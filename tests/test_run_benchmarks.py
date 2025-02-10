@@ -53,20 +53,20 @@ class TestRunBenchmarks(unittest.TestCase):
 
     def test_measure_one(self) -> None:
         # Check that we measure the run.
-        actual = run_benchmarks.measure_execution_time(Path("../.github/actions/run-benchmarks"), lambda x: "answer")
+        actual = run_benchmarks.measure_execution_time(Path("."), lambda x: "answer")
         expected = "0.000 sec"
         self.assertEqual(expected, actual)
 
     def test_measure_two(self) -> None:
         # Check that we .strip() the result.
-        actual = run_benchmarks.measure_execution_time(Path("../.github/actions/run-benchmarks"), lambda x: "answer\n")
+        actual = run_benchmarks.measure_execution_time(Path("."), lambda x: "answer\n")
         expected = "0.000 sec"
         self.assertEqual(expected, actual)
 
     def test_measure_three(self) -> None:
         # Check that we check the answer.
         actual = run_benchmarks.measure_execution_time(
-            Path("../.github/actions/run-benchmarks"), lambda x: "wrong answer"
+            Path("."), lambda x: "wrong answer"
         )
         expected = "Wrong answer"
         self.assertEqual(expected, actual)
@@ -77,7 +77,7 @@ class TestRunBenchmarks(unittest.TestCase):
             raise subprocess.CalledProcessError(1, "cmd")
 
         actual = run_benchmarks.measure_execution_time(
-            Path("../.github/actions/run-benchmarks"),
+            Path("."),
             raises,
         )
         expected = "Error (1)"
