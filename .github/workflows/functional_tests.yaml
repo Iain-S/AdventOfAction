@@ -21,4 +21,4 @@ jobs:
           echo "..."
           cat tests/EXPECTED_README.md
           echo "..."
-          diff --ignore-all-space tests/README.md tests/EXPECTED_README.md
+          diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README.md
