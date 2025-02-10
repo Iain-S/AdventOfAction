@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 on:
   pull_request:
     branches:
@@ -19,4 +19,5 @@ jobs:
           python-version: '3.13'
       # Install our only dependency.
       - run: pip install pyre-check
-      - uses: pre-commit/action@v3.0.1
+      - run: cd .github/actions/run-benchmarks/ && python test_run_benchmarks.py
+        shell: bash
