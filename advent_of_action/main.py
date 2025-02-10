@@ -10,7 +10,7 @@ from collections.abc import Callable
 RunnerFunc = Callable[[Path], str]
 
 SUBPROCESS_RUN: Final[Callable] = partial(
-    subprocess.run, capture_output=True, timeout=60
+    subprocess.run, capture_output=True, timeout=60, text=True
 )
 
 
@@ -26,7 +26,7 @@ def run_racket(dirpath: Path) -> str:
     """Run a Racket solution."""
     command = ["racket", dirpath / "solution.rkt"]
     print("Running", command)
-    completed_process = SUBPROCESS_RUN(command, capture_output=True)
+    completed_process = SUBPROCESS_RUN(command)
     return completed_process.stdout
 
 
