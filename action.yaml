@@ -1,0 +1,35 @@
+name: "Advent Of Action"
+description: "Runs code in subfolders, records execution times, and updates README"
+inputs:
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.13"
+  racket-version:
+    description: "Racket version to use"
+    required: false
+    default: "8.14"
+  working-directory:
+    description: "The working directory"
+    required: false
+    default: "."
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Setup Racket
+      uses: Bogdanp/setup-racket@v1.11
+      with:
+        # Note "version" vs "racket-version".
+        version: ${{ inputs.racket-version }}
+    - name: Install dependencies
+      run: pip install .
+      shell: bash
+    - name: Change directory
+      run: |
+        pushd ${{ inputs.working-directory }}
+        python -m advent_of_action.main
+      shell: bash

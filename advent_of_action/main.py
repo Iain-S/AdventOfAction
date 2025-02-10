@@ -10,7 +10,7 @@ from collections.abc import Callable
 RunnerFunc = Callable[[Path], str]
 
 SUBPROCESS_RUN: Final[Callable] = partial(
-    subprocess.run, capture_output=True, timeout=60
+    subprocess.run, capture_output=True, timeout=60, text=True
 )
 
 
@@ -26,7 +26,7 @@ def run_racket(dirpath: Path) -> str:
     """Run a Racket solution."""
     command = ["racket", dirpath / "solution.rkt"]
     print("Running", command)
-    completed_process = SUBPROCESS_RUN(command, capture_output=True)
+    completed_process = SUBPROCESS_RUN(command)
     return completed_process.stdout
 
 
@@ -46,12 +46,12 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
             return "Wrong answer"
     except subprocess.CalledProcessError as e:
         return f"Error ({e.returncode})"
-    return f"{time.time() - start:.3f} sec"
+    return f"{time.time() - start:.0f} sec"
 
 
 def update_readme(the_results: Mapping[Path, str]) -> None:
     readme_path = "README.md"
-    new_content = "\n## Benchmark Results\n"
+    new_content = "\n## Results\n"
     for the_path, time_taken in the_results.items():
         new_content += f"- `{the_path}`: {time_taken}\n"
 
@@ -60,7 +60,7 @@ def update_readme(the_results: Mapping[Path, str]) -> None:
 
 
 def main() -> None:
-    """Run the benchmarks."""
+    """Run the solutions."""
     results: dict[Path, str] = {}
     path = Path(".")
     # Expecting

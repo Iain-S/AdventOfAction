@@ -12,56 +12,25 @@ Run AoC problems with a GitHub action.
 ## Running Tests
 
 ```bash
-cd .github/actions/run-benchmarks
-python test_run_benchmarks.py
+cd tests
+python test_main.py
 ```
 
 ## Using the Action
 
+See [functional_tests.yaml](.github/workflows/functional_tests.yaml).
+
+You may want to commit and push the changes to your branch with
+
+```yaml
+- name: Commit results
+  shell: bash
+  run: |
+    git config --global user.name "github-actions[bot]"
+    git config --global user.email "github-actions@github.com"
+    git add README.md
+    git commit -m "Update README with results" || echo "No changes to commit"
+    git push
+```
+
 See [run_solutions.yaml](.github/workflows/run_solutions.yaml).
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/python_iain`: Wrong answer
-- `day_99/racket_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/racket_iain`: Wrong answer
-- `day_99/python_iain`: Wrong answer
-
-## Benchmark Results
-- `day_99/racket_iain`: Wrong answer
-- `day_99/python_iain`: Wrong answer
