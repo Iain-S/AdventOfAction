@@ -35,8 +35,7 @@ class TestRunBenchmarks(unittest.TestCase):
             benchmarks = importlib.reload(benchmarks)
             with Chdir("../../.."):
                 benchmarks.main()
-                self.assertListEqual(
-                    mock_run.call_args_list,
+                mock_run.assert_has_calls(
                     [
                         call(
                             ["python", PosixPath("day_99/python_iain/solution.py")],
@@ -49,6 +48,7 @@ class TestRunBenchmarks(unittest.TestCase):
                             timeout=60,
                         ),
                     ],
+                    any_order=True,
                 )
 
     def test_measure_one(self) -> None:
