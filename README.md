@@ -4,8 +4,8 @@ Run AoC problems with a GitHub action.
 
 ## Development Setup
 
-1. Install Python 3.13.
-2. Install Pyre-check, with `pip install pyre-check`.
+1. Install Poetry.
+2. Install Advent of Action, with `poetry install`.
 3. Install the pre-commit hooks with `pre-commit install --install-hooks`.
 4. You're good to go.
 
@@ -20,7 +20,7 @@ python test_main.py
 
 See [functional_tests.yaml](.github/workflows/functional_tests.yaml).
 
-You may want to commit and push the changes to your branch with
+You may want to commit and push the changes to your branch with:
 
 ```yaml
 - name: Commit results
@@ -32,5 +32,3 @@ You may want to commit and push the changes to your branch with
     git commit -m "Update README with results" || echo "No changes to commit"
     git push
 ```
-
-See [run_solutions.yaml](.github/workflows/run_solutions.yaml).
