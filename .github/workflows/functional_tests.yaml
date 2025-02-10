@@ -1,7 +1,5 @@
 name: Functional tests
-
 on: [push, pull_request]
-
 jobs:
   benchmark:
     runs-on: ubuntu-latest
@@ -10,16 +8,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-
       - name: CD to tests
         run: cd tests/
         shell: bash
-
       - name: Run Benchmarks
         uses: ../
         with:
           python-version: "3.13"
-
       - name: Compare results
         shell: bash
         run: diff README.md EXPECTED_README.md

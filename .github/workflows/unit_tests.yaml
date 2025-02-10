@@ -7,7 +7,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -19,7 +18,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: pip install ".[dev]"
+      - run: pip install .
         shell: bash
       - run: cd tests/ && python test_run_benchmarks.py
         shell: bash
