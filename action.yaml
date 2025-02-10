@@ -31,8 +31,8 @@ runs:
     - name: Change directory
       run: pushd ${{ inputs.working-directory }}
       shell: bash
-    - name: Run benchmark script
-      run: python -m advent_of_action.run_benchmarks
+    - name: Run our action
+      run: python -m advent_of_action.main
       shell: bash
     - name: Change directory
       run: popd

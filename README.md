@@ -12,8 +12,8 @@ Run AoC problems with a GitHub action.
 ## Running Tests
 
 ```bash
-cd .github/actions/run-benchmarks
-python test_run_benchmarks.py
+cd tests
+python test_main.py
 ```
 
 ## Using the Action
