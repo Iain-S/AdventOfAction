@@ -25,6 +25,6 @@ repos:
     hooks:
       - id: Pyre
         name: Pyre
-        entry: pyre --strict --noninteractive check
+        entry: poetry run pyre --strict --noninteractive check
         language: system
         pass_filenames: false
