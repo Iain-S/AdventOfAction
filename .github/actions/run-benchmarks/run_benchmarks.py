@@ -3,50 +3,47 @@
 import subprocess
 import time
 from pathlib import Path
-from typing import Final, Optional, Mapping, Type
-from abc import ABC, abstractmethod
+from typing import Final, Mapping
+from collections.abc import Callable
+
+RunnerFunc = Callable[[Path], str]
 
 
-class Runtime(ABC):
-    @classmethod
-    @abstractmethod
-    def run(cls, *args, **kwargs) -> None:
-        """Run the code."""
-
-    @classmethod
-    @abstractmethod
-    def can_run(cls, *args, **kwargs) -> bool:
-        """Whether we can run the code"""
+def run_python(dirpath: Path) -> str:
+    for filepath in dirpath.iterdir():
+        if filepath.suffix == ".py":
+            command = ["python", filepath]
+            print("Running", command)
+            completed_process = subprocess.run(command)
+            return completed_process.stdout.decode("utf-8")
+    raise Exception("No Python file found.")
 
 
-class PythonRuntime(Runtime):
-    @classmethod
-    def run(cls, dirpath: Path, *args: str) -> None:
-        for filepath in dirpath.iterdir():
-            if filepath.suffix == ".py":
-                command = ["python", filepath]
-                print("Running", command)
-                subprocess.run(command)
-
-    @classmethod
-    def can_run(cls, dirpath: Path) -> bool:
-        for filepath in dirpath.iterdir():
-            if filepath.suffix == ".py":
-                return True
-        return False
+def run_racket(dirpath: Path) -> str:
+    """Run the code."""
+    for filepath in dirpath.iterdir():
+        if filepath.suffix == ".rkt":
+            command = ["racket", filepath]
+            print("Running", command)
+            completed_process = subprocess.run(command)
+            return completed_process.stdout.decode("utf-8")
+    raise Exception("No Python file found.")
 
 
 # Languages and their commands
-RUNTIMES: Final = {
-    PythonRuntime,
+RUNTIMES: Final[dict[str, RunnerFunc]] = {
+    "python": run_python,
+    "racket": run_racket,
 }
 
 
-def measure_execution_time(dirpath: Path, ext: Type[Runtime]) -> Optional[str]:
+def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
     # Use the licence as input while testing.
     start = time.time()
     try:
-        ext.run(dirpath)
+        output = ext(dirpath)
+        if output != "answer":
+            return "Error"
     except subprocess.CalledProcessError as e:
         return f"Error ({e.returncode})"
     return f"{time.time() - start:.3f} sec"
@@ -67,10 +64,10 @@ def main() -> None:
     path = Path(".")
     for dirpath, _, filenames in path.walk():
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
-            for ext in RUNTIMES:
-                if ext.can_run(dirpath):
-                    if temp := measure_execution_time(dirpath, ext):
-                        results[dirpath] = temp
+            if dirpath.parts and len(dirpath.parts) == 2:
+                for name, runner in RUNTIMES.items():
+                    if dirpath.parts[1].startswith(name):
+                        results[dirpath] = measure_execution_time(dirpath, runner)
 
     update_readme(results)
 
