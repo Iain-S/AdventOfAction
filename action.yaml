@@ -25,5 +25,5 @@ runs:
         version: ${{ inputs.racket-version }}
 
     - name: Run benchmark script
-      run: python .github/actions/run-benchmarks/run_benchmarks.py
+      run: python advent_of_action/run_benchmarks.py
       shell: bash
