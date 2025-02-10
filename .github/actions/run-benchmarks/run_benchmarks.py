@@ -13,9 +13,11 @@ def measure_execution_time(filepath):
     if ext not in RUNTIMES:
         return None  # Skip unsupported files
 
-    command = [RUNTIMES[ext], filepath]
+    # Use the licence as input while testing.
+    command = [RUNTIMES[ext], filepath, "./LICENSE"]
     start = time.time()
     try:
+        print("Running", command)
         subprocess.run(command, capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError as e:
         return f"Error ({e.returncode})"
