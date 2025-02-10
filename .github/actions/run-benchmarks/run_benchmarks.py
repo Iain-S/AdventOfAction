@@ -2,27 +2,32 @@
 
 import subprocess
 import time
+from functools import partial
 from pathlib import Path
 from typing import Final, Mapping
 from collections.abc import Callable
 
 RunnerFunc = Callable[[Path], str]
 
+SUBPROCESS_RUN: Final[Callable] = partial(
+    subprocess.run, capture_output=True, timeout=60
+)
+
 
 def run_python(dirpath: Path) -> str:
     """Run a Python solution."""
     command = ["python", dirpath / "solution.py"]
     print("Running", command)
-    completed_process = subprocess.run(command, capture_output=True)
-    return completed_process.stdout.decode("utf-8")
+    completed_process = SUBPROCESS_RUN(command)
+    return completed_process.stdout
 
 
 def run_racket(dirpath: Path) -> str:
     """Run a Racket solution."""
     command = ["racket", dirpath / "solution.rkt"]
     print("Running", command)
-    completed_process = subprocess.run(command, capture_output=True)
-    return completed_process.stdout.decode("utf-8")
+    completed_process = SUBPROCESS_RUN(command, capture_output=True)
+    return completed_process.stdout
 
 
 # Languages and their commands
@@ -37,8 +42,8 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
     start = time.time()
     try:
         output = ext(dirpath)
-        if output != "answer":
-            return "Error"
+        if output.strip() != "answer":
+            return "Wrong answer"
     except subprocess.CalledProcessError as e:
         return f"Error ({e.returncode})"
     return f"{time.time() - start:.3f} sec"
