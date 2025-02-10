@@ -1,0 +1,13 @@
+name: Run all solutions
+
+on: [push, pull_request]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Benchmarks
+        uses: ./.github/actions/run-benchmarks

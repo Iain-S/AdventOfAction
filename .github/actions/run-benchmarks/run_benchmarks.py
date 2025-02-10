@@ -1,14 +1,12 @@
 """Run every solution."""
+
 import os
 import subprocess
 import time
 
 # Languages and their commands
-RUNTIMES = {
-    ".py": "python3",
-    ".js": "node",
-    ".sh": "bash"
-}
+RUNTIMES = {".py": "python3", ".js": "node", ".sh": "bash"}
+
 
 def measure_execution_time(filepath):
     ext = os.path.splitext(filepath)[1]
@@ -23,6 +21,7 @@ def measure_execution_time(filepath):
         return f"Error ({e.returncode})"
     return f"{time.time() - start:.3f} sec"
 
+
 def update_readme(the_results):
     readme_path = "README.md"
     new_content = "\n## Benchmark Results\n"
@@ -32,12 +31,14 @@ def update_readme(the_results):
     with open(readme_path, "a") as f:
         f.write(new_content)
 
+
 if __name__ == "__main__":
     results = {}
     for root, _, files in os.walk("."):
-        for file in files:
-            if any(file.endswith(ext) for ext in RUNTIMES):
-                path = os.path.join(root, file)
-                results[path] = measure_execution_time(path)
+        if root.startswith("./day"):
+            for file in files:
+                if any(file.endswith(ext) for ext in RUNTIMES):
+                    path = os.path.join(root, file)
+                    results[path] = measure_execution_time(path)
 
     update_readme(results)
