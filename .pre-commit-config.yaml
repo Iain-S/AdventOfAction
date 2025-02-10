@@ -17,10 +17,10 @@ repos:
     hooks:
       # Run the linter.
       - id: ruff
-        files: (.github/|day_99)
+        files: (.advent_of_action|tests)
       # Run the formatter.
       - id: ruff-format
-        files: (.github/|day_99)
+        files: (.advent_of_action|tests)
   - repo: local
     hooks:
       - id: Pyre
