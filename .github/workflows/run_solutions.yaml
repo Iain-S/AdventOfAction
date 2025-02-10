@@ -11,10 +11,20 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Setup Racket
+        uses: Bogdanp/setup-racket@v1.11
+        with:
+          version: "8.14"
+
       - name: Run Benchmarks
         uses: ./.github/actions/run-benchmarks
         with:
-          python-version: '3.13'
+          python-version: "3.13"
 
       - name: Commit results
         run: |

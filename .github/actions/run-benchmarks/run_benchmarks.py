@@ -21,13 +21,12 @@ def run_python(dirpath: Path) -> str:
 
 def run_racket(dirpath: Path) -> str:
     """Run the code."""
-    for filepath in dirpath.iterdir():
-        if filepath.suffix == ".rkt":
-            command = ["racket", filepath]
-            print("Running", command)
-            completed_process = subprocess.run(command)
-            return completed_process.stdout.decode("utf-8")
-    raise Exception("No Python file found.")
+    # for filepath in dirpath.iterdir():
+    #     if filepath.suffix == ".rkt":
+    command = ["racket", "solution.rkt"]
+    print("Running", command)
+    completed_process = subprocess.run(command)
+    return completed_process.stdout.decode("utf-8")
 
 
 # Languages and their commands
@@ -60,6 +59,7 @@ def update_readme(the_results: Mapping[Path, str]) -> None:
 
 
 def main() -> None:
+    """Run the benchmarks."""
     results: dict[Path, str] = {}
     path = Path(".")
     for dirpath, _, filenames in path.walk():
