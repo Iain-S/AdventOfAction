@@ -19,5 +19,5 @@ jobs:
         with:
           python-version: '3.13'
       # Install our only dependency.
-      - run: pip install pyre-check
+      - run: pip install ".[dev]"
       - uses: pre-commit/action@v3.0.1
