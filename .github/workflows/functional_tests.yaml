@@ -15,4 +15,10 @@ jobs:
           working-directory: tests/
       - name: Compare results
         shell: bash
-        run: diff --ignore-all-space tests/README.md tests/EXPECTED_README.md
+        run: |
+          echo "..."
+          cat tests/README.md
+          echo "..."
+          cat tests/EXPECTED_README.md
+          echo "..."
+          diff --ignore-all-space tests/README.md tests/EXPECTED_README.md
