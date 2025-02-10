@@ -13,7 +13,7 @@ def run_python(dirpath: Path) -> str:
     """Run a Python solution."""
     command = ["python", dirpath / "solution.py"]
     print("Running", command)
-    completed_process = subprocess.run(command)
+    completed_process = subprocess.run(command, capture_output=True)
     return completed_process.stdout.decode("utf-8")
 
 
@@ -21,7 +21,7 @@ def run_racket(dirpath: Path) -> str:
     """Run a Racket solution."""
     command = ["racket", dirpath / "solution.rkt"]
     print("Running", command)
-    completed_process = subprocess.run(command)
+    completed_process = subprocess.run(command, capture_output=True)
     return completed_process.stdout.decode("utf-8")
 
 

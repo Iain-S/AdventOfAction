@@ -1,7 +1,7 @@
 import unittest
 from pathlib import PosixPath
 from types import TracebackType
-from unittest.mock import patch
+from unittest.mock import patch, call
 import os
 import run_benchmarks  # type: ignore
 
@@ -26,10 +26,20 @@ class Chdir:
 class TestRunBenchmarks(unittest.TestCase):
     def test_main(self) -> None:
         with Chdir("../../.."):
-            with patch("run_benchmarks.measure_execution_time") as mock_measure:
+            with patch("subprocess.run") as mock_run:
                 run_benchmarks.main()
-                mock_measure.assert_called_once_with(
-                    PosixPath("day_99/racket_iain"), run_benchmarks.run_racket
+                self.assertListEqual(
+                    mock_run.call_args_list,
+                    [
+                        call(
+                            ["python", PosixPath("day_99/python_iain/solution.py")],
+                            capture_output=True,
+                        ),
+                        call(
+                            ["racket", PosixPath("day_99/racket_iain/solution.rkt")],
+                            capture_output=True,
+                        ),
+                    ],
                 )
 
 
