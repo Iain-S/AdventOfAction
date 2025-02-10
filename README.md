@@ -32,3 +32,5 @@ You may want to commit and push the changes to your branch with
     git commit -m "Update README with results" || echo "No changes to commit"
     git push
 ```
+
+See [run_solutions.yaml](.github/workflows/run_solutions.yaml).
