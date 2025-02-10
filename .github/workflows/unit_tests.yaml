@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      # Install our only dependency.
+      - run: pip install ".[dev]"
+        shell: bash
       - run: cd tests/ && python test_run_benchmarks.py
         shell: bash
