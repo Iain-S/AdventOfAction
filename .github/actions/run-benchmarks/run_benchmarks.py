@@ -10,6 +10,7 @@ RunnerFunc = Callable[[Path], str]
 
 
 def run_python(dirpath: Path) -> str:
+    """Run a Python solution."""
     for filepath in dirpath.iterdir():
         if filepath.suffix == ".py":
             command = ["python", filepath]
@@ -20,7 +21,7 @@ def run_python(dirpath: Path) -> str:
 
 
 def run_racket(dirpath: Path) -> str:
-    """Run the code."""
+    """Run a Racket solution."""
     # for filepath in dirpath.iterdir():
     #     if filepath.suffix == ".rkt":
     command = ["racket", "solution.rkt"]
@@ -62,6 +63,10 @@ def main() -> None:
     """Run the benchmarks."""
     results: dict[Path, str] = {}
     path = Path(".")
+    # Expecting
+    # ├── day_01
+    # │   ├── python_person
+    # │   │   └── solution.py
     for dirpath, _, filenames in path.walk():
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             if dirpath.parts and len(dirpath.parts) == 2:
