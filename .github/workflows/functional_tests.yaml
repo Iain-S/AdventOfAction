@@ -15,4 +15,4 @@ jobs:
           working-directory: tests/
       - name: Compare results
         shell: bash
-        run: diff README.md EXPECTED_README.md
+        run: diff tests/README.md tests/EXPECTED_README.md
