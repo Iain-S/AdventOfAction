@@ -1,4 +1,6 @@
 # Advent of Code
+.python-version
+.idea/
 inputs/
 examples/
 
