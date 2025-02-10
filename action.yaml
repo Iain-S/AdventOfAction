@@ -29,8 +29,11 @@ runs:
       run: pip install .
       shell: bash
     - name: Change directory
-      run: cd ${{ inputs.working-directory }}
+      run: pushd ${{ inputs.working-directory }}
       shell: bash
     - name: Run benchmark script
       run: python -m advent_of_action.run_benchmarks
+      shell: bash
+    - name: Change directory
+      run: popd
       shell: bash

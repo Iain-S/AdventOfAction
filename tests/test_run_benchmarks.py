@@ -2,27 +2,8 @@ import importlib
 import subprocess
 import unittest
 from pathlib import PosixPath, Path
-from types import TracebackType
 from unittest.mock import patch, call
-import os
 from advent_of_action import run_benchmarks
-
-
-class Chdir:
-    def __init__(self, new: str) -> None:
-        self.new = new
-        self.cwd: str = os.getcwd()
-
-    def __enter__(self) -> None:
-        os.chdir(self.new)
-
-    def __exit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_val: BaseException | None,
-        exc_tb: TracebackType | None,
-    ) -> None:
-        os.chdir(self.cwd)
 
 
 class TestRunBenchmarks(unittest.TestCase):
@@ -33,7 +14,6 @@ class TestRunBenchmarks(unittest.TestCase):
             # patched subprocess.run.
             benchmarks = importlib.import_module("advent_of_action.run_benchmarks")
             benchmarks = importlib.reload(benchmarks)
-            # with Chdir("../../.."):
             benchmarks.main()
             mock_run.assert_has_calls(
                 [
