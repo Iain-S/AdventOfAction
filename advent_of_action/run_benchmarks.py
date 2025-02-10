@@ -62,7 +62,7 @@ def update_readme(the_results: Mapping[Path, str]) -> None:
 def main() -> None:
     """Run the benchmarks."""
     results: dict[Path, str] = {}
-    path = Path("../.github/actions/run-benchmarks")
+    path = Path(".")
     # Expecting
     # ├── day_01
     # │   ├── python_person

@@ -1,17 +1,28 @@
 name: "Run Benchmarks"
 description: "Runs code in subfolders, records execution times, and updates README"
-#inputs:
-#  python-version:
-#    description: "Python version to use"
-#    required: false
-#    default: "3.13"
+inputs:
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.13"
+  racket-version:
+    description: "Racket version to use"
+    required: false
+    default: "8.14"
+
 runs:
   using: "composite"
   steps:
-#    - name: Set up Python
-#      uses: actions/setup-python@v5
-#      with:
-#        python-version: ${{ inputs.python-version }}
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Setup Racket
+      uses: Bogdanp/setup-racket@v1.11
+      with:
+        # Note "version" vs "racket-version".
+        version: ${{ inputs.racket-version }}
 
     - name: Run benchmark script
       run: python .github/actions/run-benchmarks/run_benchmarks.py

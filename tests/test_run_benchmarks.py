@@ -31,25 +31,25 @@ class TestRunBenchmarks(unittest.TestCase):
             # Need to explicitly (re)load the module
             # so that the call to partial() works on the
             # patched subprocess.run.
-            benchmarks = importlib.import_module("run_benchmarks")
+            benchmarks = importlib.import_module("advent_of_action.run_benchmarks")
             benchmarks = importlib.reload(benchmarks)
-            with Chdir("../../.."):
-                benchmarks.main()
-                mock_run.assert_has_calls(
-                    [
-                        call(
-                            ["python", PosixPath("day_99/python_iain/solution.py")],
-                            capture_output=True,
-                            timeout=60,
-                        ),
-                        call(
-                            ["racket", PosixPath("day_99/racket_iain/solution.rkt")],
-                            capture_output=True,
-                            timeout=60,
-                        ),
-                    ],
-                    any_order=True,
-                )
+            # with Chdir("../../.."):
+            benchmarks.main()
+            mock_run.assert_has_calls(
+                [
+                    call(
+                        ["python", PosixPath("day_99/python_iain/solution.py")],
+                        capture_output=True,
+                        timeout=60,
+                    ),
+                    call(
+                        ["racket", PosixPath("day_99/racket_iain/solution.rkt")],
+                        capture_output=True,
+                        timeout=60,
+                    ),
+                ],
+                any_order=True,
+            )
 
     def test_measure_one(self) -> None:
         # Check that we measure the run.
