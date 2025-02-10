@@ -46,7 +46,7 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
             return "Wrong answer"
     except subprocess.CalledProcessError as e:
         return f"Error ({e.returncode})"
-    return f"{time.time() - start:.3f} sec"
+    return f"{time.time() - start:.0f} sec"
 
 
 def update_readme(the_results: Mapping[Path, str]) -> None:

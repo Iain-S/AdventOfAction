@@ -21,11 +21,13 @@ class TestMain(unittest.TestCase):
                         ["python", PosixPath("day_99/python_iain/solution.py")],
                         capture_output=True,
                         timeout=60,
+                        text=True,
                     ),
                     call(
                         ["racket", PosixPath("day_99/racket_iain/solution.rkt")],
                         capture_output=True,
                         timeout=60,
+                        text=True,
                     ),
                 ],
                 any_order=True,
@@ -34,13 +36,13 @@ class TestMain(unittest.TestCase):
     def test_measure_one(self) -> None:
         # Check that we measure the run.
         actual = main.measure_execution_time(Path("."), lambda x: "answer")
-        expected = "0.000 sec"
+        expected = "0 sec"
         self.assertEqual(expected, actual)
 
     def test_measure_two(self) -> None:
         # Check that we .strip() the result.
         actual = main.measure_execution_time(Path("."), lambda x: "answer\n")
-        expected = "0.000 sec"
+        expected = "0 sec"
         self.assertEqual(expected, actual)
 
     def test_measure_three(self) -> None:
