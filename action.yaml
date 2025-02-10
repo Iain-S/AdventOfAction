@@ -1,4 +1,4 @@
-name: "Run Benchmarks"
+name: "Advent Of Action"
 description: "Runs code in subfolders, records execution times, and updates README"
 inputs:
   python-version:
@@ -9,7 +9,10 @@ inputs:
     description: "Racket version to use"
     required: false
     default: "8.14"
-
+  working-directory:
+    description: "The working directory"
+    required: false
+    default: "."
 runs:
   using: "composite"
   steps:
@@ -17,13 +20,17 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-
     - name: Setup Racket
       uses: Bogdanp/setup-racket@v1.11
       with:
         # Note "version" vs "racket-version".
         version: ${{ inputs.racket-version }}
-
+    - name: Install dependencies
+      run: pip install .
+      shell: bash
+    - name: Change directory
+      run: cd ${{ inputs.working-directory }}
+      shell: bash
     - name: Run benchmark script
-      run: python advent_of_action/run_benchmarks.py
+      run: python -m advent_of_action.run_benchmarks
       shell: bash

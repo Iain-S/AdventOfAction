@@ -12,9 +12,10 @@ jobs:
         run: cd tests/
         shell: bash
       - name: Run Benchmarks
-        uses: ".."
+        uses: .
         with:
           python-version: "3.13"
+          working-directory: tests/
       - name: Compare results
         shell: bash
         run: diff README.md EXPECTED_README.md
