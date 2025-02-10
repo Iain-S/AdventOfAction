@@ -8,7 +8,7 @@ on:
       - main
   workflow_dispatch:
 jobs:
-  lint:
+  tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -20,5 +20,5 @@ jobs:
           python-version: '3.13'
       - run: pip install .
         shell: bash
-      - run: cd tests/ && python test_run_benchmarks.py
+      - run: cd tests/ && python test_main.py
         shell: bash
