@@ -1,14 +1,14 @@
 name: Functional tests
 on: [push, pull_request]
 jobs:
-  benchmark:
+  functional:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-      - name: Run Benchmarks
+      - name: Run our action
         uses: ./
         with:
           python-version: "3.13"

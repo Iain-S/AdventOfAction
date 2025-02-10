@@ -51,7 +51,7 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
 
 def update_readme(the_results: Mapping[Path, str]) -> None:
     readme_path = "README.md"
-    new_content = "\n## Benchmark Results\n"
+    new_content = "\n## Results\n"
     for the_path, time_taken in the_results.items():
         new_content += f"- `{the_path}`: {time_taken}\n"
 
@@ -60,7 +60,7 @@ def update_readme(the_results: Mapping[Path, str]) -> None:
 
 
 def main() -> None:
-    """Run the benchmarks."""
+    """Run the solutions."""
     results: dict[Path, str] = {}
     path = Path(".")
     # Expecting
