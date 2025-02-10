@@ -11,20 +11,15 @@ RunnerFunc = Callable[[Path], str]
 
 def run_python(dirpath: Path) -> str:
     """Run a Python solution."""
-    for filepath in dirpath.iterdir():
-        if filepath.suffix == ".py":
-            command = ["python", filepath]
-            print("Running", command)
-            completed_process = subprocess.run(command)
-            return completed_process.stdout.decode("utf-8")
-    raise Exception("No Python file found.")
+    command = ["python", dirpath / "solution.py"]
+    print("Running", command)
+    completed_process = subprocess.run(command)
+    return completed_process.stdout.decode("utf-8")
 
 
 def run_racket(dirpath: Path) -> str:
     """Run a Racket solution."""
-    # for filepath in dirpath.iterdir():
-    #     if filepath.suffix == ".rkt":
-    command = ["racket", "solution.rkt"]
+    command = ["racket", dirpath / "solution.rkt"]
     print("Running", command)
     completed_process = subprocess.run(command)
     return completed_process.stdout.decode("utf-8")
