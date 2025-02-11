@@ -18,13 +18,19 @@ class TestMain(unittest.TestCase):
             mock_run.assert_has_calls(
                 [
                     call(
-                        ["python", PosixPath("day_99/python_iain/solution.py")],
+                        [
+                            "python",
+                            PosixPath("day_99/python_iain/solution.py"),
+                        ],
                         capture_output=True,
                         timeout=60,
                         text=True,
                     ),
                     call(
-                        ["racket", PosixPath("day_99/racket_iain/solution.rkt")],
+                        [
+                            "racket",
+                            PosixPath("day_99/racket_iain/solution.rkt"),
+                        ],
                         capture_output=True,
                         timeout=60,
                         text=True,
@@ -41,13 +47,20 @@ class TestMain(unittest.TestCase):
                         text=True,
                     ),
                     call(
-                        ["dotnet", "fsi", PosixPath("day_99/fsharp_iain/solution.fsx")],
+                        [
+                            "dotnet",
+                            "fsi",
+                            PosixPath("day_99/fsharp_iain/solution.fsx"),
+                        ],
                         capture_output=True,
                         timeout=60,
                         text=True,
                     ),
                     call(
-                        ["ocaml", PosixPath("day_99/ocaml_iain/solution.ml")],
+                        [
+                            "ocaml",
+                            PosixPath("day_99/ocaml_iain/solution.ml"),
+                        ],
                         capture_output=True,
                         timeout=60,
                         text=True,
@@ -68,33 +81,59 @@ class TestMain(unittest.TestCase):
 
     def test_measure_one(self) -> None:
         # Check that we measure the run.
-        actual = main.measure_execution_time(Path("."), lambda x: "answer")
+        actual = main.measure_execution_time(
+            Path("."),
+            lambda x: "answer",
+        )
         expected = "0 sec"
-        self.assertEqual(expected, actual)
+        self.assertEqual(
+            expected,
+            actual,
+        )
 
     def test_measure_two(self) -> None:
         # Check that we .strip() the result.
-        actual = main.measure_execution_time(Path("."), lambda x: "answer\n")
+        actual = main.measure_execution_time(
+            Path("."),
+            lambda x: "answer\n",
+        )
         expected = "0 sec"
-        self.assertEqual(expected, actual)
+        self.assertEqual(
+            expected,
+            actual,
+        )
 
     def test_measure_three(self) -> None:
         # Check that we check the answer.
-        actual = main.measure_execution_time(Path("."), lambda x: "wrong answer")
+        actual = main.measure_execution_time(
+            Path("."),
+            lambda x: "wrong answer",
+        )
         expected = "Wrong answer"
-        self.assertEqual(expected, actual)
+        self.assertEqual(
+            expected,
+            actual,
+        )
 
     def test_measure_four(self) -> None:
         # Check that we check the answer.
-        def raises(_) -> str:
-            raise subprocess.CalledProcessError(1, "cmd")
+        def raises(
+            _,
+        ) -> str:
+            raise subprocess.CalledProcessError(
+                1,
+                "cmd",
+            )
 
         actual = main.measure_execution_time(
             Path("."),
             raises,
         )
         expected = "Error (1)"
-        self.assertEqual(expected, actual)
+        self.assertEqual(
+            expected,
+            actual,
+        )
 
 
 if __name__ == "__main__":
