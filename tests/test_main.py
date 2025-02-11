@@ -15,8 +15,38 @@ class TestMain(unittest.TestCase):
             aoa = importlib.import_module("advent_of_action.main")
             aoa = importlib.reload(aoa)
             aoa.main()
-            mock_run.assert_has_calls(
+            self.assertListEqual(
+                mock_run.call_args_list,
                 [
+                    call(
+                        [
+                            "dotnet",
+                            "fsi",
+                            PosixPath("day_99/fsharp_iain/solution.fsx"),
+                        ],
+                        capture_output=True,
+                        timeout=60,
+                        text=True,
+                    ),
+                    call(
+                        [
+                            "ipython",
+                            "-c",
+                            f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}",
+                        ],
+                        capture_output=True,
+                        timeout=60,
+                        text=True,
+                    ),
+                    call(
+                        [
+                            "ocaml",
+                            PosixPath("day_99/ocaml_iain/solution.ml"),
+                        ],
+                        capture_output=True,
+                        timeout=60,
+                        text=True,
+                    ),
                     call(
                         [
                             "python",
@@ -46,37 +76,7 @@ class TestMain(unittest.TestCase):
                         timeout=60,
                         text=True,
                     ),
-                    call(
-                        [
-                            "dotnet",
-                            "fsi",
-                            PosixPath("day_99/fsharp_iain/solution.fsx"),
-                        ],
-                        capture_output=True,
-                        timeout=60,
-                        text=True,
-                    ),
-                    call(
-                        [
-                            "ocaml",
-                            PosixPath("day_99/ocaml_iain/solution.ml"),
-                        ],
-                        capture_output=True,
-                        timeout=60,
-                        text=True,
-                    ),
-                    call(
-                        [
-                            "ipython",
-                            "-c",
-                            f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}",
-                        ],
-                        capture_output=True,
-                        timeout=60,
-                        text=True,
-                    ),
                 ],
-                any_order=True,
             )
 
     def test_measure_one(self) -> None:

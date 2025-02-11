@@ -94,7 +94,8 @@ def main() -> None:
     # ├── day_01
     # │   ├── python_person
     # │   │   └── solution.py
-    for dirpath, _, filenames in path.walk():
+    for dirpath, dirnames, filenames in path.walk(top_down=True):
+        dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             if dirpath.parts and len(dirpath.parts) == 2:
                 for name, runner in RUNTIMES.items():
