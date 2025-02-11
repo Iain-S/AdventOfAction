@@ -28,3 +28,4 @@ repos:
         entry: poetry run pyre --strict --noninteractive check
         language: system
         pass_filenames: false
+        types: [python]
