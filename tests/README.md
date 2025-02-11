@@ -9,7 +9,7 @@
 - `day_99/python_optout`: Wrong answer
 - `day_99/python_zain`: Wrong answer
 - `day_99/racket_iain`: Wrong answer
-- `day_99/rust_iain`: Wrong answer
+- `day_9/rust_iain`: Wrong answer
 
 ## Results
 
