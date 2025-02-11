@@ -1,7 +1,6 @@
 """Run every solution."""
 
 import subprocess
-import time
 from functools import partial
 from pathlib import Path
 from typing import Final, Mapping
@@ -38,7 +37,7 @@ def run_racket(dirpath: Path) -> Triple:
 
 def run_rust(dirpath: Path) -> Triple:
     return execute_command(
-        ["cargo", "run", "--manifest-path", dirpath / "Cargo.toml"]
+        ["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml"]
     )
 
 def run_fsharp(dirpath: Path) -> Triple:
