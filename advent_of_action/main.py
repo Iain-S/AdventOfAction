@@ -74,7 +74,6 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
             return "Wrong answer"
     except subprocess.CalledProcessError as e:
         return f"Error ({e.returncode})"
-    # Seconds to 0 decimal places, kilobytes to 0 decimal places
     return f"{seconds:.2f} sec, {kilobytes} KB"
 
 
