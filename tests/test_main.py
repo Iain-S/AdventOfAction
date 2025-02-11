@@ -53,6 +53,7 @@ class TestMain(unittest.TestCase):
                         [
                             "cargo",
                             "run",
+                            "--quiet",
                             "--manifest-path",
                             PosixPath("day_99/rust_iain/Cargo.toml"),
                         ],
