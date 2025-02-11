@@ -98,7 +98,7 @@ class TestMainMore(unittest.TestCase):
     def test_measure_four(self) -> None:
         # Check that we check the answer.
         def bad_runner(_: Path) -> tuple[int, float, str]:
-            return main.execute_command(["fooobar"])
+            return main.execute_command(["bash", "-c", "exit 1"])
 
         actual = main.measure_execution_time(Path("."), bad_runner)
         expected = "Error (1)"
