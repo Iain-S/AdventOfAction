@@ -34,3 +34,4 @@ repos:
         entry: echo "" > tests/README.md
         language: system
         pass_filenames: false
+        types: [markdown]
