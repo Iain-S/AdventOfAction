@@ -9,7 +9,8 @@ from advent_of_action import main  # type: ignore
 class TestMain(unittest.TestCase):
     def test_main(self) -> None:
         with patch("subprocess.run") as mock_run:
-            mock_run.return_value.stdout = "hello\n1792,0.01,0.02"
+            mock_run.return_value.stdout = "hello"
+            mock_run.return_value.stderr = "1792,0.01,0.02"
             # Need to explicitly (re)load the module
             # so that the call to partial() works on the
             # patched subprocess.run.
@@ -108,7 +109,8 @@ class TestMain(unittest.TestCase):
 
     def test_execute_command(self) -> None:
         with patch("advent_of_action.main.SUBPROCESS_RUN") as mock_run:
-            mock_run.return_value.stdout = "hello\n1792,0.01,0.02"
+            mock_run.return_value.stdout = "hello"
+            mock_run.return_value.stderr = "1792,0.01,0.02"
             actual = main.execute_command(
                 [],
             )

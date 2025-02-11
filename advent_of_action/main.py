@@ -18,9 +18,8 @@ SUBPROCESS_RUN: Final[Callable] = partial(
 def execute_command(command: list[str|Path]) -> tuple[int, float, str]:
     print("Running", command)
     result = SUBPROCESS_RUN(["/usr/bin/time", "-f", "%M,%S,%U"] + command)
-    lines = result.stdout.split("\n")
-    kilobytes, sys_seconds, user_seconds = lines[1].split(",")
-    return int(kilobytes), float(sys_seconds)+float(user_seconds), lines[0]
+    kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
+    return int(kilobytes), float(sys_seconds)+float(user_seconds), result.stdout
 
 
 def run_python(dirpath: Path) -> Triple:
