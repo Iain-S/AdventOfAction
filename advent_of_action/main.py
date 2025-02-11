@@ -69,7 +69,6 @@ RUNTIMES: Final[dict[str, RunnerFunc]] = {
 
 
 def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
-    # Use the licence as input while testing.
     try:
         kilobytes, seconds, output = ext(dirpath)
         if output.strip() != "answer":
