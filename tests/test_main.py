@@ -66,8 +66,6 @@ class TestMain(unittest.TestCase):
                 ],
             )
 
-
-class TestMainMore(unittest.TestCase):
     def test_measure_one(self) -> None:
         # Check that we measure the run.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer"))
