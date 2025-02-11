@@ -63,7 +63,7 @@ class TestMain(unittest.TestCase):
     def test_measure_one(self) -> None:
         # Check that we measure the run.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer"))
-        expected = "0 sec"
+        expected = "0.03 sec, 1792 KB"
         self.assertEqual(
             expected,
             actual,
@@ -72,7 +72,7 @@ class TestMain(unittest.TestCase):
     def test_measure_two(self) -> None:
         # Check that we .strip() the result.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer\n"))
-        expected = "0 sec"
+        expected = "0.03 sec, 1792 KB"
         self.assertEqual(
             expected,
             actual,
