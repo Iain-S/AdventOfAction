@@ -29,3 +29,9 @@ repos:
         language: system
         pass_filenames: false
         types: [python]
+      - id: unit-tests
+        name: Unit tests
+        entry: |
+          cd tests/
+          poetry run python test_main.py
+        language: system
