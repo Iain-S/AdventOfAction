@@ -104,7 +104,7 @@ def main() -> None:
         # ToDo Is there a better way to traverse the directories alphabetically?
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
-            day: Day = dirpath.parts[0]
+            day: Day = dirpath.parts[0][4:]
             if dirpath.parts and len(dirpath.parts) == 2:
                 for name, runner in RUNTIMES.items():
                     directory = dirpath.parts[1]
