@@ -38,12 +38,17 @@ def run_rust(dirpath: Path) -> str:
         ["cargo", "run", "--manifest-path", dirpath / "Cargo.toml"]
     )
 
+def run_fsharp(dirpath: Path) -> str:
+    return execute_command(
+        ["dotnet", "fsi", dirpath / "solution.fsx"]
+    )
 
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
     "python": run_python,
     "racket": run_racket,
     "rust": run_rust,
+    "fsharp": run_fsharp,
 }
 
 

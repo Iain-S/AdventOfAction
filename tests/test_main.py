@@ -29,6 +29,23 @@ class TestMain(unittest.TestCase):
                         timeout=60,
                         text=True,
                     ),
+                    call(
+                        [
+                            "cargo",
+                            "run",
+                            "--manifest-path",
+                            PosixPath("day_99/rust_iain/Cargo.toml"),
+                        ],
+                        capture_output=True,
+                        timeout=60,
+                        text=True,
+                    ),
+                    call(
+                        ["dotnet", "fsi", PosixPath("day_99/fsharp_iain/solution.fsx")],
+                        capture_output=True,
+                        timeout=60,
+                        text=True,
+                    ),
                 ],
                 any_order=True,
             )
