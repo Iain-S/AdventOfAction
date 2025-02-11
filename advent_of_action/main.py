@@ -50,7 +50,7 @@ def run_ocaml(dirpath: Path) -> str:
 
 def run_jupyter(dirpath: Path) -> str:
     return execute_command(
-        ["ipython", "-c", f"%run {dirpath / 'solution.ml'}"]
+        ["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}"]
     )
 
 # Languages and their commands
