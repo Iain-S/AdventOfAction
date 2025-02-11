@@ -32,3 +32,5 @@ You may want to commit and push the changes to your branch with:
     git commit -m "Update README with results" || echo "No changes to commit"
     git push
 ```
+
+If you'd like to opt out of having your code executed, add an `.optout` file to your directory for that day.
