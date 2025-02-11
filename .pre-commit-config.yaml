@@ -29,3 +29,8 @@ repos:
         language: system
         pass_filenames: false
         types: [python]
+      - id: Clear
+        name: Clear tests/README
+        entry: echo "" > tests/README.md
+        language: system
+        pass_filenames: false
