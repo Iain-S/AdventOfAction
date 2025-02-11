@@ -49,5 +49,6 @@ runs:
     - name: Change directory
       run: |
         pushd ${{ inputs.working-directory }}
+        eval $(opam env)
         python -m advent_of_action.main
       shell: bash
