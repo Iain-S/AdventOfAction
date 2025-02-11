@@ -1,5 +1,4 @@
 import importlib
-import subprocess
 import unittest
 from pathlib import PosixPath, Path
 from unittest.mock import patch, call
@@ -90,18 +89,10 @@ class TestMain(unittest.TestCase):
 
     def test_measure_four(self) -> None:
         # Check that we check the answer.
-        def raises(
-            _,
-        ) -> str:
-            raise subprocess.CalledProcessError(
-                1,
-                "cmd",
-            )
+        def bad_runner(_: Path) -> tuple[int, float, str]:
+            return main.execute_command(["fooobar"])
 
-        actual = main.measure_execution_time(
-            Path("."),
-            raises,
-        )
+        actual = main.measure_execution_time(Path("."), bad_runner)
         expected = "Error (1)"
         self.assertEqual(
             expected,

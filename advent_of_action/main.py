@@ -6,17 +6,19 @@ from pathlib import Path
 from typing import Final, Mapping
 from collections.abc import Callable
 
-Triple = tuple[int, float, str]
-RunnerFunc = Callable[[Path], Triple]
+type Triple = tuple[int, float, str]
+type RunnerFunc = Callable[[Path], Triple]
 
 SUBPROCESS_RUN: Final[Callable] = partial(
-    subprocess.run, capture_output=True, timeout=60, text=True
+    subprocess.run, capture_output=True, timeout=60, text=True, check=True
 )
 
 
 def execute_command(command: list[str|Path]) -> Triple:
     print("Running", command)
     result = SUBPROCESS_RUN(["/usr/bin/time", "-f", "%M,%S,%U"] + command)
+    # todo
+    # kilobytes, sys_seconds, user_seconds = result.stderr.split("\n")[-1].split(",")
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
     return int(kilobytes), float(sys_seconds)+float(user_seconds), result.stdout
 
