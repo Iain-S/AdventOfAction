@@ -8,52 +8,44 @@ from collections.abc import Callable
 type Triple = tuple[int, float, str]
 type RunnerFunc = Callable[[Path], Triple]
 
-def execute_command(command: list[str|Path]) -> Triple:
+
+def execute_command(command: list[str | Path]) -> Triple:
     # Here rather than globally as it's easier to patch.
     print("Running", command)
     result = subprocess.run(
-        ["/usr/bin/time", "-f", "%M,%S,%U"] + command,
-        capture_output=True, timeout=60, text=True, check=True
+        ["/usr/bin/time", "-f", "%M,%S,%U"] + command, capture_output=True, timeout=60, text=True, check=True
     )
     # todo
     # kilobytes, sys_seconds, user_seconds = result.stderr.split("\n")[-1].split(",")
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
-    return int(kilobytes), float(sys_seconds)+float(user_seconds), result.stdout
+    return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout
 
 
 def run_python(dirpath: Path) -> Triple:
     """Run a Python solution."""
-    return execute_command(
-        ["python", dirpath / "solution.py"]
-    )
+    return execute_command(["python", dirpath / "solution.py"])
 
 
 def run_racket(dirpath: Path) -> Triple:
     """Run a Racket solution."""
-    return execute_command(
-        ["racket", dirpath / "solution.rkt"]
-    )
+    return execute_command(["racket", dirpath / "solution.rkt"])
 
 
 def run_rust(dirpath: Path) -> Triple:
-    return execute_command(
-        ["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml"]
-    )
+    return execute_command(["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml"])
+
 
 def run_fsharp(dirpath: Path) -> Triple:
-    return execute_command(
-        ["dotnet", "fsi", dirpath / "solution.fsx"]
-    )
+    return execute_command(["dotnet", "fsi", dirpath / "solution.fsx"])
+
 
 def run_ocaml(dirpath: Path) -> Triple:
-    return execute_command(
-        ["ocaml", dirpath / "solution.ml"]
-    )
+    return execute_command(["ocaml", dirpath / "solution.ml"])
+
 
 def run_jupyter(dirpath: Path) -> Triple:
-    return execute_command(
-        ["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}"]
-    )
+    return execute_command(["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}"])
+
 
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
