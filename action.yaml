@@ -9,6 +9,14 @@ inputs:
     description: "Racket version to use"
     required: false
     default: "8.14"
+  ocaml-version:
+    description: "Ocaml version to use"
+    required: false
+    default: "5"
+  dotnet-version:
+    description: "DotNet version to use"
+    required: false
+    default: "8"
   working-directory:
     description: "The working directory"
     required: false
@@ -30,8 +38,12 @@ runs:
     - name: Set up Dotnet
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8
-    - name: Install dependencies
+        dotnet-version: ${{ inputs.dotnet-version }}
+    - name: Set up Ocaml
+      uses: ocaml/setup-ocaml@v3
+      with:
+        ocaml-compiler: ${{ inputs.ocaml-version }}
+    - name: Install package
       run: pip install .
       shell: bash
     - name: Change directory
