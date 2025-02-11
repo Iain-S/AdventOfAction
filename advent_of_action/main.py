@@ -1,54 +1,56 @@
 """Run every solution."""
 
 import subprocess
-import time
 from functools import partial
 from pathlib import Path
 from typing import Final, Mapping
 from collections.abc import Callable
 
-RunnerFunc = Callable[[Path], str]
+Triple = tuple[int, float, str]
+RunnerFunc = Callable[[Path], Triple]
 
 SUBPROCESS_RUN: Final[Callable] = partial(
     subprocess.run, capture_output=True, timeout=60, text=True
 )
 
 
-def execute_command(command: list[str|Path]) -> str:
+def execute_command(command: list[str|Path]) -> Triple:
     print("Running", command)
-    return SUBPROCESS_RUN(command).stdout
+    result = SUBPROCESS_RUN(["/usr/bin/time", "-f", "%M,%S,%U"] + command)
+    kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
+    return int(kilobytes), float(sys_seconds)+float(user_seconds), result.stdout
 
 
-def run_python(dirpath: Path) -> str:
+def run_python(dirpath: Path) -> Triple:
     """Run a Python solution."""
     return execute_command(
         ["python", dirpath / "solution.py"]
     )
 
 
-def run_racket(dirpath: Path) -> str:
+def run_racket(dirpath: Path) -> Triple:
     """Run a Racket solution."""
     return execute_command(
         ["racket", dirpath / "solution.rkt"]
     )
 
 
-def run_rust(dirpath: Path) -> str:
+def run_rust(dirpath: Path) -> Triple:
     return execute_command(
-        ["cargo", "run", "--manifest-path", dirpath / "Cargo.toml"]
+        ["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml"]
     )
 
-def run_fsharp(dirpath: Path) -> str:
+def run_fsharp(dirpath: Path) -> Triple:
     return execute_command(
         ["dotnet", "fsi", dirpath / "solution.fsx"]
     )
 
-def run_ocaml(dirpath: Path) -> str:
+def run_ocaml(dirpath: Path) -> Triple:
     return execute_command(
         ["ocaml", dirpath / "solution.ml"]
     )
 
-def run_jupyter(dirpath: Path) -> str:
+def run_jupyter(dirpath: Path) -> Triple:
     return execute_command(
         ["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}"]
     )
@@ -66,14 +68,13 @@ RUNTIMES: Final[dict[str, RunnerFunc]] = {
 
 def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
     # Use the licence as input while testing.
-    start = time.time()
     try:
-        output = ext(dirpath)
+        kilobytes, seconds, output = ext(dirpath)
         if output.strip() != "answer":
             return "Wrong answer"
     except subprocess.CalledProcessError as e:
         return f"Error ({e.returncode})"
-    return f"{time.time() - start:.0f} sec"
+    return f"{seconds:.2f} sec, {kilobytes} KB"
 
 
 def update_readme(the_results: Mapping[Path, str]) -> None:
@@ -95,6 +96,7 @@ def main() -> None:
     # │   ├── python_person
     # │   │   └── solution.py
     for dirpath, dirnames, filenames in path.walk(top_down=True):
+        # ToDo Is there a better way to traverse the directories alphabetically?
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             if dirpath.parts and len(dirpath.parts) == 2:

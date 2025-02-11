@@ -3,6 +3,7 @@ on: [push, pull_request]
 jobs:
   functional:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,5 +22,6 @@ jobs:
           echo "..."
           cat tests/EXPECTED_README.md
           echo "..."
-          sed -i -E 's/[0-9]+ sec/x sec/' tests/README.md
+          sed -i -E 's/[0-9]+\.[0-9]+ sec/x sec/' tests/README.md
+          sed -i -E 's/[0-9]+ KB/y KB/' tests/README.md
           diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README.md
