@@ -48,6 +48,11 @@ def run_ocaml(dirpath: Path) -> str:
         ["ocaml", dirpath / "solution.ml"]
     )
 
+def run_jupyter(dirpath: Path) -> str:
+    return execute_command(
+        ["ipython", "-c", f"%run {dirpath / 'solution.ml'}"]
+    )
+
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
     "python": run_python,
@@ -55,6 +60,7 @@ RUNTIMES: Final[dict[str, RunnerFunc]] = {
     "rust": run_rust,
     "fsharp": run_fsharp,
     "ocaml": run_ocaml,
+    "jupyter": run_jupyter,
 }
 
 

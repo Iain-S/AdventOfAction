@@ -52,6 +52,16 @@ class TestMain(unittest.TestCase):
                         timeout=60,
                         text=True,
                     ),
+                    call(
+                        [
+                            "ipython",
+                            "-c",
+                            f"%run {PosixPath('day_99/ocaml_iain/solution.ml')}",
+                        ],
+                        capture_output=True,
+                        timeout=60,
+                        text=True,
+                    ),
                 ],
                 any_order=True,
             )
