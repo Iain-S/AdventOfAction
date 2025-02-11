@@ -56,7 +56,7 @@ class TestMain(unittest.TestCase):
                         [
                             "ipython",
                             "-c",
-                            f"%run {PosixPath('day_99/ocaml_iain/solution.ml')}",
+                            f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}",
                         ],
                         capture_output=True,
                         timeout=60,
