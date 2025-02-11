@@ -12,9 +12,9 @@ class TestMain(unittest.TestCase):
             # Need to explicitly (re)load the module
             # so that the call to partial() works on the
             # patched subprocess.run.
-            main = importlib.import_module("advent_of_action.main")
-            main = importlib.reload(main)
-            main.main()
+            aoa = importlib.import_module("advent_of_action.main")
+            aoa = importlib.reload(aoa)
+            aoa.main()
             mock_run.assert_has_calls(
                 [
                     call(
