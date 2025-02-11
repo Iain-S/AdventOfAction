@@ -97,6 +97,7 @@ def main() -> None:
     # │   ├── python_person
     # │   │   └── solution.py
     for dirpath, dirnames, filenames in path.walk(top_down=True):
+        # ToDo Is there a better way to traverse the directories alphabetically?
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             if dirpath.parts and len(dirpath.parts) == 2:
