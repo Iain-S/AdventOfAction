@@ -25,6 +25,8 @@ runs:
       with:
         # Note "version" vs "racket-version".
         version: ${{ inputs.racket-version }}
+    - name: Set up Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
     - name: Install dependencies
       run: pip install .
       shell: bash

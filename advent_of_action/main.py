@@ -14,26 +14,36 @@ SUBPROCESS_RUN: Final[Callable] = partial(
 )
 
 
+def execute_command(command: list[str|Path]) -> str:
+    print("Running", command)
+    return SUBPROCESS_RUN(command).stdout
+
+
 def run_python(dirpath: Path) -> str:
     """Run a Python solution."""
-    command = ["python", dirpath / "solution.py"]
-    print("Running", command)
-    completed_process = SUBPROCESS_RUN(command)
-    return completed_process.stdout
+    return execute_command(
+        ["python", dirpath / "solution.py"]
+    )
 
 
 def run_racket(dirpath: Path) -> str:
     """Run a Racket solution."""
-    command = ["racket", dirpath / "solution.rkt"]
-    print("Running", command)
-    completed_process = SUBPROCESS_RUN(command)
-    return completed_process.stdout
+    return execute_command(
+        ["racket", dirpath / "solution.rkt"]
+    )
+
+
+def run_rust(dirpath: Path) -> str:
+    return execute_command(
+        ["cargo", "run", "--manifest-path", dirpath / "Cargo.toml"]
+    )
 
 
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
     "python": run_python,
     "racket": run_racket,
+    "rust": run_rust,
 }
 
 
