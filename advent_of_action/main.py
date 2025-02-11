@@ -99,16 +99,17 @@ def main() -> None:
     # │   ├── python_person
     # │   │   └── solution.py
     for dirpath, dirnames, filenames in path.walk(top_down=True):
-        # ToDo Is there a better way to traverse the directories alphabetically?
         if ".optout" in filenames:
             continue
+        # ToDo Is there a better way to traverse the directories alphabetically?
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             day: Day = dirpath.parts[0]
             if dirpath.parts and len(dirpath.parts) == 2:
                 for name, runner in RUNTIMES.items():
-                    language: Language = name[0 : name.find("_")]
-                    person: Person = name[name.find("_") + 1 :]
+                    directory = dirpath.parts[1]
+                    language: Language = directory[0 : directory.find("_")]
+                    person: Person = directory[directory.find("_") + 1 :]
                     if language == name:
                         results[(day, language, person)] = measure_execution_time(dirpath, runner)
 

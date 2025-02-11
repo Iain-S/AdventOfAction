@@ -69,7 +69,7 @@ class TestMain(unittest.TestCase):
     def test_measure_one(self) -> None:
         # Check that we measure the run.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer"))
-        expected = "0.03 sec, 1792 KB"
+        expected = ("0.03 sec", "1792 KB", "")
         self.assertEqual(
             expected,
             actual,
@@ -78,7 +78,7 @@ class TestMain(unittest.TestCase):
     def test_measure_two(self) -> None:
         # Check that we .strip() the result.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer\n"))
-        expected = "0.03 sec, 1792 KB"
+        expected = ("0.03 sec", "1792 KB", "")
         self.assertEqual(
             expected,
             actual,
@@ -87,7 +87,7 @@ class TestMain(unittest.TestCase):
     def test_measure_three(self) -> None:
         # Check that we check the answer.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "wrong answer\n"))
-        expected = "Wrong answer"
+        expected = "", "", "Wrong answer"
         self.assertEqual(
             expected,
             actual,
@@ -99,7 +99,7 @@ class TestMain(unittest.TestCase):
             return main.execute_command(["bash", "-c", "exit 1"])
 
         actual = main.measure_execution_time(Path("."), bad_runner)
-        expected = "Error (1)"
+        expected = "", "", "Error (1)"
         self.assertEqual(
             expected,
             actual,
