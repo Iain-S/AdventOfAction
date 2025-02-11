@@ -9,7 +9,6 @@ type Triple = tuple[int, float, str]
 type RunnerFunc = Callable[[Path], Triple]
 
 def execute_command(command: list[str|Path]) -> Triple:
-    # Here rather than globally as it's easier to patch.
     print("Running", command)
     result = subprocess.run(
         ["/usr/bin/time", "-f", "%M,%S,%U"] + command,
@@ -85,6 +84,15 @@ def update_readme(the_results: Mapping[Path, str]) -> None:
     with open(readme_path, "a") as f:
         f.write(new_content)
 
+def get_changed_files() -> set[Path]:
+    changed_files = set()
+    result = subprocess.run(
+        ["git", "diff", "--name-only", "origin/main"],
+        capture_output=True, text=True, check=True
+    )
+    for line in result.stdout.split("\n"):
+        changed_files.add(Path(line))
+    return changed_files
 
 def main() -> None:
     """Run the solutions."""
@@ -94,6 +102,7 @@ def main() -> None:
     # ├── day_01
     # │   ├── python_person
     # │   │   └── solution.py
+    changed_files = get_changed_files()
     for dirpath, dirnames, filenames in path.walk(top_down=True):
         # ToDo Is there a better way to traverse the directories alphabetically?
         if ".optout" in filenames:
@@ -101,6 +110,13 @@ def main() -> None:
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             if dirpath.parts and len(dirpath.parts) == 2:
+                skip = False
+                for changed_file in changed_files:
+                    if changed_file.parts[1].startswith(dirpath.parts[1]):
+                        skip = True
+                if skip:
+                    print(f"Skipping {dirpath}")
+                    continue
                 for name, runner in RUNTIMES.items():
                     if dirpath.parts[1].startswith(name):
                         results[dirpath] = measure_execution_time(dirpath, runner)
