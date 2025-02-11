@@ -3,7 +3,7 @@ import subprocess
 import unittest
 from pathlib import PosixPath, Path
 from unittest.mock import patch, call
-from advent_of_action import main
+from advent_of_action import main  # type: ignore
 
 
 class TestMain(unittest.TestCase):
