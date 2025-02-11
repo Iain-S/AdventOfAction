@@ -1,22 +1,22 @@
 """Run every solution."""
 
 import subprocess
-from functools import partial
 from pathlib import Path
 from typing import Final, Mapping
 from collections.abc import Callable
 
-Triple = tuple[int, float, str]
-RunnerFunc = Callable[[Path], Triple]
-
-SUBPROCESS_RUN: Final[Callable] = partial(
-    subprocess.run, capture_output=True, timeout=60, text=True
-)
-
+type Triple = tuple[int, float, str]
+type RunnerFunc = Callable[[Path], Triple]
 
 def execute_command(command: list[str|Path]) -> Triple:
+    # Here rather than globally as it's easier to patch.
     print("Running", command)
-    result = SUBPROCESS_RUN(["/usr/bin/time", "-f", "%M,%S,%U"] + command)
+    result = subprocess.run(
+        ["/usr/bin/time", "-f", "%M,%S,%U"] + command,
+        capture_output=True, timeout=60, text=True, check=True
+    )
+    # todo
+    # kilobytes, sys_seconds, user_seconds = result.stderr.split("\n")[-1].split(",")
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
     return int(kilobytes), float(sys_seconds)+float(user_seconds), result.stdout
 
@@ -67,7 +67,6 @@ RUNTIMES: Final[dict[str, RunnerFunc]] = {
 
 
 def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
-    # Use the licence as input while testing.
     try:
         kilobytes, seconds, output = ext(dirpath)
         if output.strip() != "answer":

@@ -1,5 +1,3 @@
-import importlib
-import subprocess
 import unittest
 from pathlib import PosixPath, Path
 from unittest.mock import patch, call
@@ -9,14 +7,12 @@ from advent_of_action import main  # type: ignore
 class TestMain(unittest.TestCase):
     def test_main(self) -> None:
         with patch("subprocess.run") as mock_run:
-            mock_run.return_value.stdout = "hello"
+            mock_run.return_value.stdout = "helloo"
             mock_run.return_value.stderr = "1792,0.01,0.02"
             # Need to explicitly (re)load the module
             # so that the call to partial() works on the
             # patched subprocess.run.
-            aoa = importlib.import_module("advent_of_action.main")
-            aoa = importlib.reload(aoa)
-            aoa.main()
+            main.main()
             timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
             self.assertListEqual(
                 mock_run.call_args_list,
@@ -26,6 +22,7 @@ class TestMain(unittest.TestCase):
                         capture_output=True,
                         timeout=60,
                         text=True,
+                        check=True,
                     )
                     for x in (
                         [
@@ -47,6 +44,14 @@ class TestMain(unittest.TestCase):
                             PosixPath("day_99/python_iain/solution.py"),
                         ],
                         [
+                            "python",
+                            PosixPath("day_99/python_nain/solution.py"),
+                        ],
+                        [
+                            "python",
+                            PosixPath("day_99/python_zain/solution.py"),
+                        ],
+                        [
                             "racket",
                             PosixPath("day_99/racket_iain/solution.rkt"),
                         ],
@@ -61,6 +66,8 @@ class TestMain(unittest.TestCase):
                 ],
             )
 
+
+class TestMainMore(unittest.TestCase):
     def test_measure_one(self) -> None:
         # Check that we measure the run.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer"))
@@ -90,18 +97,10 @@ class TestMain(unittest.TestCase):
 
     def test_measure_four(self) -> None:
         # Check that we check the answer.
-        def raises(
-            _,
-        ) -> str:
-            raise subprocess.CalledProcessError(
-                1,
-                "cmd",
-            )
+        def bad_runner(_: Path) -> tuple[int, float, str]:
+            return main.execute_command(["bash", "-c", "exit 1"])
 
-        actual = main.measure_execution_time(
-            Path("."),
-            raises,
-        )
+        actual = main.measure_execution_time(Path("."), bad_runner)
         expected = "Error (1)"
         self.assertEqual(
             expected,
@@ -109,7 +108,7 @@ class TestMain(unittest.TestCase):
         )
 
     def test_execute_command(self) -> None:
-        with patch("advent_of_action.main.SUBPROCESS_RUN") as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value.stdout = "hello"
             mock_run.return_value.stderr = "1792,0.01,0.02"
             actual = main.execute_command(

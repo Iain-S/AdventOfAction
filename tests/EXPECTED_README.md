@@ -5,5 +5,7 @@
 - `day_99/jupyter_iain`: x sec, y KB
 - `day_99/ocaml_iain`: x sec, y KB
 - `day_99/python_iain`: x sec, y KB
+- `day_99/python_nain`: Wrong answer
+- `day_99/python_zain`: Error(1)
 - `day_99/racket_iain`: x sec, y KB
 - `day_99/rust_iain`: x sec, y KB
