@@ -35,3 +35,5 @@ repos:
           cd tests/
           poetry run python test_main.py
         language: system
+        types: [python]
+        pass_filenames: false
