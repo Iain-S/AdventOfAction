@@ -2,7 +2,7 @@
 
 import subprocess
 from pathlib import Path
-from typing import Final, Mapping
+from typing import Final, MutableMapping
 from collections.abc import Callable
 
 type Triple = tuple[int, float, str]
@@ -57,22 +57,34 @@ RUNTIMES: Final[dict[str, RunnerFunc]] = {
     "jupyter": run_jupyter,
 }
 
+type Day = str
+type Language = str
+type Person = str
+type Seconds = str
+type Kilobytes = str
+type Notes = str
+type Run = tuple[Day, Language, Person]
+type Stats = tuple[Seconds, Kilobytes, Notes]
+type Results = MutableMapping[Run, Stats]
 
-def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
+
+def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
     try:
         kilobytes, seconds, output = ext(dirpath)
         if output.strip() != "answer":
-            return "Wrong answer"
+            return "", "", "Wrong answer"
     except subprocess.CalledProcessError as e:
-        return f"Error ({e.returncode})"
-    return f"{seconds:.2f} sec, {kilobytes} KB"
+        return "", "", f"Error ({e.returncode})"
+    return f"{seconds:.2f} sec", f"{kilobytes} KB", ""
 
 
-def update_readme(the_results: Mapping[Path, str]) -> None:
+def write_results(the_results: Results) -> None:
     readme_path = "README.md"
     new_content = "\n## Results\n\n"
-    for the_path, time_taken in the_results.items():
-        new_content += f"- `{the_path}`: {time_taken}\n"
+    new_content += "| day | language | who | time | mem | notes |\n"
+    new_content += "| --- | --- | --- | --- | --- | --- |\n"
+    for (day, language, person), (seconds, kilobytes, notes) in the_results.items():
+        new_content += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
 
     with open(readme_path, "a") as f:
         f.write(new_content)
@@ -80,7 +92,7 @@ def update_readme(the_results: Mapping[Path, str]) -> None:
 
 def main() -> None:
     """Run the solutions."""
-    results: dict[Path, str] = {}
+    results: Results = {}
     path = Path(".")
     # Expecting
     # ├── day_01
@@ -92,12 +104,15 @@ def main() -> None:
             continue
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
+            day: Day = dirpath.parts[0]
             if dirpath.parts and len(dirpath.parts) == 2:
                 for name, runner in RUNTIMES.items():
-                    if dirpath.parts[1].startswith(name):
-                        results[dirpath] = measure_execution_time(dirpath, runner)
+                    language: Language = name[0 : name.find("_")]
+                    person: Person = name[name.find("_") + 1 :]
+                    if language == name:
+                        results[(day, language, person)] = measure_execution_time(dirpath, runner)
 
-    update_readme(results)
+    write_results(results)
 
 
 if __name__ == "__main__":

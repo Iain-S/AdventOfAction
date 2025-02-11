@@ -119,6 +119,9 @@ class TestMain(unittest.TestCase):
             actual[2],
         )
 
+    def test_write_results(self) -> None:
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()
