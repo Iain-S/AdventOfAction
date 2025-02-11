@@ -1,7 +1,6 @@
 """Run every solution."""
 
 import subprocess
-from functools import partial
 from pathlib import Path
 from typing import Final, Mapping
 from collections.abc import Callable
@@ -9,14 +8,13 @@ from collections.abc import Callable
 type Triple = tuple[int, float, str]
 type RunnerFunc = Callable[[Path], Triple]
 
-SUBPROCESS_RUN: Final[Callable] = partial(
-    subprocess.run, capture_output=True, timeout=60, text=True, check=True
-)
-
-
 def execute_command(command: list[str|Path]) -> Triple:
+    # Here rather than globally as it's easier to patch.
     print("Running", command)
-    result = SUBPROCESS_RUN(["/usr/bin/time", "-f", "%M,%S,%U"] + command)
+    result = subprocess.run(
+        ["/usr/bin/time", "-f", "%M,%S,%U"] + command,
+        capture_output=True, timeout=60, text=True, check=True
+    )
     # todo
     # kilobytes, sys_seconds, user_seconds = result.stderr.split("\n")[-1].split(",")
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
