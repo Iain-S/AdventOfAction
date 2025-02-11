@@ -78,7 +78,7 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> str:
 
 def update_readme(the_results: Mapping[Path, str]) -> None:
     readme_path = "README.md"
-    new_content = "\n## Results\n"
+    new_content = "\n## Results\n\n"
     for the_path, time_taken in the_results.items():
         new_content += f"- `{the_path}`: {time_taken}\n"
 
