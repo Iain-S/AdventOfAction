@@ -142,6 +142,9 @@ class TestMain(unittest.TestCase):
         main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
+        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        self.assertEqual(expected_readme_txt, readme.read_text())
+
 
 if __name__ == "__main__":
     unittest.main()

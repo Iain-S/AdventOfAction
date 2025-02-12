@@ -65,12 +65,12 @@ def write_results(the_results: Mapping[Run, Stats]) -> None:
     readme = Path("README.md")
     old_content = readme.read_text()
     section_begins = old_content.find("\n\n## Stats")
-    if section_begins:
+    if section_begins > -1:
         section_ends = old_content.find("\n\n##", section_begins + 1)
         section = old_content[section_begins:section_ends] if section_ends else old_content[section_begins:]
         old_dict = from_table(section)
         the_results = {**old_dict, **the_results}
-        if section_ends:
+        if section_ends > -1:
             new_content = old_content[:section_begins] + to_table(the_results) + old_content[section_ends:]
         else:
             new_content = old_content[:section_begins] + to_table(the_results)
