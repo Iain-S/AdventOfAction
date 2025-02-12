@@ -88,7 +88,7 @@ class TestMain(unittest.TestCase):
     def test_measure_three(self) -> None:
         # Check that we check the answer.
         actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "wrong answer\n"))
-        expected = "", "", "Wrong answer"
+        expected = "", "", "Different answer"
         self.assertEqual(
             expected,
             actual,
