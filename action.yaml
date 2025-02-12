@@ -17,6 +17,10 @@ inputs:
     description: "DotNet version to use. -1 for no DotNet"
     required: false
     default: "8"
+  rust-version:
+    description: "Rust toolchain version to use. -1 for no DotNet"
+    required: false
+    default: "1"
   working-directory:
     description: "The working directory. Default is the root of the repository."
     required: false
@@ -48,11 +52,12 @@ runs:
       with:
         ocaml-compiler: ${{ inputs.ocaml-version }}
     - name: Install package
-      run: pip install .
+      run: pip install AdventOfAction/
       shell: bash
     - name: Change directory
+      # Call opam to set up Ocaml.
       run: |
         pushd ${{ inputs.working-directory }}
-        eval $(opam env)
+        eval $(opam env) || true
         python -m advent_of_action.main
       shell: bash
