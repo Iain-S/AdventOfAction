@@ -1,60 +1,21 @@
 """Run every solution."""
 
 import subprocess
-from collections.abc import Callable, Mapping, MutableMapping
+from collections.abc import Mapping, MutableMapping
 from pathlib import Path
 from typing import Final
 
-type Triple = tuple[int, float, str]
-type RunnerFunc = Callable[[Path], Triple]
-
-
-def execute_command(command: list[str | Path]) -> Triple:
-    # Here rather than globally as it's easier to patch.
-    print("Running", command)
-    result = subprocess.run(
-        ["/usr/bin/time", "-f", "%M,%S,%U"] + command, capture_output=True, timeout=60, text=True, check=True
-    )
-    # todo
-    # kilobytes, sys_seconds, user_seconds = result.stderr.split("\n")[-1].split(",")
-    kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
-    return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout
-
-
-def run_python(dirpath: Path) -> Triple:
-    """Run a Python solution."""
-    return execute_command(["python", dirpath / "solution.py"])
-
-
-def run_racket(dirpath: Path) -> Triple:
-    """Run a Racket solution."""
-    return execute_command(["racket", dirpath / "solution.rkt"])
-
-
-def run_rust(dirpath: Path) -> Triple:
-    return execute_command(["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml"])
-
-
-def run_fsharp(dirpath: Path) -> Triple:
-    return execute_command(["dotnet", "fsi", dirpath / "solution.fsx"])
-
-
-def run_ocaml(dirpath: Path) -> Triple:
-    return execute_command(["ocaml", dirpath / "solution.ml"])
-
-
-def run_jupyter(dirpath: Path) -> Triple:
-    return execute_command(["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}"])
-
+from advent_of_action import runners
+from advent_of_action.runners import RunnerFunc
 
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
-    "python": run_python,
-    "racket": run_racket,
-    "rust": run_rust,
-    "fsharp": run_fsharp,
-    "ocaml": run_ocaml,
-    "jupyter": run_jupyter,
+    "python": runners.python,
+    "racket": runners.racket,
+    "rust": runners.rust,
+    "fsharp": runners.fsharp,
+    "ocaml": runners.ocaml,
+    "jupyter": runners.jupyter,
 }
 
 type Day = str
@@ -74,27 +35,48 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
             return "", "", "Different answer"
     except subprocess.CalledProcessError as e:
         return "", "", f"Error ({e.returncode})"
-    return f"{seconds:.2f} sec", f"{kilobytes} KB", ""
+    return f"{seconds:.2f}", f"{kilobytes}", ""
+
+
+def from_table(table: str) -> dict[Run, Stats]:
+    results: dict[Run, Stats] = {}
+    for line in table.split("\n")[6:]:
+        if not line:
+            break
+        day, lang, person, seconds, kb, notes = line[1:-1].split(" | ")
+        results[(day.strip(), lang.strip(), person.strip())] = (
+            seconds.strip(),
+            kb.strip(),
+            notes.strip(),
+        )
+    return results
+
+
+def to_table(results: Mapping[Run, Stats]) -> str:
+    table = "\n\n## Stats\n\n"
+    table += "| day | language | who | time (s) | mem (KB) | notes |\n"
+    table += "| --- | --- | --- | --- | --- | --- |\n"
+    for (day, language, person), (seconds, kilobytes, notes) in results.items():
+        table += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
+    return table
 
 
 def write_results(the_results: Mapping[Run, Stats]) -> None:
-    readme_path = "README.md"
-    new_content = "\n## Results\n\n"
-    new_content += "| day | language | who | time | mem | notes |\n"
-    new_content += "| --- | --- | --- | --- | --- | --- |\n"
-    for (day, language, person), (seconds, kilobytes, notes) in the_results.items():
-        new_content += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
-
-    old_content = ""
-    if Path(readme_path).exists():
-        with open(readme_path) as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.strip() == "## Results":
-                    break
-                old_content += line
-    with open(readme_path, "w") as f:
-        f.write(old_content + new_content)
+    readme = Path("README.md")
+    old_content = readme.read_text()
+    section_begins = old_content.find("\n\n## Stats")
+    if section_begins > -1:
+        section_ends = old_content.find("\n\n##", section_begins + 1)
+        section = old_content[section_begins:section_ends] if section_ends else old_content[section_begins:]
+        old_dict = from_table(section)
+        the_results = {**old_dict, **the_results}
+        if section_ends > -1:
+            new_content = old_content[:section_begins] + to_table(the_results) + old_content[section_ends:]
+        else:
+            new_content = old_content[:section_begins] + to_table(the_results)
+    else:
+        new_content = old_content + to_table(the_results)
+    readme.write_text(new_content)
 
 
 def main() -> None:

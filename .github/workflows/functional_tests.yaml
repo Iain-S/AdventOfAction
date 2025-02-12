@@ -16,6 +16,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+      - name: Set up README
+        shell: bash
+        run: cp tests/README_TEMPLATE.md tests/README.md
       - name: Run our action
         uses: ./
         with:
@@ -29,6 +32,7 @@ jobs:
           echo "..."
           cat tests/EXPECTED_README.md
           echo "..."
-          sed -i -E 's/[0-9]+\.[0-9]+ sec/x sec/' tests/README.md
-          sed -i -E 's/[0-9]+ KB/y KB/' tests/README.md
+          sed -i -E 's/[0-9]+\.[0-9]+/x/' tests/README.md
+          sed -i -E 's/[0-9]+/y/' tests/README.md
+          sed -i -E 's/[0-9]+/z/' tests/README.md
           diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README.md
