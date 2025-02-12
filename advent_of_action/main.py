@@ -25,30 +25,43 @@ type Seconds = str
 type Kilobytes = str
 type Notes = str
 type Run = tuple[Day, Language, Person]
-type Stats = tuple[Seconds, Kilobytes, Notes]
+type Stat = tuple[Seconds, Kilobytes, Notes]
+type Stats = tuple[Stats, Stats]
 
 
-def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
-    try:
-        kilobytes, seconds, output = ext(dirpath)
-        if output.strip() != "answer":
-            return "", "", "Different answer"
-    except subprocess.CalledProcessError as e:
-        return "", "", f"Error ({e.returncode})"
-    return f"{seconds:.2f}", f"{kilobytes}", ""
+def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> tuple[Stats, Stats]:
+    """Measure the execution time of a solution."""
+
+    def inner(part: str, answer: str) -> Stat:
+        try:
+            kilobytes, seconds, output = ext(dirpath, part)
+            if output.strip() != answer:
+                return "", "", "Different answer"
+        except subprocess.CalledProcessError as e:
+            return "", "", f"Error ({e.returncode})"
+        return f"{seconds:.2f}", f"{kilobytes}", ""
+
+    return inner("one", answers[0]), inner("two", answers[1])
 
 
 def from_table(table: str) -> dict[Run, Stats]:
     results: dict[Run, Stats] = {}
+    part_one = None
     for line in table.split("\n")[6:]:
         if not line:
             break
-        day, lang, person, seconds, kb, notes = line[1:-1].split(" | ")
-        results[(day.strip(), lang.strip(), person.strip())] = (
-            seconds.strip(),
-            kb.strip(),
-            notes.strip(),
-        )
+        day, lang, person, part, seconds, kb, notes = line[1:-1].split(" | ")
+        if part == "one":
+            part_one = (seconds.strip(), kb.strip(), notes.strip())
+        elif part == "two":
+            assert part_one is not None
+            results[(day.strip(), lang.strip(), person.strip())] = (
+                part_one,
+                (seconds.strip(), kb.strip(), notes.strip()),
+            )
+        else:
+            raise ValueError(f"Unknown part {part}")
+
     return results
 
 
@@ -56,8 +69,10 @@ def to_table(results: Mapping[Run, Stats]) -> str:
     table = "\n\n## Stats\n\n"
     table += "| day | language | who | time (s) | mem (KB) | notes |\n"
     table += "| --- | --- | --- | --- | --- | --- |\n"
-    for (day, language, person), (seconds, kilobytes, notes) in results.items():
-        table += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
+    for run, stats in results.items():
+        day, language, person = run
+        for (seconds, kilobytes, notes), part in zip(stats, ("one", "two"), strict=False):
+            table += f"| {day} | {language} | {person} | {part} | {seconds} | {kilobytes} | {notes} |\n"
     return table
 
 
@@ -94,13 +109,14 @@ def main() -> None:
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             day: Day = dirpath.parts[0][4:]
+            answers = ("answer", "answer")
             if dirpath.parts and len(dirpath.parts) == 2:
                 for name, runner in RUNTIMES.items():
                     directory = dirpath.parts[1]
                     language: Language = directory[0 : directory.find("_")]
                     person: Person = directory[directory.find("_") + 1 :]
                     if language == name:
-                        results[(day, language, person)] = measure_execution_time(dirpath, runner)
+                        results[(day, language, person)] = measure_execution_time(answers, dirpath, runner)
 
     write_results(results)
 

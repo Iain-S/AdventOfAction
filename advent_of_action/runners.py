@@ -3,7 +3,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 type Triple = tuple[int, float, str]
-type RunnerFunc = Callable[[Path], Triple]
+type RunnerFunc = Callable[[Path, str], Triple]
 
 
 def execute_command(command: list[str | Path]) -> Triple:
@@ -18,31 +18,31 @@ def execute_command(command: list[str | Path]) -> Triple:
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout
 
 
-def python(dirpath: Path) -> Triple:
+def python(dirpath: Path, part: str) -> Triple:
     """Run a Python solution."""
-    return execute_command(["python", dirpath / "solution.py"])
+    return execute_command(["python", dirpath / "solution.py", part])
 
 
-def racket(dirpath: Path) -> Triple:
+def racket(dirpath: Path, part: str) -> Triple:
     """Run a Racket solution."""
-    return execute_command(["racket", dirpath / "solution.rkt"])
+    return execute_command(["racket", dirpath / "solution.rkt", part])
 
 
-def rust(dirpath: Path) -> Triple:
+def rust(dirpath: Path, part: str) -> Triple:
     """Run a Rust solution."""
-    return execute_command(["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml"])
+    return execute_command(["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml", part])
 
 
-def fsharp(dirpath: Path) -> Triple:
+def fsharp(dirpath: Path, part: str) -> Triple:
     """Run an F# solution"""
-    return execute_command(["dotnet", "fsi", dirpath / "solution.fsx"])
+    return execute_command(["dotnet", "fsi", dirpath / "solution.fsx", part])
 
 
-def ocaml(dirpath: Path) -> Triple:
+def ocaml(dirpath: Path, part: str) -> Triple:
     """Run an OCaml solution."""
-    return execute_command(["ocaml", dirpath / "solution.ml"])
+    return execute_command(["ocaml", dirpath / "solution.ml", part])
 
 
-def jupyter(dirpath: Path) -> Triple:
+def jupyter(dirpath: Path, part: str) -> Triple:
     """Run a Jupyter notebook."""
-    return execute_command(["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}"])
+    return execute_command(["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}", part])

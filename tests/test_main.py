@@ -18,43 +18,27 @@ class TestMain(unittest.TestCase):
             main.main()
             timings: list[PosixPath | str] = ["/usr/bin/time", "-f", "%M,%S,%U"]
             a: tuple[list[PosixPath | str], ...] = (
-                [
-                    "dotnet",
-                    "fsi",
-                    PosixPath("day_99/fsharp_iain/solution.fsx"),
-                ],
-                [
-                    "ipython",
-                    "-c",
-                    f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}",
-                ],
-                [
-                    "ocaml",
-                    PosixPath("day_99/ocaml_iain/solution.ml"),
-                ],
-                [
-                    "python",
-                    PosixPath("day_99/python_iain/solution.py"),
-                ],
-                [
-                    "python",
-                    PosixPath("day_99/python_nain/solution.py"),
-                ],
-                [
-                    "python",
-                    PosixPath("day_99/python_zain/solution.py"),
-                ],
-                [
-                    "racket",
-                    PosixPath("day_99/racket_iain/solution.rkt"),
-                ],
-                [
-                    "cargo",
-                    "run",
-                    "--quiet",
-                    "--manifest-path",
-                    PosixPath("day_99/rust_iain/Cargo.toml"),
-                ],
+                [["dotnet", "fsi", PosixPath("day_99/fsharp_iain/solution.fsx"), x] for x in ("one", "two")]
+                + [
+                    ["ipython", "-c", f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}", x]
+                    for x in ("one", "two")
+                ]
+                + [["ocaml", PosixPath("day_99/ocaml_iain/solution.ml"), x] for x in ("one", "two")]
+                + [["python", PosixPath("day_99/python_iain/solution.py"), x] for x in ("one", "two")]
+                + [["python", PosixPath("day_99/python_nain/solution.py"), x] for x in ("one", "two")]
+                + [
+                    [
+                        "python",
+                        PosixPath("day_99/python_zain/solution.py"),
+                        x,
+                    ]
+                    for x in ("one", "two")
+                ]
+                + [["racket", PosixPath("day_99/racket_iain/solution.rkt"), x] for x in ("one", "two")]
+                + [
+                    ["cargo", "run", "--quiet", "--manifest-path", PosixPath("day_99/rust_iain/Cargo.toml"), x]
+                    for x in ("one", "two")
+                ]
             )
             self.assertListEqual(
                 mock_run.call_args_list,
@@ -72,8 +56,8 @@ class TestMain(unittest.TestCase):
 
     def test_measure_one(self) -> None:
         # Check that we measure the run.
-        actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer"))
-        expected = ("0.03", "1792", "")
+        actual = main.measure_execution_time(("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "answer"))
+        expected = ("0.03", "1792", ""), ("0.03", "1792", "")
         self.assertEqual(
             expected,
             actual,
@@ -81,8 +65,8 @@ class TestMain(unittest.TestCase):
 
     def test_measure_two(self) -> None:
         # Check that we .strip() the result.
-        actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "answer\n"))
-        expected = ("0.03", "1792", "")
+        actual = main.measure_execution_time(("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "answer\n"))
+        expected = ("0.03", "1792", ""), ("0.03", "1792", "")
         self.assertEqual(
             expected,
             actual,
@@ -90,8 +74,10 @@ class TestMain(unittest.TestCase):
 
     def test_measure_three(self) -> None:
         # Check that we check the answer.
-        actual = main.measure_execution_time(Path("."), lambda x: (1792, 0.03, "wrong answer\n"))
-        expected = "", "", "Different answer"
+        actual = main.measure_execution_time(
+            ("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "wrong answer\n")
+        )
+        expected = ("", "", "Different answer"), ("", "", "Different answer")
         self.assertEqual(
             expected,
             actual,
@@ -99,12 +85,26 @@ class TestMain(unittest.TestCase):
 
     def test_measure_four(self) -> None:
         # Check that we check the answer.
-        def bad_runner(_: Path) -> tuple[int, float, str]:
+        def bad_runner(_: Path, __: tuple[str, str]) -> tuple[int, float, str]:
             return runners.execute_command(["bash", "-c", "exit 1"])
 
-        actual = main.measure_execution_time(Path("."), bad_runner)
-        expected = "", "", "Error (1)"
-        self.assertEqual(
+        actual = main.measure_execution_time(("", ""), Path("."), bad_runner)
+        expected = ("", "", "Error (1)"), ("", "", "Error (1)")
+        self.assertTupleEqual(
+            expected,
+            actual,
+        )
+
+    def test_measure_five(self) -> None:
+        # Check that we check the answer.
+        def partial_runner(_: Path, part: str) -> tuple[int, float, str]:
+            if part == "one":
+                return 1792, 0.03, "answer"
+            return 1792, 0.03, "wrong answer"
+
+        actual = main.measure_execution_time(("answer", "answer"), Path("."), partial_runner)
+        expected = (("0.03", "1792", ""), ("", "", "Different answer"))
+        self.assertTupleEqual(
             expected,
             actual,
         )
