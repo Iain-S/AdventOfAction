@@ -5,17 +5,17 @@ from collections.abc import Mapping, MutableMapping
 from pathlib import Path
 from typing import Final
 
-from advent_of_action import run
-from advent_of_action.run import RunnerFunc
+from advent_of_action import runners
+from advent_of_action.runners import RunnerFunc
 
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
-    "python": run.python,
-    "racket": run.racket,
-    "rust": run.rust,
-    "fsharp": run.fsharp,
-    "ocaml": run.ocaml,
-    "jupyter": run.jupyter,
+    "python": runners.python,
+    "racket": runners.racket,
+    "rust": runners.rust,
+    "fsharp": runners.fsharp,
+    "ocaml": runners.ocaml,
+    "jupyter": runners.jupyter,
 }
 
 type Day = str
