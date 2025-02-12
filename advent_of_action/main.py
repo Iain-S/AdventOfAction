@@ -3,6 +3,7 @@
 import subprocess
 from collections.abc import Mapping, MutableMapping
 from pathlib import Path
+from subprocess import run
 from typing import Final
 
 from advent_of_action import runners
@@ -25,39 +26,54 @@ type Seconds = str
 type Kilobytes = str
 type Notes = str
 type Run = tuple[Day, Language, Person]
-type Stats = tuple[Seconds, Kilobytes, Notes]
+type Stat = tuple[Seconds, Kilobytes, Notes]
+type Stats = tuple[Stat, Stat]
 
 
-def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
-    try:
-        kilobytes, seconds, output = ext(dirpath)
-        if output.strip() != "answer":
-            return "", "", "Different answer"
-    except subprocess.CalledProcessError as e:
-        return "", "", f"Error ({e.returncode})"
-    return f"{seconds:.2f}", f"{kilobytes}", ""
+def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> Stats:
+    """Measure the execution time of a solution."""
+
+    def inner(part: str, answer: str) -> Stat:
+        try:
+            kilobytes, seconds, output = ext(dirpath, part)
+            if output.strip() != answer:
+                return "", "", "Different answer"
+        except subprocess.CalledProcessError as e:
+            return "", "", f"Error ({e.returncode})"
+        return f"{seconds:.2f}", f"{kilobytes}", ""
+
+    return inner("one", answers[0]), inner("two", answers[1])
 
 
 def from_table(table: str) -> dict[Run, Stats]:
     results: dict[Run, Stats] = {}
-    for line in table.split("\n")[6:]:
+    part_one = None
+    for line in table.splitlines()[6:]:
         if not line:
             break
-        day, lang, person, seconds, kb, notes = line[1:-1].split(" | ")
-        results[(day.strip(), lang.strip(), person.strip())] = (
-            seconds.strip(),
-            kb.strip(),
-            notes.strip(),
-        )
+        day, lang, person, part, seconds, kb, notes = line[1:-1].split(" | ")
+        if part == "one":
+            part_one = (seconds.strip(), kb.strip(), notes.strip())
+        elif part == "two":
+            assert part_one is not None
+            results[(day.strip(), lang.strip(), person.strip())] = (
+                part_one,
+                (seconds.strip(), kb.strip(), notes.strip()),
+            )
+        else:
+            raise ValueError(f"Unknown part {part}")
+
     return results
 
 
 def to_table(results: Mapping[Run, Stats]) -> str:
     table = "\n\n## Stats\n\n"
-    table += "| day | language | who | time (s) | mem (KB) | notes |\n"
-    table += "| --- | --- | --- | --- | --- | --- |\n"
-    for (day, language, person), (seconds, kilobytes, notes) in results.items():
-        table += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
+    table += "| day | language | who | part | time (s) | mem (KB) | notes |\n"
+    table += "| --- | --- | --- | --- | --- | --- | --- |\n"
+    for the_run, stats in results.items():
+        day, language, person = the_run
+        for (seconds, kilobytes, notes), part in zip(stats, ("one", "two"), strict=False):
+            table += f"| {day} | {language} | {person} | {part} | {seconds} | {kilobytes} | {notes} |\n"
     return table
 
 
@@ -87,6 +103,7 @@ def main() -> None:
     # ├── day_01
     # │   ├── python_person
     # │   │   └── solution.py
+    answers = ("", "")  # todo
     for dirpath, dirnames, filenames in path.walk(top_down=True):
         if ".optout" in filenames:
             continue
@@ -94,13 +111,57 @@ def main() -> None:
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             day: Day = dirpath.parts[0][4:]
-            if dirpath.parts and len(dirpath.parts) == 2:
+
+            if len(dirpath.parts) == 1:
+                # Note that we don't patch this run in tests.
+                run(
+                    [
+                        "gpg",
+                        "--batch",
+                        "--yes",
+                        "--passphrase",
+                        "yourpassword",  # todo env var
+                        "--decrypt",
+                        "--output",
+                        Path("answers.txt"),
+                        dirpath / "answers.gpg",
+                    ],
+                    text=True,
+                    capture_output=True,
+                    check=True,
+                    timeout=10,
+                )
+                lines = Path("answers.txt").read_text().splitlines()
+                answers = lines[0], lines[1]
+                Path("answers.txt").unlink()
+
+                # Note that we don't patch this run in tests.
+                run(
+                    [
+                        "gpg",
+                        "--batch",
+                        "--yes",
+                        "--passphrase",
+                        "yourpassword",  # todo env var
+                        "--decrypt",
+                        "--output",
+                        # Scripts expect input.txt to be in the CWD.
+                        Path("input.txt"),
+                        dirpath / "input.gpg",
+                    ],
+                    text=True,
+                    capture_output=True,
+                    check=True,
+                    timeout=10,
+                )
+
+            if len(dirpath.parts) == 2:
+                directory = dirpath.parts[1]
                 for name, runner in RUNTIMES.items():
-                    directory = dirpath.parts[1]
                     language: Language = directory[0 : directory.find("_")]
                     person: Person = directory[directory.find("_") + 1 :]
                     if language == name:
-                        results[(day, language, person)] = measure_execution_time(dirpath, runner)
+                        results[(day, language, person)] = measure_execution_time(answers, dirpath, runner)
 
     write_results(results)
 

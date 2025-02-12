@@ -22,7 +22,7 @@ repos:
       - id: ruff-format
   - repo: local
     hooks:
-      - id: Pyre
+      - id: pyre
         name: Pyre
         entry: poetry run pyre --strict --noninteractive check
         language: system
