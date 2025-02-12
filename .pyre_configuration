@@ -1,10 +1,6 @@
 {
   "site_package_search_strategy": "pep561",
   "source_directories": [
-    "advent_of_action",
-    "tests"
-  ],
-  "search_path": [
-    "advent_of_action"
+    "."
   ]
 }

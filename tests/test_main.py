@@ -2,7 +2,8 @@ import unittest
 from pathlib import Path, PosixPath
 from unittest.mock import call, patch
 
-from advent_of_action import main  # type: ignore
+from advent_of_action import main
+from advent_of_action import runners
 
 
 class TestMain(unittest.TestCase):
@@ -22,7 +23,7 @@ class TestMain(unittest.TestCase):
                 mock_run.call_args_list,
                 [
                     call(
-                        timings + x,  # type: ignore
+                        timings + x,
                         capture_output=True,
                         timeout=60,
                         text=True,
@@ -100,7 +101,7 @@ class TestMain(unittest.TestCase):
     def test_measure_four(self) -> None:
         # Check that we check the answer.
         def bad_runner(_: Path) -> tuple[int, float, str]:
-            return main.execute_command(["bash", "-c", "exit 1"])
+            return runners.execute_command(["bash", "-c", "exit 1"])
 
         actual = main.measure_execution_time(Path("."), bad_runner)
         expected = "", "", "Error (1)"
@@ -113,7 +114,7 @@ class TestMain(unittest.TestCase):
         with patch("subprocess.run") as mock_run:
             mock_run.return_value.stdout = "hello"
             mock_run.return_value.stderr = "1792,0.01,0.02"
-            actual = main.execute_command(
+            actual = runners.execute_command(
                 [],
             )
         self.assertEqual(actual[0], 1792)

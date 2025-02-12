@@ -5,8 +5,8 @@ from collections.abc import Mapping, MutableMapping
 from pathlib import Path
 from typing import Final
 
-from advent_of_action import runners
-from advent_of_action.runners import RunnerFunc
+from . import runners
+from .runners import RunnerFunc
 
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
