@@ -38,24 +38,45 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
     return f"{seconds:.2f} sec", f"{kilobytes} KB", ""
 
 
-def write_results(the_results: Mapping[Run, Stats]) -> None:
-    readme_path = "README.md"
-    new_content = "\n## Results\n\n"
-    new_content += "| day | language | who | time | mem | notes |\n"
-    new_content += "| --- | --- | --- | --- | --- | --- |\n"
-    for (day, language, person), (seconds, kilobytes, notes) in the_results.items():
-        new_content += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
+def from_table(table: str) -> dict[Run, Stats]:
+    results: dict[Run, Stats] = {}
+    for line in table.split("\n")[6:]:
+        if not line:
+            break
+        day, lang, person, seconds, kb, notes = line[1:-1].split(" | ")
+        results[(day.strip(), lang.strip(), person.strip())] = (
+            seconds[:-4].strip(),
+            kb[:-3].strip(),
+            notes.strip(),
+        )
+    return results
 
-    old_content = ""
-    if Path(readme_path).exists():
-        with open(readme_path) as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.strip() == "## Results":
-                    break
-                old_content += line
-    with open(readme_path, "w") as f:
-        f.write(old_content + new_content)
+
+def to_table(results: Mapping[Run, Stats]) -> str:
+    table = "\n\n## Stats\n\n"
+    table += "| day | language | who | time | mem | notes |\n"
+    table += "| --- | --- | --- | --- | --- | --- |\n"
+    for (day, language, person), (seconds, kilobytes, notes) in results.items():
+        table += f"| {day} | {language} | {person} | {seconds} sec | {kilobytes} KB | {notes} |\n"
+    return table
+
+
+def write_results(the_results: Mapping[Run, Stats]) -> None:
+    readme = Path("README.md")
+    old_content = readme.read_text()
+    section_begins = old_content.find("\n\n## Stats")
+    if section_begins:
+        section_ends = old_content.find("\n\n##", section_begins + 1)
+        section = old_content[section_begins:section_ends] if section_ends else old_content[section_begins:]
+        old_dict = from_table(section)
+        the_results = {**old_dict, **the_results}
+        if section_ends:
+            new_content = old_content[:section_begins] + to_table(the_results) + old_content[section_ends:]
+        else:
+            new_content = old_content[:section_begins] + to_table(the_results)
+    else:
+        new_content = old_content + to_table(the_results)
+    readme.write_text(new_content)
 
 
 def main() -> None:

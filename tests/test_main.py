@@ -14,6 +14,7 @@ class TestMain(unittest.TestCase):
         with patch("subprocess.run") as mock_run:
             mock_run.return_value.stdout = "helloo"
             mock_run.return_value.stderr = "1792,0.01,0.02"
+            Path("README.md").write_text("")
             main.main()
             timings: list[PosixPath | str] = ["/usr/bin/time", "-f", "%M,%S,%U"]
             a: tuple[list[PosixPath | str], ...] = (
@@ -128,10 +129,18 @@ class TestMain(unittest.TestCase):
         expected_readme_txt = Path("EXPECTED_README_2.md").read_text()
 
         main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
-        self.assertEqual(readme.read_text(), expected_readme_txt)
+        self.assertEqual(expected_readme_txt, readme.read_text())
 
         main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
-        self.assertEqual(readme.read_text(), expected_readme_txt)
+        self.assertEqual(expected_readme_txt, readme.read_text())
+
+    def test_write_results_two(self) -> None:
+        readme = Path("README.md")
+        shutil.copy(Path("README_TEMPLATE_2.md"), readme)
+        expected_readme_txt = Path("EXPECTED_README_3.md").read_text()
+
+        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        self.assertEqual(expected_readme_txt, readme.read_text())
 
 
 if __name__ == "__main__":

@@ -6,10 +6,4 @@ A sentence.
 
 | day | language | who | time | mem | notes |
 | --- | --- | --- | --- | --- | --- |
-| 00 | python | iain | 2.34 sec | 1999 KB |  |
 | 01 | python | iain | 0.01 sec | 1792 KB |  |
-
-
-## Section
-
-Another sentence.
