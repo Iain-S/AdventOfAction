@@ -2,8 +2,7 @@ import unittest
 from pathlib import Path, PosixPath
 from unittest.mock import call, patch
 
-from advent_of_action import main
-from advent_of_action import runners
+from advent_of_action import main, runners
 
 
 class TestMain(unittest.TestCase):
@@ -18,7 +17,46 @@ class TestMain(unittest.TestCase):
             # so that the call to partial() works on the
             # patched subprocess.run.
             main.main()
-            timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
+            timings: list[PosixPath | str] = ["/usr/bin/time", "-f", "%M,%S,%U"]
+            a: tuple[list[PosixPath | str], ...] = (
+                [
+                    "dotnet",
+                    "fsi",
+                    PosixPath("day_99/fsharp_iain/solution.fsx"),
+                ],
+                [
+                    "ipython",
+                    "-c",
+                    f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}",
+                ],
+                [
+                    "ocaml",
+                    PosixPath("day_99/ocaml_iain/solution.ml"),
+                ],
+                [
+                    "python",
+                    PosixPath("day_99/python_iain/solution.py"),
+                ],
+                [
+                    "python",
+                    PosixPath("day_99/python_nain/solution.py"),
+                ],
+                [
+                    "python",
+                    PosixPath("day_99/python_zain/solution.py"),
+                ],
+                [
+                    "racket",
+                    PosixPath("day_99/racket_iain/solution.rkt"),
+                ],
+                [
+                    "cargo",
+                    "run",
+                    "--quiet",
+                    "--manifest-path",
+                    PosixPath("day_99/rust_iain/Cargo.toml"),
+                ],
+            )
             self.assertListEqual(
                 mock_run.call_args_list,
                 [
@@ -29,45 +67,7 @@ class TestMain(unittest.TestCase):
                         text=True,
                         check=True,
                     )
-                    for x in (
-                        [
-                            "dotnet",
-                            "fsi",
-                            PosixPath("day_99/fsharp_iain/solution.fsx"),
-                        ],
-                        [
-                            "ipython",
-                            "-c",
-                            f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}",
-                        ],
-                        [
-                            "ocaml",
-                            PosixPath("day_99/ocaml_iain/solution.ml"),
-                        ],
-                        [
-                            "python",
-                            PosixPath("day_99/python_iain/solution.py"),
-                        ],
-                        [
-                            "python",
-                            PosixPath("day_99/python_nain/solution.py"),
-                        ],
-                        [
-                            "python",
-                            PosixPath("day_99/python_zain/solution.py"),
-                        ],
-                        [
-                            "racket",
-                            PosixPath("day_99/racket_iain/solution.rkt"),
-                        ],
-                        [
-                            "cargo",
-                            "run",
-                            "--quiet",
-                            "--manifest-path",
-                            PosixPath("day_99/rust_iain/Cargo.toml"),
-                        ],
-                    )
+                    for x in a
                 ],
             )
 
