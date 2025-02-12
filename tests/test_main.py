@@ -6,6 +6,9 @@ from advent_of_action import main  # type: ignore
 
 
 class TestMain(unittest.TestCase):
+    def setUp(self) -> None:
+        Path("./README.md").unlink(missing_ok=True)
+
     def test_main(self) -> None:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value.stdout = "helloo"
@@ -121,7 +124,18 @@ class TestMain(unittest.TestCase):
         )
 
     def test_write_results(self) -> None:
-        pass
+        readme = Path("README.md")
+        self.assertFalse(readme.exists())
+
+        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        with readme.open("r") as f:
+            content = f.readlines()
+        self.assertEqual(1, sum(1 for line in content if "## Results" in line))
+
+        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        with readme.open("r") as f:
+            content = f.readlines()
+        self.assertEqual(1, sum(1 for line in content if "## Results" in line))
 
 
 if __name__ == "__main__":
