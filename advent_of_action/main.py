@@ -135,7 +135,6 @@ def main() -> None:
                 answers = lines[0], lines[1]
                 Path("answers.txt").unlink()
 
-                # Scripts expect input to be in the CWD.
                 # Note that we don't patch this run in tests.
                 run(
                     [
@@ -146,6 +145,7 @@ def main() -> None:
                         "yourpassword",  # todo env var
                         "--decrypt",
                         "--output",
+                        # Scripts expect input.txt to be in the CWD.
                         Path("input.txt"),
                         dirpath / "input.gpg",
                     ],
