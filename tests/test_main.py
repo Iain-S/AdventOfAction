@@ -13,9 +13,6 @@ class TestMain(unittest.TestCase):
         with patch("subprocess.run") as mock_run:
             mock_run.return_value.stdout = "helloo"
             mock_run.return_value.stderr = "1792,0.01,0.02"
-            # Need to explicitly (re)load the module
-            # so that the call to partial() works on the
-            # patched subprocess.run.
             main.main()
             timings: list[PosixPath | str] = ["/usr/bin/time", "-f", "%M,%S,%U"]
             a: tuple[list[PosixPath | str], ...] = (
