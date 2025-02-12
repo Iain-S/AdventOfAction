@@ -29,7 +29,7 @@ target-version = "py313"
 
 [tool.ruff.lint]
 # 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
-select = ["E", "F", "B", "I"]
+select = ["E", "F", "B", "I", "UP", "SIM"]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

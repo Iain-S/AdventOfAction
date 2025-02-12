@@ -1,6 +1,7 @@
 import unittest
-from pathlib import PosixPath, Path
-from unittest.mock import patch, call
+from pathlib import Path, PosixPath
+from unittest.mock import call, patch
+
 from advent_of_action import main  # type: ignore
 
 

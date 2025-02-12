@@ -1,9 +1,9 @@
 """Run every solution."""
 
 import subprocess
+from collections.abc import Callable, MutableMapping
 from pathlib import Path
-from typing import Final, MutableMapping
-from collections.abc import Callable
+from typing import Final
 
 type Triple = tuple[int, float, str]
 type RunnerFunc = Callable[[Path], Triple]
