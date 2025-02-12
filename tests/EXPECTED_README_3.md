@@ -5,6 +5,6 @@ A sentence.
 
 ## Stats
 
-| day | language | who | time | mem | notes |
+| day | language | who | time (s) | mem (KB) | notes |
 | --- | --- | --- | --- | --- | --- |
-| 01 | python | iain | 0.01 sec | 1792 KB |  |
+| 01 | python | iain | 0.01 | 1792 |  |

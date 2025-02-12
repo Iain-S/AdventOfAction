@@ -6,7 +6,7 @@ A sentence.
 
 | day | language | who | time | mem | notes |
 | --- | --- | --- | --- | --- | --- |
-| 00 | python | iain | 2.34 sec | 1999 KB |  |
+| 00 | python | iain | 2.34 | 1999 |  |
 
 ## Section
 

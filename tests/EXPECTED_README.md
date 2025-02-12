@@ -4,17 +4,17 @@ A sentence.
 
 ## Stats
 
-| day | language | who | time | mem | notes |
+| day | language | who | time (s) | mem (KB) | notes |
 | --- | --- | --- | --- | --- | --- |
-| 00 | python | iain | x sec | y KB |  |
-| 99 | fsharp | iain | x sec | y KB |  |
-| 99 | jupyter | iain | x sec | y KB |  |
-| 99 | ocaml | iain | x sec | y KB |  |
-| 99 | python | iain | x sec | y KB |  |
-| 99 | python | nain |  |  | Different answer |
-| 99 | python | zain |  |  | Error(1) |
-| 99 | racket | iain | x sec | y KB |  |
-| 99 | rust | iain | x sec | y KB |  |
+| y | python | iain | x | y |  |
+| y | fsharp | iain | x | y |  |
+| y | jupyter | iain | x | y |  |
+| y | ocaml | iain | x | y |  |
+| y | python | iain | x | y |  |
+| y | python | nain |  |  | Different answer |
+| y | python | zain |  |  | Error(1) |
+| y | racket | iain | x | y |  |
+| y | rust | iain | x | y |  |
 
 
 ## Section

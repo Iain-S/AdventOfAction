@@ -32,6 +32,6 @@ jobs:
           echo "..."
           cat tests/EXPECTED_README.md
           echo "..."
-          sed -i -E 's/[0-9]+\.[0-9]+ sec/x sec/' tests/README.md
-          sed -i -E 's/[0-9]+ KB/y KB/' tests/README.md
+          sed -i -E 's/[0-9]+\.[0-9]+/x/' tests/README.md
+          sed -i -E 's/[0-9]+/y/' tests/README.md
           diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README.md

@@ -45,8 +45,8 @@ def from_table(table: str) -> dict[Run, Stats]:
             break
         day, lang, person, seconds, kb, notes = line[1:-1].split(" | ")
         results[(day.strip(), lang.strip(), person.strip())] = (
-            seconds[:-4].strip(),
-            kb[:-3].strip(),
+            seconds.strip(),
+            kb.strip(),
             notes.strip(),
         )
     return results
@@ -54,10 +54,10 @@ def from_table(table: str) -> dict[Run, Stats]:
 
 def to_table(results: Mapping[Run, Stats]) -> str:
     table = "\n\n## Stats\n\n"
-    table += "| day | language | who | time | mem | notes |\n"
+    table += "| day | language | who | time (s) | mem (KB) | notes |\n"
     table += "| --- | --- | --- | --- | --- | --- |\n"
     for (day, language, person), (seconds, kilobytes, notes) in results.items():
-        table += f"| {day} | {language} | {person} | {seconds} sec | {kilobytes} KB | {notes} |\n"
+        table += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
     return table
 
 
