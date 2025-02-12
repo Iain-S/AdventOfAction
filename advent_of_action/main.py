@@ -120,7 +120,7 @@ def main() -> None:
                         "--batch",
                         "--yes",
                         "--passphrase",
-                        "yourpassword",
+                        "yourpassword",  # todo env var
                         "--decrypt",
                         "--output",
                         Path("answers.txt"),
@@ -143,7 +143,7 @@ def main() -> None:
                         "--batch",
                         "--yes",
                         "--passphrase",
-                        "yourpassword",
+                        "yourpassword",  # todo env var
                         "--decrypt",
                         "--output",
                         Path("input.txt"),
