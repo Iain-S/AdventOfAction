@@ -6,15 +6,15 @@ A sentence.
 
 | day | language | who | time (s) | mem (KB) | notes |
 | --- | --- | --- | --- | --- | --- |
-| y | python | iain | x | y |  |
-| y | fsharp | iain | x | y |  |
-| y | jupyter | iain | x | y |  |
-| y | ocaml | iain | x | y |  |
-| y | python | iain | x | y |  |
+| y | python | iain | x | z |  |
+| y | fsharp | iain | x | z |  |
+| y | jupyter | iain | x | z |  |
+| y | ocaml | iain | x | z |  |
+| y | python | iain | x | z |  |
 | y | python | nain |  |  | Different answer |
 | y | python | zain |  |  | Error(1) |
-| y | racket | iain | x | y |  |
-| y | rust | iain | x | y |  |
+| y | racket | iain | x | z |  |
+| y | rust | iain | x | z |  |
 
 
 ## Section
