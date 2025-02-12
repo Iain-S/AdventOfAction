@@ -12,7 +12,7 @@ A sentence.
 | y | ocaml | iain | x | z |  |
 | y | python | iain | x | z |  |
 | y | python | nain |  |  | Different answer |
-| y | python | zain |  |  | Error(1) |
+| y | python | zain |  |  | Error(z) |
 | y | racket | iain | x | z |  |
 | y | rust | iain | x | z |  |
 
