@@ -1,3 +1,4 @@
+import shutil
 import unittest
 from pathlib import Path, PosixPath
 from unittest.mock import call, patch
@@ -123,17 +124,14 @@ class TestMain(unittest.TestCase):
 
     def test_write_results(self) -> None:
         readme = Path("README.md")
-        self.assertFalse(readme.exists())
+        shutil.copy(Path("README_TEMPLATE.md"), readme)
+        expected_readme_txt = Path("EXPECTED_README_2.md").read_text()
 
         main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
-        with readme.open("r") as f:
-            content = f.readlines()
-        self.assertEqual(1, sum(1 for line in content if "## Results" in line))
+        self.assertEqual(readme.read_text(), expected_readme_txt)
 
         main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
-        with readme.open("r") as f:
-            content = f.readlines()
-        self.assertEqual(1, sum(1 for line in content if "## Results" in line))
+        self.assertEqual(readme.read_text(), expected_readme_txt)
 
 
 if __name__ == "__main__":
