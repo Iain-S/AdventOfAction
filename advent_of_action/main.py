@@ -35,7 +35,7 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
             return "", "", "Different answer"
     except subprocess.CalledProcessError as e:
         return "", "", f"Error ({e.returncode})"
-    return f"{seconds:.2f} sec", f"{kilobytes} KB", ""
+    return f"{seconds:.2f}", f"{kilobytes}", ""
 
 
 def from_table(table: str) -> dict[Run, Stats]:
