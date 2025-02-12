@@ -1,7 +1,7 @@
 """Run every solution."""
 
 import subprocess
-from collections.abc import Callable, MutableMapping
+from collections.abc import Callable, Mapping, MutableMapping
 from pathlib import Path
 from typing import Final
 
@@ -65,7 +65,6 @@ type Kilobytes = str
 type Notes = str
 type Run = tuple[Day, Language, Person]
 type Stats = tuple[Seconds, Kilobytes, Notes]
-type Results = MutableMapping[Run, Stats]
 
 
 def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
@@ -78,7 +77,7 @@ def measure_execution_time(dirpath: Path, ext: RunnerFunc) -> Stats:
     return f"{seconds:.2f} sec", f"{kilobytes} KB", ""
 
 
-def write_results(the_results: Results) -> None:
+def write_results(the_results: Mapping[Run, Stats]) -> None:
     readme_path = "README.md"
     new_content = "\n## Results\n\n"
     new_content += "| day | language | who | time | mem | notes |\n"
@@ -86,13 +85,21 @@ def write_results(the_results: Results) -> None:
     for (day, language, person), (seconds, kilobytes, notes) in the_results.items():
         new_content += f"| {day} | {language} | {person} | {seconds} | {kilobytes} | {notes} |\n"
 
-    with open(readme_path, "a") as f:
-        f.write(new_content)
+    old_content = ""
+    if Path(readme_path).exists():
+        with open(readme_path) as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.strip() == "## Results":
+                    break
+                old_content += line
+    with open(readme_path, "w") as f:
+        f.write(old_content + new_content)
 
 
 def main() -> None:
     """Run the solutions."""
-    results: Results = {}
+    results: MutableMapping[Run, Stats] = {}
     path = Path(".")
     # Expecting
     # ├── day_01
