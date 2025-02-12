@@ -3,6 +3,7 @@
 import subprocess
 from collections.abc import Mapping, MutableMapping
 from pathlib import Path
+from subprocess import run
 from typing import Final
 
 from advent_of_action import runners
@@ -47,7 +48,7 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
 def from_table(table: str) -> dict[Run, Stats]:
     results: dict[Run, Stats] = {}
     part_one = None
-    for line in table.split("\n")[6:]:
+    for line in table.splitlines()[6:]:
         if not line:
             break
         day, lang, person, part, seconds, kb, notes = line[1:-1].split(" | ")
@@ -69,8 +70,8 @@ def to_table(results: Mapping[Run, Stats]) -> str:
     table = "\n\n## Stats\n\n"
     table += "| day | language | who | part | time (s) | mem (KB) | notes |\n"
     table += "| --- | --- | --- | --- | --- | --- | --- |\n"
-    for run, stats in results.items():
-        day, language, person = run
+    for the_run, stats in results.items():
+        day, language, person = the_run
         for (seconds, kilobytes, notes), part in zip(stats, ("one", "two"), strict=False):
             table += f"| {day} | {language} | {person} | {part} | {seconds} | {kilobytes} | {notes} |\n"
     return table
@@ -102,6 +103,7 @@ def main() -> None:
     # ├── day_01
     # │   ├── python_person
     # │   │   └── solution.py
+    answers = ("", "")  # todo
     for dirpath, dirnames, filenames in path.walk(top_down=True):
         if ".optout" in filenames:
             continue
@@ -109,10 +111,53 @@ def main() -> None:
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
             day: Day = dirpath.parts[0][4:]
-            answers = ("answer", "answer")
-            if dirpath.parts and len(dirpath.parts) == 2:
+
+            if len(dirpath.parts) == 1:
+                # Note that we don't patch this run in tests.
+                run(
+                    [
+                        "gpg",
+                        "--batch",
+                        "--yes",
+                        "--passphrase",
+                        "yourpassword",
+                        "--decrypt",
+                        "--output",
+                        Path("answers.txt"),
+                        dirpath / "answers.gpg",
+                    ],
+                    text=True,
+                    capture_output=True,
+                    check=True,
+                    timeout=10,
+                )
+                lines = Path("answers.txt").read_text().splitlines()
+                answers = lines[0], lines[1]
+                Path("answers.txt").unlink()
+
+                # Scripts expect input to be in the CWD.
+                # Note that we don't patch this run in tests.
+                run(
+                    [
+                        "gpg",
+                        "--batch",
+                        "--yes",
+                        "--passphrase",
+                        "yourpassword",
+                        "--decrypt",
+                        "--output",
+                        Path("input.txt"),
+                        dirpath / "input.gpg",
+                    ],
+                    text=True,
+                    capture_output=True,
+                    check=True,
+                    timeout=10,
+                )
+
+            if len(dirpath.parts) == 2:
+                directory = dirpath.parts[1]
                 for name, runner in RUNTIMES.items():
-                    directory = dirpath.parts[1]
                     language: Language = directory[0 : directory.find("_")]
                     person: Person = directory[directory.find("_") + 1 :]
                     if language == name:

@@ -1,8 +1,8 @@
 # Advent of Code
 .python-version
 .idea/
-inputs/
-examples/
+answers.txt
+input.txt
 tests/README.md
 
 # Byte-compiled / optimized / DLL files
