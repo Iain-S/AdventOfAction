@@ -20,27 +20,27 @@ def execute_command(command: list[str | Path]) -> Triple:
 
 def python(dirpath: Path, part: str) -> Triple:
     """Run a Python solution."""
-    return execute_command(["python", dirpath / "solution.py", part])
+    return execute_command(["python", str(dirpath / "solution.py"), part])
 
 
 def racket(dirpath: Path, part: str) -> Triple:
     """Run a Racket solution."""
-    return execute_command(["racket", dirpath / "solution.rkt", part])
+    return execute_command(["racket", str(dirpath / "solution.rkt"), part])
 
 
 def rust(dirpath: Path, part: str) -> Triple:
     """Run a Rust solution."""
-    return execute_command(["cargo", "run", "--quiet", "--manifest-path", dirpath / "Cargo.toml", part])
+    return execute_command(["cargo", "run", "--quiet", "--manifest-path", str(dirpath / "Cargo.toml"), part])
 
 
 def fsharp(dirpath: Path, part: str) -> Triple:
     """Run an F# solution"""
-    return execute_command(["dotnet", "fsi", dirpath / "solution.fsx", part])
+    return execute_command(["dotnet", "fsi", str(dirpath / "solution.fsx"), part])
 
 
 def ocaml(dirpath: Path, part: str) -> Triple:
     """Run an OCaml solution."""
-    return execute_command(["ocaml", dirpath / "solution.ml", part])
+    return execute_command(["ocaml", str(dirpath / "solution.ml"), part])
 
 
 def jupyter(dirpath: Path, part: str) -> Triple:

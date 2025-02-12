@@ -16,27 +16,27 @@ class TestMain(unittest.TestCase):
             mock_run.return_value.stderr = "1792,0.01,0.02"
             Path("README.md").write_text("")
             main.main()
-            timings: list[PosixPath | str] = ["/usr/bin/time", "-f", "%M,%S,%U"]
-            a: tuple[list[PosixPath | str], ...] = (
-                [["dotnet", "fsi", PosixPath("day_99/fsharp_iain/solution.fsx"), x] for x in ("one", "two")]
+            timings: list[str] = ["/usr/bin/time", "-f", "%M,%S,%U"]
+            a: tuple[list[str], ...] = tuple(
+                [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")]
                 + [
-                    ["ipython", "-c", f"%run {PosixPath('day_99/jupyter_iain/solution.ipynb')}", x]
+                    ["ipython", "-c", f"%run {str(PosixPath('day_99/jupyter_iain/solution.ipynb'))}", x]
                     for x in ("one", "two")
                 ]
-                + [["ocaml", PosixPath("day_99/ocaml_iain/solution.ml"), x] for x in ("one", "two")]
-                + [["python", PosixPath("day_99/python_iain/solution.py"), x] for x in ("one", "two")]
-                + [["python", PosixPath("day_99/python_nain/solution.py"), x] for x in ("one", "two")]
+                + [["ocaml", str(PosixPath("day_99/ocaml_iain/solution.ml")), x] for x in ("one", "two")]
+                + [["python", str(PosixPath("day_99/python_iain/solution.py")), x] for x in ("one", "two")]
+                + [["python", str(PosixPath("day_99/python_nain/solution.py")), x] for x in ("one", "two")]
                 + [
                     [
                         "python",
-                        PosixPath("day_99/python_zain/solution.py"),
+                        str(PosixPath("day_99/python_zain/solution.py")),
                         x,
                     ]
                     for x in ("one", "two")
                 ]
-                + [["racket", PosixPath("day_99/racket_iain/solution.rkt"), x] for x in ("one", "two")]
+                + [["racket", str(PosixPath("day_99/racket_iain/solution.rkt")), x] for x in ("one", "two")]
                 + [
-                    ["cargo", "run", "--quiet", "--manifest-path", PosixPath("day_99/rust_iain/Cargo.toml"), x]
+                    ["cargo", "run", "--quiet", "--manifest-path", str(PosixPath("day_99/rust_iain/Cargo.toml")), x]
                     for x in ("one", "two")
                 ]
             )
@@ -85,7 +85,7 @@ class TestMain(unittest.TestCase):
 
     def test_measure_four(self) -> None:
         # Check that we check the answer.
-        def bad_runner(_: Path, __: tuple[str, str]) -> tuple[int, float, str]:
+        def bad_runner(_: Path, __: str) -> tuple[int, float, str]:
             return runners.execute_command(["bash", "-c", "exit 1"])
 
         actual = main.measure_execution_time(("", ""), Path("."), bad_runner)
@@ -128,10 +128,13 @@ class TestMain(unittest.TestCase):
         shutil.copy(Path("README_TEMPLATE.md"), readme)
         expected_readme_txt = Path("EXPECTED_README_2.md").read_text()
 
-        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        run = ("01", "python", "iain")
+        stat = ("0.01", "1792", "")
+
+        main.write_results({run: (stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
-        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        main.write_results({run: (stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
     def test_write_results_two(self) -> None:
@@ -139,10 +142,13 @@ class TestMain(unittest.TestCase):
         shutil.copy(Path("README_TEMPLATE_2.md"), readme)
         expected_readme_txt = Path("EXPECTED_README_3.md").read_text()
 
-        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        run = ("01", "python", "iain")
+        stat = ("0.01", "1792", "")
+
+        main.write_results({run: (stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
-        main.write_results({("01", "python", "iain"): ("0.01", "1792", "")})
+        main.write_results({run: (stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
 

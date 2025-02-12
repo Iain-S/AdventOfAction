@@ -26,10 +26,10 @@ type Kilobytes = str
 type Notes = str
 type Run = tuple[Day, Language, Person]
 type Stat = tuple[Seconds, Kilobytes, Notes]
-type Stats = tuple[Stats, Stats]
+type Stats = tuple[Stat, Stat]
 
 
-def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> tuple[Stats, Stats]:
+def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> Stats:
     """Measure the execution time of a solution."""
 
     def inner(part: str, answer: str) -> Stat:
@@ -67,8 +67,8 @@ def from_table(table: str) -> dict[Run, Stats]:
 
 def to_table(results: Mapping[Run, Stats]) -> str:
     table = "\n\n## Stats\n\n"
-    table += "| day | language | who | time (s) | mem (KB) | notes |\n"
-    table += "| --- | --- | --- | --- | --- | --- |\n"
+    table += "| day | language | who | part | time (s) | mem (KB) | notes |\n"
+    table += "| --- | --- | --- | --- | --- | --- | --- |\n"
     for run, stats in results.items():
         day, language, person = run
         for (seconds, kilobytes, notes), part in zip(stats, ("one", "two"), strict=False):
