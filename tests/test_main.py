@@ -25,7 +25,6 @@ class TestMain(unittest.TestCase):
                 ]
                 + [["ocaml", str(PosixPath("day_99/ocaml_iain/solution.ml")), x] for x in ("one", "two")]
                 + [["python", str(PosixPath("day_99/python_iain/solution.py")), x] for x in ("one", "two")]
-                + [["python", str(PosixPath("day_99/python_nain/solution.py")), x] for x in ("one", "two")]
                 + [
                     [
                         "python",
