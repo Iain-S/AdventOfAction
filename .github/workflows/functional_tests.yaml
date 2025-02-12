@@ -16,6 +16,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+      - name: Set up README
+        shell: bash
+        run: cp tests/README_TEMPLATE.md tests/README.md
       - name: Run our action
         uses: ./
         with:
