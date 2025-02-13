@@ -26,3 +26,11 @@ jobs:
           python -m pybadges --left-text Coverage --right-text "${COVERAGE}"% > badge.svg
         shell: bash
         working-directory: tests
+      - name: Commit results
+        shell: bash
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions@github.com"
+          git add tests/badge.svg
+          git commit -m "Update coverage badge" || echo "No changes to commit"
+          git push
