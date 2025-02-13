@@ -19,39 +19,14 @@ class TestMain(unittest.TestCase):
         Path("./README.md").unlink(missing_ok=True)
         Path("./input.txt").unlink(missing_ok=True)
 
-    def test_main_two(self) -> None:
-        with patch("subprocess.run") as mock_run:
-            mock_run.return_value.stdout = "helloo"
-            mock_run.return_value.stderr = "1792,0.01,0.02"
-            shutil.copy(Path("README_TEMPLATE_3.md"), Path("README.md"))
-            main.main()
-            timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
-            a = [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")] + [
-                ["cargo", "run", "--quiet", "--manifest-path", str(PosixPath("day_99/rust_iain/Cargo.toml")), x]
-                for x in ("one", "two")
-            ]
-            self.assertListEqual(
-                mock_run.call_args_list,
-                [
-                    call(
-                        timings + x,
-                        capture_output=True,
-                        timeout=60,
-                        text=True,
-                        check=True,
-                    )
-                    for x in a
-                ],
-            )
-
     def test_main(self) -> None:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value.stdout = "helloo"
             mock_run.return_value.stderr = "1792,0.01,0.02"
             Path("README.md").write_text("")
             main.main()
-            timings: list[str] = ["/usr/bin/time", "-f", "%M,%S,%U"]
-            a: tuple[list[str], ...] = tuple(
+            timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
+            a = (
                 [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")]
                 + [
                     ["ipython", "-c", f"%run {str(PosixPath('day_99/jupyter_iain/solution.ipynb'))}", x]
@@ -73,6 +48,31 @@ class TestMain(unittest.TestCase):
                     for x in ("one", "two")
                 ]
             )
+            self.assertListEqual(
+                mock_run.call_args_list,
+                [
+                    call(
+                        timings + x,
+                        capture_output=True,
+                        timeout=60,
+                        text=True,
+                        check=True,
+                    )
+                    for x in a
+                ],
+            )
+
+    def test_main_two(self) -> None:
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value.stdout = "helloo"
+            mock_run.return_value.stderr = "1792,0.01,0.02"
+            shutil.copy(Path("README_TEMPLATE_3.md"), Path("README.md"))
+            main.main()
+            timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
+            a = [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")] + [
+                ["cargo", "run", "--quiet", "--manifest-path", str(PosixPath("day_99/rust_iain/Cargo.toml")), x]
+                for x in ("one", "two")
+            ]
             self.assertListEqual(
                 mock_run.call_args_list,
                 [
