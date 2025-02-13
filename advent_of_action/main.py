@@ -1,10 +1,9 @@
 """Run every solution."""
 
 import os
-import subprocess
 from collections.abc import Mapping, MutableMapping
 from pathlib import Path
-from subprocess import run
+from subprocess import CalledProcessError, run
 from typing import Final
 
 from advent_of_action import runners
@@ -35,11 +34,12 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
     """Measure the execution time of a solution."""
 
     def inner(part: str, answer: str) -> Stat:
+        """Use the runner to measure the execution time of one part."""
         try:
             kilobytes, seconds, output = ext(dirpath, part)
             if output.strip() != answer:
                 return "", "", "Different answer"
-        except subprocess.CalledProcessError as e:
+        except CalledProcessError as e:
             return "", "", f"Error ({e.returncode})"
         return f"{seconds:.2f}", f"{kilobytes}", ""
 
@@ -47,6 +47,7 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
 
 
 def from_table(table: str) -> dict[Run, Stats]:
+    """Extract results from the Markdown ##Stats section."""
     results: dict[Run, Stats] = {}
     part_one = None
     for line in table.splitlines()[6:]:
@@ -68,6 +69,7 @@ def from_table(table: str) -> dict[Run, Stats]:
 
 
 def to_table(results: Mapping[Run, Stats]) -> str:
+    """Convert results to a Markdown table."""
     table = "\n\n## Stats\n\n"
     table += "| day | language | who | part | time (s) | mem (KB) | notes |\n"
     table += "| --- | --- | --- | --- | --- | --- | --- |\n"
@@ -79,6 +81,7 @@ def to_table(results: Mapping[Run, Stats]) -> str:
 
 
 def write_results(the_results: Mapping[Run, Stats]) -> None:
+    """Write results to the README."""
     readme = Path("README.md")
     old_content = readme.read_text()
     section_begins = old_content.find("\n\n## Stats")
@@ -142,8 +145,7 @@ def main() -> None:
 
 
 def make_input_file(dirpath: Path) -> None:
-    # Note that we don't patch this run in tests.
-
+    """Decrypt the input file."""
     if (passphrase := os.getenv("GPG_PASS")) is None:
         raise ValueError("GPG_PASS environment variable not set.")
 
@@ -196,4 +198,4 @@ def get_answers(dirpath: Path) -> tuple[str, str]:
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pragma: no cover
