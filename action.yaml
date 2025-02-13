@@ -9,17 +9,21 @@ inputs:
     required: false
     default: "3.13"
   racket-version:
-    description: "Racket version to use. -1 for no Racket"
+    description: "Racket version to use. -1 for none."
     required: false
     default: "8.14"
   ocaml-version:
-    description: "Ocaml version to use. -1 for no Ocaml"
+    description: "Ocaml version to use. -1 for none."
     required: false
     default: "5"
   dotnet-version:
-    description: "DotNet version to use. -1 for no DotNet"
+    description: "DotNet version to use. -1 for none."
     required: false
     default: "8"
+  rust-version:
+    description: "Rust toolchain version to use. -1 for none."
+    required: false
+    default: "1"
   working-directory:
     description: "The working directory. Default is the root of the repository."
     required: false
