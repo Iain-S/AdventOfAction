@@ -54,7 +54,7 @@ runs:
       with:
         ocaml-compiler: ${{ inputs.ocaml-version }}
     - name: Install package
-      run: pip install .
+      run: echo $GITHUB_ACTION_PATH && pip install $GITHUB_ACTION_PATH
       shell: bash
     - name: Change directory
       run: |
