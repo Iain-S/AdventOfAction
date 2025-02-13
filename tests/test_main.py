@@ -220,6 +220,21 @@ class TestMain(unittest.TestCase):
         expected = {("01", "python", "iain"): (("0.01", "1792", ""), ("0.01", "1792", ""))}
         self.assertDictEqual(expected, actual)
 
+    def test_from_table_raises(self) -> None:
+        """Test that we can convert a table to a dictionary."""
+        with self.assertRaises(ValueError):
+            main.from_table(
+                "\n"
+                + "\n"
+                + "## Stats\n"
+                + "\n"
+                + "| day | language | who | part | time (s) | mem (KB) | notes |\n"
+                + "| --- | --- | --- | --- | --- | --- | --- |\n"
+                + "| 01 | python | iain | three | 0.01 | 1792 | |\n"
+                + "\n"
+                + "\n"
+            )
+
 
 class TestExpectsGPG(unittest.TestCase):
     """Test the functions that expect GPG_PASS to be set."""
