@@ -1297,17 +1297,9 @@ files = [
 ]
 
 [extras]
-<<<<<<< HEAD
 coverage = ["coverage", "pybadges", "setuptools", "standard-imghdr"]
-=======
-coverage = ["pybadges"]
->>>>>>> 05f91ef (Add pybadges dependency)
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-<<<<<<< HEAD
 content-hash = "758bca4ca12d45c29881cb4be1b2a3936d19c161a8d43ae76bc5fe48cc16313c"
-=======
-content-hash = "024ec98e86b903f9116a62db00c1aa22f970614654680b0d095682b478ebe4be"
->>>>>>> 05f91ef (Add pybadges dependency)
