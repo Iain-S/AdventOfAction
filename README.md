@@ -1,6 +1,6 @@
 # Advent Of Action
 
-If you and your friends/colleagues share a repo for AoC, you can use this to run solutions to each day's problems.
+If you and your friends/colleagues share a repo for AoC, you can use this to run your solutions to each day's problems.
 It will time each person's solution and monitor maximum memory usage, saving the results to the README.
 
 ## Using the Action
@@ -37,6 +37,38 @@ To see how each language is executed, look in [runners.py](advent_of_action/runn
 
 For each day, provide an input file named `input.gpg` and a solution file named `answers.gpg`.
 Provide the encryption/decryption passphrase as the `gpg-passphrase` input.
+This means that someone will need to complete the day's challenge and:
+
+1. Write their answers to `answer.txt`, with the part one answer on the first line and the part two line on the second.
+1. Write the problem input to `input.txt`.
+2. Encrypt the files with something like `gpg --batch --yes --symmetric --passphrase "your_secret" --output input.gpg input.txt` and `gpg --batch --yes --symmetric --passphrase "your_secret" --output answers.gpg answers.txt`.
+
+Input and answers are encrypted because the author of advent-of-code has asked that they be kept private.
+
+Each solution should:
+
+1. Expect the last command-line argument to be either `one` or `two` and to return the part-one or part-two solution accordingly.
+2. Expect an `input.txt` file in the current working directory, which is the problem input.
+
+For example:
+
+```python
+"""solution.py"""
+import sys
+from pathlib import Path
+
+def main() -> None:
+    text = Path("input.txt").read_text()
+    match sys.argv[-1]:
+        case "one":
+            # Part one solution.
+            print(len(text))
+        case "two":
+            # Part two solution.
+            print(len(text) * 2)
+        case _:
+            print("Unknown argument")
+```
 
 If you'd like to opt out of having your code executed, add an `.optout` file to your directory for that day.
 
