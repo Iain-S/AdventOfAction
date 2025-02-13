@@ -35,4 +35,4 @@ You may want to commit and push the changes to your branch with:
 
 If you'd like to opt out of having your code executed, add an `.optout` file to your directory for that day.
 
-For each day, provide an input file named `input.gpg` and a solution file named `answers.gpg`. Set an environment variable called GPG_PASS with the encryption/decryption passphrase. Set an environment variable called GPG_PASS with the encryption/decryption passphrase. Set an environment variable called GPG_PASS with the encryption/decryption passphrase. Set an environment variable called GPG_PASS with the encryption/decryption passphrase.
+For each day, provide an input file named `input.gpg` and a solution file named `answers.gpg`. Set an environment variable called `GPG_PASS` with the encryption/decryption passphrase.
