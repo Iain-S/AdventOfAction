@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-coverage = ["pybadges[coverage] (>=3.0.1,<4.0.0)", "coverage[coverage] (>=7.6.12,<8.0.0)"]
+coverage = ["pybadges[coverage] (>=3.0.1,<4.0.0)", "coverage[coverage] (>=7.6.12,<8.0.0)", "standard-imghdr[coverage] (>=3.13.0,<4.0.0)", "setuptools[coverage] (>=75.8.0,<76.0.0)"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

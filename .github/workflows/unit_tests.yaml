@@ -18,7 +18,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: pip install .
+      - run: pip install .[coverage]
         shell: bash
-      - run: cd tests/ && python test_main.py
+      - run: |
+          coverage run --source advent_of_action -m unittest discover
+          COVERAGE=$(coverage report --format total)
+          python -m pybadges --left-text Coverage --right-text "${COVERAGE}"% > badge.svg
         shell: bash
+        working-directory: tests
