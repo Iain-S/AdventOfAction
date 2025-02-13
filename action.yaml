@@ -35,13 +35,21 @@ runs:
         # Note "version" vs "racket-version".
         version: ${{ inputs.racket-version }}
     - name: Set up Rust
+<<<<<<< HEAD
       if: ${{ inputs.rust-version != -1 }}
+=======
+      if: ${{ inputs.rust-version != "-1" }}
+>>>>>>> a97e06e (More functional tests)
       uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
         profile: minimal
         toolchain: ${{ inputs.rust-version }}
     - name: Set up Dotnet
+<<<<<<< HEAD
       if: ${{ inputs.dotnet-version  != -1 }}
+=======
+      if: ${{ inputs.dotnet-version  != "-1" }}
+>>>>>>> a97e06e (More functional tests)
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
