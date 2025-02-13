@@ -84,7 +84,7 @@ If there are previous results in the README, those solutions will not be re-exec
 To force a re-run, you can delete those lines from the results table in the README.
 
 ```yaml
-steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
