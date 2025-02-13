@@ -21,6 +21,8 @@ jobs:
         run: cp tests/README_TEMPLATE.md tests/README.md
       - name: Run our action
         uses: ./
+        env:
+          GPG_PASS: ${{ secrets.GPG_PASS }}
         with:
           python-version: "3.13"
           working-directory: tests/

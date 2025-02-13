@@ -1,5 +1,6 @@
 """Run every solution."""
 
+import os
 import subprocess
 from collections.abc import Mapping, MutableMapping
 from pathlib import Path
@@ -113,47 +114,9 @@ def main() -> None:
             day: Day = dirpath.parts[0][4:]
 
             if len(dirpath.parts) == 1:
-                # Note that we don't patch this run in tests.
-                run(
-                    [
-                        "gpg",
-                        "--batch",
-                        "--yes",
-                        "--passphrase",
-                        "yourpassword",  # todo env var
-                        "--decrypt",
-                        "--output",
-                        Path("answers.txt"),
-                        dirpath / "answers.gpg",
-                    ],
-                    text=True,
-                    capture_output=True,
-                    check=True,
-                    timeout=10,
-                )
-                lines = Path("answers.txt").read_text().splitlines()
-                answers = lines[0], lines[1]
-                Path("answers.txt").unlink()
+                answers = get_answers(dirpath)
 
-                # Note that we don't patch this run in tests.
-                run(
-                    [
-                        "gpg",
-                        "--batch",
-                        "--yes",
-                        "--passphrase",
-                        "yourpassword",  # todo env var
-                        "--decrypt",
-                        "--output",
-                        # Scripts expect input.txt to be in the CWD.
-                        Path("input.txt"),
-                        dirpath / "input.gpg",
-                    ],
-                    text=True,
-                    capture_output=True,
-                    check=True,
-                    timeout=10,
-                )
+                make_input_file(dirpath)
 
             if len(dirpath.parts) == 2:
                 directory = dirpath.parts[1]
@@ -164,6 +127,60 @@ def main() -> None:
                         results[(day, language, person)] = measure_execution_time(answers, dirpath, runner)
 
     write_results(results)
+
+
+def make_input_file(dirpath: Path) -> None:
+    # Note that we don't patch this run in tests.
+
+    if (passphrase := os.getenv("GPG_PASS")) is None:
+        raise ValueError("GPG_PASS environment variable not set.")
+
+    run(
+        [
+            "gpg",
+            "--batch",
+            "--yes",
+            "--passphrase",
+            passphrase,
+            "--decrypt",
+            "--output",
+            # Scripts expect input.txt to be in the CWD.
+            Path("input.txt"),
+            dirpath / "input.gpg",
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+        timeout=10,
+    )
+
+
+def get_answers(dirpath: Path) -> tuple[str, str]:
+    """Get today's answers from the encrypted file."""
+    if (passphrase := os.getenv("GPG_PASS")) is None:
+        raise ValueError("GPG_PASS environment variable not set.")
+
+    run(
+        [
+            "gpg",
+            "--batch",
+            "--yes",
+            "--passphrase",
+            passphrase,
+            "--decrypt",
+            "--output",
+            Path("answers.txt"),
+            dirpath / "answers.gpg",
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+        timeout=10,
+    )
+    lines = Path("answers.txt").read_text().splitlines()
+    answers = lines[0], lines[1]
+    Path("answers.txt").unlink()
+    return answers
 
 
 if __name__ == "__main__":

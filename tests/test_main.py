@@ -1,3 +1,4 @@
+import os
 import shutil
 import unittest
 from pathlib import Path, PosixPath
@@ -8,7 +9,12 @@ from advent_of_action import main, runners
 
 class TestMain(unittest.TestCase):
     def setUp(self) -> None:
+        """Setup the test environment."""
+
+        # Undo anything that might have been set by failing tests.
         Path("./README.md").unlink(missing_ok=True)
+        Path("./input.txt").unlink(missing_ok=True)
+        os.unsetenv("GPG_PASS")
 
     def test_main(self) -> None:
         with patch("subprocess.run") as mock_run:
@@ -149,6 +155,11 @@ class TestMain(unittest.TestCase):
 
         main.write_results({run: (stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
+
+    def test_get_answers(self) -> None:
+        os.environ["GPG_PASS"] = "yourpassword"
+        actual = main.get_answers(Path("day_99/"))
+        self.assertEqual(("answer", "answer2"), actual)
 
 
 if __name__ == "__main__":
