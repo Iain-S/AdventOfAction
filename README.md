@@ -124,7 +124,7 @@ To force a re-run, you can delete those lines from the results table in the READ
           git config --global user.email "github-actions@github.com"
           git add README.md
           git commit -m "Update README with results" || echo "No changes to commit"
-          git push
+          git push origin HEAD:${{ github.head_ref }}
 ```
 
 ## Developing the Action
