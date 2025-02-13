@@ -29,21 +29,24 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
     - name: Setup Racket
-      if: ${{ inputs.racket-version }} != "-1"
+      if: ${{ inputs.racket-version != -1 }}
       uses: Bogdanp/setup-racket@v1.11
       with:
         # Note "version" vs "racket-version".
         version: ${{ inputs.racket-version }}
     - name: Set up Rust
-      if: ${{ inputs.rust-version }} != "-1"
+      if: ${{ inputs.rust-version != -1 }}
       uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        profile: minimal
+        toolchain: ${{ inputs.rust-version }}
     - name: Set up Dotnet
-      if: ${{ inputs.dotnet-version }} != "-1"
+      if: ${{ inputs.dotnet-version  != -1 }}
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
     - name: Set up Ocaml
-      if: ${{ inputs.ocaml-version }} != "-1"
+      if: ${{ inputs.ocaml-version != -1 }}
       uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: ${{ inputs.ocaml-version }}

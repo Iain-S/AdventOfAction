@@ -38,3 +38,25 @@ jobs:
           sed -i -E 's/[0-9]+/y/' tests/README.md
           sed -i -E 's/[0-9]+/z/' tests/README.md
           diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README.md
+  functional_two:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Set up README
+        shell: bash
+        run: cp tests/README_TEMPLATE.md tests/README.md
+      - name: Run our action
+        uses: ./
+        env:
+          GPG_PASS: ${{ secrets.GPG_PASS }}
+        with:
+          python-version: "3.13"
+          racket-version: "-1"
+          rust-version: "-1"
+          dotnet-version: "-1"
+          ocaml-version: "-1"
+          working-directory: tests/
