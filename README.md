@@ -33,6 +33,7 @@ day_01:
 
 We currently support Python, IPython notebook, OCaml, Rust, Racket, and F# solutions.
 Unsupported languages will be ignored.
+To see how each language is executed, look in [runners.py](advent_of_action/runners.py).
 
 For each day, provide an input file named `input.gpg` and a solution file named `answers.gpg`.
 Provide the encryption/decryption passphrase as the `gpg-passphrase` input.
