@@ -67,7 +67,7 @@ runs:
       run: |
         pushd ${{ inputs.working-directory }}
         eval $(opam env)
-        echo "::add-mask::${{ inputs.gpg_passphrase }}"
-        export GPG_PASS="${{ inputs.gpg_passphrase }}"
+        echo "::add-mask::${{ inputs.gpg-passphrase }}"
+        export GPG_PASS="${{ inputs.gpg-passphrase }}"
         python -m advent_of_action.main
       shell: bash
