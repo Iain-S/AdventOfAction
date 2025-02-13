@@ -22,7 +22,7 @@ jobs:
       - name: Run our action
         uses: ./
         env:
-          API_KEY: ${{ secrets.GPG_PASS }}
+          GPG_PASS: ${{ secrets.GPG_PASS }}
         with:
           python-version: "3.13"
           working-directory: tests/
