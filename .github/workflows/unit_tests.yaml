@@ -33,8 +33,4 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add tests/badge.svg
           git commit -m "Update coverage badge" || echo "No changes to commit"
-<<<<<<< HEAD
           git push origin HEAD:${{ github.head_ref }}
-=======
-          git push
->>>>>>> 4cb85d2 (Add commit for badge)
