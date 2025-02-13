@@ -44,7 +44,7 @@ For each day, provide an input file named `input.gpg` and a solution file named 
 Provide the encryption/decryption passphrase as the `gpg-passphrase` input.
 This means that someone will need to complete the day's challenge and:
 
-1. Write their answers to `answer.txt`, with the part one answer on the first line and the part two line on the second.
+1. Write their answers to `answer.txt`, with the part one answer on the first line and the part two answer on the second.
 1. Write the problem input to `input.txt`.
 1. Encrypt the files with something like `gpg --batch --yes --symmetric --passphrase "your_secret" --output input|answers.gpg input|answers.txt`.
 
