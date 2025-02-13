@@ -28,6 +28,9 @@ inputs:
     description: "The working directory. Default is the root of the repository."
     required: false
     default: "."
+  gpg-passphrase:
+    description: "The passphrase for the GPG-encrypted files."
+    required: true
 runs:
   using: "composite"
   steps:
@@ -60,9 +63,11 @@ runs:
     - name: Install package
       run: echo $GITHUB_ACTION_PATH && pip install $GITHUB_ACTION_PATH
       shell: bash
-    - name: Change directory
+    - name: Run our Python module
       run: |
         pushd ${{ inputs.working-directory }}
         eval $(opam env)
+        echo "::add-mask::${{ inputs.gpg-passphrase }}"
+        export GPG_PASS="${{ inputs.gpg-passphrase }}"
         python -m advent_of_action.main
       shell: bash
