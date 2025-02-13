@@ -1,5 +1,7 @@
 name: "Advent Of Action"
 description: "Runs code in subfolders, records execution times, and updates README"
+color: "green"
+icon: "triangle"
 inputs:
   python-version:
     description: "Python version to use"
