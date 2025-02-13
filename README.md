@@ -79,6 +79,8 @@ If you'd like to opt out of having your code executed, add an `.optout` file to 
 
 The results of running each solution will be written to a table in the README.
 You will need to add an extra workflow step to push and commit in order to save that change (see below).
+Since pushing in a workflow uses the implicit GITHUB_TOKEN, you will need to give that token write permissions, if you haven't already.
+See [Configuring the Default GitHub Token Permissions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-the-default-github_token-permissions).
 
 If there are previous results in the README, those solutions will not be re-executed.
 To force a re-run, you can delete those lines from the results table in the README.
