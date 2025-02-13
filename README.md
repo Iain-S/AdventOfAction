@@ -1,7 +1,12 @@
 # Advent Of Action
 
 If you and your friends/colleagues share a repo for AoC, you can use this to run your solutions to each day's problems.
-It will time each person's solution and monitor maximum memory usage, saving the results to the README.
+It will time each person's solution and monitor maximum memory usage, saving the results to the README:
+
+| day | language | who | part | time (s) | mem (KB) | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 01 | python | tina | one | 0.00 | 9728 |  |
+| 01 | python | tina | two | 0.02 | 9856 |  |
 
 ## Using the Action
 
@@ -41,14 +46,14 @@ This means that someone will need to complete the day's challenge and:
 
 1. Write their answers to `answer.txt`, with the part one answer on the first line and the part two line on the second.
 1. Write the problem input to `input.txt`.
-2. Encrypt the files with something like `gpg --batch --yes --symmetric --passphrase "your_secret" --output input.gpg input.txt` and `gpg --batch --yes --symmetric --passphrase "your_secret" --output answers.gpg answers.txt`.
+1. Encrypt the files with something like `gpg --batch --yes --symmetric --passphrase "your_secret" --output input|answers.gpg input|answers.txt`.
 
 Input and answers are encrypted because the author of advent-of-code has asked that they be kept private.
 
 Each solution should:
 
 1. Expect the last command-line argument to be either `one` or `two` and to return the part-one or part-two solution accordingly.
-2. Expect an `input.txt` file in the current working directory, which is the problem input.
+1. Expect an `input.txt` file in the current working directory, which is the problem input.
 
 For example:
 
@@ -85,7 +90,7 @@ steps:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
       - name: Run the action
-        uses: Iain-S/AdventOfAction@0.1.4
+        uses: Iain-S/AdventOfAction@0.1.5
         with:
           # The directory in which you keep the day_xx directories.
           working-directory: ./
@@ -121,6 +126,7 @@ steps:
 ## Developing the Action
 
 1. Install Poetry.
-2. Install Advent of Action, with `poetry install`.
-3. Install the pre-commit hooks with `pre-commit install --install-hooks`.
-4. Run the unit tests with `cd tests/ && poetry run python test_main.py`.
+1. Install Pre-commit.
+1. Install Advent of Action, with `poetry install`.
+1. Install the pre-commit hooks with `pre-commit install --install-hooks`.
+1. Run the unit tests with `cd tests/ && poetry run python test_main.py`.
