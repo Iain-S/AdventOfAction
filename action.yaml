@@ -23,7 +23,7 @@ inputs:
   rust-version:
     description: "Rust toolchain version to use. -1 for none."
     required: false
-    default: "1"
+    default: "1.84"
   working-directory:
     description: "The working directory. Default is the root of the repository."
     required: false
