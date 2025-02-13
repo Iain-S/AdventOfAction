@@ -6,19 +6,19 @@ inputs:
     required: false
     default: "3.13"
   racket-version:
-    description: "Racket version to use"
+    description: "Racket version to use. -1 for no Racket"
     required: false
     default: "8.14"
   ocaml-version:
-    description: "Ocaml version to use"
+    description: "Ocaml version to use. -1 for no Ocaml"
     required: false
     default: "5"
   dotnet-version:
-    description: "DotNet version to use"
+    description: "DotNet version to use. -1 for no DotNet"
     required: false
     default: "8"
   working-directory:
-    description: "The working directory"
+    description: "The working directory. Default is the root of the repository."
     required: false
     default: "."
 runs:
@@ -29,17 +29,21 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
     - name: Setup Racket
+      if: ${{ inputs.racket-version }} != "-1"
       uses: Bogdanp/setup-racket@v1.11
       with:
         # Note "version" vs "racket-version".
         version: ${{ inputs.racket-version }}
     - name: Set up Rust
+      if: ${{ inputs.rust-version }} != "-1"
       uses: actions-rust-lang/setup-rust-toolchain@v1
     - name: Set up Dotnet
+      if: ${{ inputs.dotnet-version }} != "-1"
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
     - name: Set up Ocaml
+      if: ${{ inputs.ocaml-version }} != "-1"
       uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: ${{ inputs.ocaml-version }}
