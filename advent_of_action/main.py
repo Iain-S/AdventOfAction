@@ -105,6 +105,17 @@ def main() -> None:
     # │   ├── python_person
     # │   │   └── solution.py
     answers = ("", "")  # todo
+
+    # Get the previous results.
+    # todo Refactor this into a function.
+    readme = Path("README.md")
+    old_content = readme.read_text()
+    section_begins = old_content.find("\n\n## Stats")
+    if section_begins > -1:
+        section_ends = old_content.find("\n\n##", section_begins + 1)
+        section = old_content[section_begins:section_ends] if section_ends else old_content[section_begins:]
+        results = from_table(section)
+
     for dirpath, dirnames, filenames in path.walk(top_down=True):
         if ".optout" in filenames:
             continue
@@ -120,11 +131,12 @@ def main() -> None:
 
             if len(dirpath.parts) == 2:
                 directory = dirpath.parts[1]
-                for name, runner in RUNTIMES.items():
-                    language: Language = directory[0 : directory.find("_")]
-                    person: Person = directory[directory.find("_") + 1 :]
-                    if language == name:
-                        results[(day, language, person)] = measure_execution_time(answers, dirpath, runner)
+                language: Language = directory[0 : directory.find("_")]
+                person: Person = directory[directory.find("_") + 1 :]
+                if (day, language, person) not in results:
+                    for name, runner in RUNTIMES.items():
+                        if language == name:
+                            results[(day, language, person)] = measure_execution_time(answers, dirpath, runner)
 
     write_results(results)
 
