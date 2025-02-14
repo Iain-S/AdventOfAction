@@ -92,7 +92,7 @@ To force a re-run, you can delete those lines from the results table in the READ
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.head_ref || github.ref_name }}
       - name: Run the action
         uses: Iain-S/AdventOfAction@0.1.5
         with:
@@ -124,7 +124,7 @@ To force a re-run, you can delete those lines from the results table in the READ
           git config --global user.email "github-actions@github.com"
           git add README.md
           git commit -m "Update README with results" || echo "No changes to commit"
-          git push origin HEAD:${{ github.head_ref }}
+          git push origin ${{ github.head_ref || github.ref_name }}
 ```
 
 ## Developing the Action
