@@ -221,7 +221,7 @@ class TestMain(unittest.TestCase):
         self.assertDictEqual(expected, actual)
 
     def test_from_table_raises(self) -> None:
-        """Test that we can convert a table to a dictionary."""
+        """We expect an error if the part isn't 'one' or 'two'."""
         with self.assertRaises(ValueError):
             main.from_table(
                 "\n"
