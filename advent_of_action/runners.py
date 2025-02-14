@@ -1,3 +1,5 @@
+"""Runners for various programming languages."""
+
 import subprocess
 from collections.abc import Callable
 from pathlib import Path
@@ -34,7 +36,7 @@ def rust(dirpath: Path, part: str) -> Triple:
 
 
 def fsharp(dirpath: Path, part: str) -> Triple:
-    """Run an F# solution"""
+    """Run an F# solution."""
     return execute_command(["dotnet", "fsi", str(dirpath / "solution.fsx"), part])
 
 

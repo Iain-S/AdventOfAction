@@ -1,8 +1,11 @@
+"""A sample solution that reads input.txt."""
+
 import sys
 from pathlib import Path
 
 
 def main() -> None:
+    """Run the solution."""
     text = Path("input.txt").read_text().splitlines()
     match sys.argv[-1]:
         case "one":
