@@ -4,6 +4,17 @@ branding:
   icon: 'triangle'
   color: 'green'
 inputs:
+  working-directory:
+    description: "The working directory. Default is the root of the repository."
+    required: false
+    default: "."
+  gpg-passphrase:
+    description: "The passphrase for the GPG-encrypted files."
+    required: true
+  timeout-seconds:
+    description: "The time allowed for each solution to provide an answer for each part."
+    required: false
+    default: "60"
   python-version:
     description: "Python version to use"
     required: false
@@ -24,13 +35,6 @@ inputs:
     description: "Rust toolchain version to use. -1 for none."
     required: false
     default: "1.84"
-  working-directory:
-    description: "The working directory. Default is the root of the repository."
-    required: false
-    default: "."
-  gpg-passphrase:
-    description: "The passphrase for the GPG-encrypted files."
-    required: true
 runs:
   using: "composite"
   steps:
@@ -69,5 +73,6 @@ runs:
         eval $(opam env)
         echo "::add-mask::${{ inputs.gpg-passphrase }}"
         export GPG_PASS="${{ inputs.gpg-passphrase }}"
+        export TIMEOUT_SECONDS="${{ inputs.timeout-seconds }}"
         python -m advent_of_action.main
       shell: bash

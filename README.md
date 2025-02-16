@@ -103,6 +103,9 @@ To force a re-run, you can delete those lines from the results table in the READ
           # Probably best to store in a repo secret.
           gpg-passphrase: {{ secrets.YOUR_SECRET }}
 
+          # The timeout, in seconds, for each part of each solution.
+          timeout: 60
+
           # To be passed to the setup-python action.
           python-version: "3.13"
 
@@ -127,10 +130,13 @@ To force a re-run, you can delete those lines from the results table in the READ
           git push origin ${{ github.head_ref || github.ref_name }}
 ```
 
+If a solution times out, throws an error or doesn't match the expected answer, the action will print some diagnostic information to the log.
+
 ## Developing the Action
 
 1. Install Poetry.
 1. Install Pre-commit.
 1. Install Advent of Action, with `poetry install`.
 1. Install the pre-commit hooks with `pre-commit install --install-hooks`.
-1. Run the unit tests with `cd tests/ && poetry run python test_main.py`.
+1. If you're on macOS, you'll want to install GNU's time (e.g. with `brew install gnu-time`) as the built-in time command doesn't support the `-f` option.
+1. Run the unit tests with `cd tests/ && coverage run --source advent_of_action -m unittest discover`.

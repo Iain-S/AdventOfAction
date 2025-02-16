@@ -8,7 +8,7 @@ on:
       - main
   workflow_dispatch:
 jobs:
-  functional:
+  test_with_default_inputs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -37,7 +37,7 @@ jobs:
           sed -i -E 's/[0-9]+/y/' tests/README.md
           sed -i -E 's/[0-9]+/z/' tests/README.md
           diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README.md
-  functional_two:
+  test_with_explicit_inputs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -51,10 +51,23 @@ jobs:
       - name: Run our action
         uses: ./
         with:
+          working-directory: tests/
+          gpg-passphrase: ${{ secrets.GPG_PASS }}
+          timeout-seconds: 30
           python-version: "3.13"
           racket-version: "-1"
           rust-version: "-1"
           dotnet-version: "-1"
           ocaml-version: "-1"
-          working-directory: tests/
-          gpg-passphrase: ${{ secrets.GPG_PASS }}
+      - name: Compare results
+        shell: bash
+        run: |
+          echo "..."
+          cat tests/README.md
+          echo "..."
+          cat tests/EXPECTED_README_4.md
+          echo "..."
+          sed -i -E 's/[0-9]+\.[0-9]+/x/' tests/README.md
+          sed -i -E 's/[0-9]+/y/' tests/README.md
+          sed -i -E 's/[0-9]+/z/' tests/README.md
+          diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README_4.md

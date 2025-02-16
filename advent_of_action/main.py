@@ -3,7 +3,7 @@
 import os
 from collections.abc import Mapping, MutableMapping
 from pathlib import Path
-from subprocess import CalledProcessError, run
+from subprocess import CalledProcessError, TimeoutExpired, run
 from typing import Final
 
 from advent_of_action import runners
@@ -37,10 +37,17 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
         """Use the runner to measure the execution time of one part."""
         try:
             kilobytes, seconds, output = ext(dirpath, part)
-            if output.strip() != answer:
+            if output != answer:
+                print(f"Incorrect answer for part {part}: {output}")
                 return "", "", "Different answer"
         except CalledProcessError as e:
+            # Print all but the last line, which will be the timings.
+            print("".join(e.stderr.splitlines()[:-1]))
             return "", "", f"Error ({e.returncode})"
+        except TimeoutExpired as e:
+            print(f"Command timed out after {e.timeout:.0f} seconds")
+            return "", "", "Timeout"
+
         return f"{seconds:.2f}", f"{kilobytes}", ""
 
     return inner("one", answers[0]), inner("two", answers[1])
