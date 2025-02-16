@@ -4,6 +4,7 @@ import os
 import shutil
 import unittest
 from pathlib import Path, PosixPath
+from subprocess import run
 from unittest.mock import MagicMock, call, patch
 
 from advent_of_action import main, runners
@@ -17,13 +18,26 @@ class TestMain(unittest.TestCase):
         """Set up the test environment for the class."""
         os.environ["GPG_PASS"] = "yourpassword"
 
+        # If we're on macOS.
+        def new_run(command, *args, **kwargs):  # type: ignore
+            command = ["gtime"] + command[1:]
+            return run(command, *args, **kwargs)
+
+        if shutil.which("gtime"):
+            patch("subprocess.run", new=new_run).start()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """Tear down the test environment for the class."""
+        patch.stopall()
+
     def setUp(self) -> None:
         """Set up the test environment for each function."""
         # Undo anything that might have been set by failing tests.
         Path("./README.md").unlink(missing_ok=True)
         Path("./input.txt").unlink(missing_ok=True)
 
-    @patch("subprocess.run")
+    @patch("subprocess.run", autospec=True)
     def test_main(self, mock_run: MagicMock) -> None:
         """We should run all the solutions."""
         mock_run.return_value.stdout = "helloo"
@@ -67,7 +81,7 @@ class TestMain(unittest.TestCase):
             ],
         )
 
-    @patch("subprocess.run")
+    @patch("subprocess.run", autospec=True)
     def test_main_two(self, mock_run: MagicMock) -> None:
         """We shouldn't re-run a solution that we have stats for."""
         mock_run.return_value.stdout = "helloo"
@@ -103,15 +117,6 @@ class TestMain(unittest.TestCase):
         )
 
     def test_measure_two(self) -> None:
-        """Check that we .strip() the result."""
-        actual = main.measure_execution_time(("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "answer\n"))
-        expected = ("0.03", "1792", ""), ("0.03", "1792", "")
-        self.assertEqual(
-            expected,
-            actual,
-        )
-
-    def test_measure_three(self) -> None:
         """Check that we can handle a wrong answer."""
         actual = main.measure_execution_time(
             ("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "wrong answer\n")
@@ -122,8 +127,8 @@ class TestMain(unittest.TestCase):
             actual,
         )
 
-    @patch("builtins.print")
-    def test_measure_four(self, mock_print: MagicMock) -> None:
+    @patch("builtins.print", autospec=True)
+    def test_measure_three(self, mock_print: MagicMock) -> None:
         """Check that we can handle a non-zero exit code."""
 
         def bad_runner(_: Path, __: str) -> tuple[int, float, str]:
@@ -138,7 +143,8 @@ class TestMain(unittest.TestCase):
 
         mock_print.assert_called_with("Command exited with non-zero status 1")
 
-    def test_measure_five(self) -> None:
+    @patch("builtins.print", autospec=True)
+    def test_measure_four(self, mock_print: MagicMock) -> None:
         """Check that we can handle a partially wrong answer."""
 
         # Check that we check the answer.
@@ -153,11 +159,12 @@ class TestMain(unittest.TestCase):
             expected,
             actual,
         )
+        mock_print.assert_called_with("Incorrect answer for part two: wrong answer")
 
-    @patch("subprocess.run")
+    @patch("subprocess.run", autospec=True)
     def test_execute_command(self, mock_run: MagicMock) -> None:
         """Executing a command should return the memory usage, time and stdout."""
-        mock_run.return_value.stdout = "hello"
+        mock_run.return_value.stdout = "hello\n"
         mock_run.return_value.stderr = "1792,0.01,0.02"
         actual = runners.execute_command(
             [],

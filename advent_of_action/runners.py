@@ -15,7 +15,7 @@ def execute_command(command: list[str | Path]) -> Triple:
         ["/usr/bin/time", "-f", "%M,%S,%U"] + command, capture_output=True, timeout=60, text=True, check=True
     )
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
-    return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout
+    return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()
 
 
 def python(dirpath: Path, part: str) -> Triple:

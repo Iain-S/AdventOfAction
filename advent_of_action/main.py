@@ -37,7 +37,8 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
         """Use the runner to measure the execution time of one part."""
         try:
             kilobytes, seconds, output = ext(dirpath, part)
-            if output.strip() != answer:
+            if output != answer:
+                print(f"Incorrect answer for part {part}: {output}")
                 return "", "", "Different answer"
         except CalledProcessError as e:
             # Print all but the last line, which will be the timings.
