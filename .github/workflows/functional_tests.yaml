@@ -53,7 +53,7 @@ jobs:
         with:
           working-directory: tests/
           gpg-passphrase: ${{ secrets.GPG_PASS }}
-          timeout: 30
+          timeout-seconds: 30
           python-version: "3.13"
           racket-version: "-1"
           rust-version: "-1"
