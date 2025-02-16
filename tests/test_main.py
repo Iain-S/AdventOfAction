@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import subprocess
 import unittest
 from pathlib import Path, PosixPath
 from subprocess import run
@@ -18,7 +19,7 @@ class TestMain(unittest.TestCase):
         """Set up the test environment for the class."""
         os.environ["GPG_PASS"] = "yourpassword"
 
-        # If we're on macOS.
+        # For example, if we're on macOS.
         def new_run(command, *args, **kwargs):  # type: ignore
             command = ["gtime"] + command[1:]
             return run(command, *args, **kwargs)
@@ -160,6 +161,21 @@ class TestMain(unittest.TestCase):
             actual,
         )
         mock_print.assert_called_with("Incorrect answer for part two: wrong answer")
+
+    @patch("builtins.print", autospec=True)
+    def test_measure_five(self, mock_print: MagicMock) -> None:
+        """Check that we can handle a timeout."""
+
+        def raise_timeout(*args, **kwargs):  # type: ignore
+            raise subprocess.TimeoutExpired("cmd", 6)
+
+        actual = main.measure_execution_time(("", ""), Path("."), raise_timeout)
+        expected = ("", "", "Timeout"), ("", "", "Timeout")
+        self.assertTupleEqual(
+            expected,
+            actual,
+        )
+        mock_print.assert_called_with("Command timed out after 6 seconds")
 
     @patch("subprocess.run", autospec=True)
     def test_execute_command(self, mock_run: MagicMock) -> None:
