@@ -74,4 +74,5 @@ runs:
         echo "::add-mask::${{ inputs.gpg-passphrase }}"
         export GPG_PASS="${{ inputs.gpg-passphrase }}"
         export TIMEOUT_SECONDS="${{ inputs.timeout-seconds }}"
+        python -m advent_of_action.main
       shell: bash
