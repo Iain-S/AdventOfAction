@@ -59,3 +59,15 @@ jobs:
           rust-version: "-1"
           dotnet-version: "-1"
           ocaml-version: "-1"
+      - name: Compare results
+        shell: bash
+        run: |
+          echo "..."
+          cat tests/README.md
+          echo "..."
+          cat tests/EXPECTED_README_4.md
+          echo "..."
+          sed -i -E 's/[0-9]+\.[0-9]+/x/' tests/README.md
+          sed -i -E 's/[0-9]+/y/' tests/README.md
+          sed -i -E 's/[0-9]+/z/' tests/README.md
+          diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README_4.md
