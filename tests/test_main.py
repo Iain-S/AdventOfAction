@@ -18,6 +18,7 @@ class TestMain(unittest.TestCase):
     def setUpClass(cls) -> None:
         """Set up the test environment for the class."""
         os.environ["GPG_PASS"] = "yourpassword"
+        os.environ["TIMEOUT_SECONDS"] = "60"
 
         # For example, if we're on macOS.
         def new_run(command, *args, **kwargs):  # type: ignore

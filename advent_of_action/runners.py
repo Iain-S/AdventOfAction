@@ -1,5 +1,6 @@
 """Runners for various programming languages."""
 
+import os
 import subprocess
 from collections.abc import Callable
 from pathlib import Path
@@ -12,7 +13,11 @@ def execute_command(command: list[str | Path]) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
     print("Running", command)
     result = subprocess.run(
-        ["/usr/bin/time", "-f", "%M,%S,%U"] + command, capture_output=True, timeout=60, text=True, check=True
+        ["/usr/bin/time", "-f", "%M,%S,%U"] + command,
+        capture_output=True,
+        timeout=float(os.environ["TIMEOUT_SECONDS"]),
+        text=True,
+        check=True,
     )
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()

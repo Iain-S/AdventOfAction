@@ -51,10 +51,11 @@ jobs:
       - name: Run our action
         uses: ./
         with:
+          working-directory: tests/
+          gpg-passphrase: ${{ secrets.GPG_PASS }}
+          timeout: 30
           python-version: "3.13"
           racket-version: "-1"
           rust-version: "-1"
           dotnet-version: "-1"
           ocaml-version: "-1"
-          working-directory: tests/
-          gpg-passphrase: ${{ secrets.GPG_PASS }}

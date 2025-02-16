@@ -103,6 +103,9 @@ To force a re-run, you can delete those lines from the results table in the READ
           # Probably best to store in a repo secret.
           gpg-passphrase: {{ secrets.YOUR_SECRET }}
 
+          # The timeout, in seconds, for each part of each solution.
+          timeout: 60
+
           # To be passed to the setup-python action.
           python-version: "3.13"
 
