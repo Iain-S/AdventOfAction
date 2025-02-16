@@ -40,6 +40,8 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
             if output.strip() != answer:
                 return "", "", "Different answer"
         except CalledProcessError as e:
+            # Print all but the last line, which will be the timings.
+            print("".join(e.stderr.splitlines()[:-1]))
             return "", "", f"Error ({e.returncode})"
         return f"{seconds:.2f}", f"{kilobytes}", ""
 

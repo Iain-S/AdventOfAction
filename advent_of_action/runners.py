@@ -14,8 +14,6 @@ def execute_command(command: list[str | Path]) -> Triple:
     result = subprocess.run(
         ["/usr/bin/time", "-f", "%M,%S,%U"] + command, capture_output=True, timeout=60, text=True, check=True
     )
-    # todo
-    # kilobytes, sys_seconds, user_seconds = result.stderr.split("\n")[-1].split(",")
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout
 
