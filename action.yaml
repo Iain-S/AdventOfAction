@@ -18,7 +18,7 @@ inputs:
   python-version:
     description: "Python version to use"
     required: false
-    default: "3.13"
+    default: "3.12"
   racket-version:
     description: "Racket version to use. -1 for none."
     required: false
@@ -34,7 +34,7 @@ inputs:
   rust-version:
     description: "Rust toolchain version to use. -1 for none."
     required: false
-    default: "1.84"
+    default: "1.84.1"
 runs:
   using: "composite"
   steps:
@@ -55,7 +55,7 @@ runs:
         profile: minimal
         toolchain: ${{ inputs.rust-version }}
     - name: Set up Dotnet
-      if: ${{ inputs.dotnet-version  != -1 }}
+      if: ${{ inputs.dotnet-version != -1 }}
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
