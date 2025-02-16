@@ -70,7 +70,7 @@ runs:
     - name: Run our Python module
       run: |
         pushd ${{ inputs.working-directory }}
-        eval $(opam env)
+        which opam && eval $(opam env)
         echo "::add-mask::${{ inputs.gpg-passphrase }}"
         export GPG_PASS="${{ inputs.gpg-passphrase }}"
         export TIMEOUT_SECONDS="${{ inputs.timeout-seconds }}"
