@@ -7,16 +7,16 @@ from subprocess import CalledProcessError, TimeoutExpired, run
 from typing import Final
 
 from advent_of_action import runners
-from advent_of_action.runners import RunnerFunc
+from advent_of_action.runners import Part, Runner
 
 # Languages and their commands
-RUNTIMES: Final[dict[str, RunnerFunc]] = {
-    "python": runners.python,
-    "racket": runners.racket,
-    "rust": runners.rust,
-    "fsharp": runners.fsharp,
-    "ocaml": runners.ocaml,
-    "jupyter": runners.jupyter,
+RUNTIMES: Final[dict[str, Runner]] = {
+    "python": runners.PythonRunner,
+    # "racket": runners.racket,
+    "rust": runners.RustRunner,
+    # "fsharp": runners.fsharp,
+    # "ocaml": runners.ocaml,
+    # "jupyter": runners.jupyter,
 }
 
 type Day = str
@@ -32,11 +32,12 @@ type Stats = tuple[Stat, Stat]
 
 def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> Stats:
     """Measure the execution time of a solution."""
+    ext.setup()
 
-    def inner(part: str, answer: str) -> Stat:
+    def inner(part: Part, answer: str) -> Stat:
         """Use the runner to measure the execution time of one part."""
         try:
-            kilobytes, seconds, output = ext(dirpath, part)
+            kilobytes, seconds, output = ext(dirpath)
             if output != answer:
                 print(f"Incorrect answer for part {part}: {output}")
                 return "", "", "Different answer"
@@ -50,7 +51,9 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
 
         return f"{seconds:.2f}", f"{kilobytes}", ""
 
-    return inner("one", answers[0]), inner("two", answers[1])
+    result = tuple(map(inner, zip((Part), answers, strict=False)))
+    ext.teardown()
+    return result
 
 
 def from_table(table: str) -> dict[Run, Stats]:
@@ -61,9 +64,9 @@ def from_table(table: str) -> dict[Run, Stats]:
         if not line:
             break
         day, lang, person, part, seconds, kb, notes = line[1:-1].split(" | ")
-        if part == "one":
+        if part == Part.ONE:
             part_one = (seconds.strip(), kb.strip(), notes.strip())
-        elif part == "two":
+        elif part == Part.TWO:
             assert part_one is not None
             results[(day.strip(), lang.strip(), person.strip())] = (
                 part_one,
@@ -82,7 +85,7 @@ def to_table(results: Mapping[Run, Stats]) -> str:
     table += "| --- | --- | --- | --- | --- | --- | --- |\n"
     for the_run, stats in results.items():
         day, language, person = the_run
-        for (seconds, kilobytes, notes), part in zip(stats, ("one", "two"), strict=False):
+        for (seconds, kilobytes, notes), part in zip(stats, (Part.ONE, Part.TWO), strict=False):
             table += f"| {day} | {language} | {person} | {part} | {seconds} | {kilobytes} | {notes} |\n"
     return table
 
