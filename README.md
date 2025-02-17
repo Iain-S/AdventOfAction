@@ -137,6 +137,7 @@ If a solution times out, throws an error or doesn't match the expected answer, t
 
 1. Install Poetry.
 1. Install Pre-commit.
+1. Clone this repo and `cd` into it.
 1. Install Advent of Action, with `poetry install`.
 1. Install the pre-commit hooks with `pre-commit install --install-hooks`.
 1. If you're on macOS, you'll want to install GNU's time (e.g. with `brew install gnu-time`) as the built-in time command doesn't support the `-f` option.
