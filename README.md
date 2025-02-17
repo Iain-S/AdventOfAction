@@ -17,12 +17,13 @@ See also the [AdventOfActionTest](https://github.com/Iain-S/AdventOfActionTest/t
 The action expects your code to be laid out with this file structure:
 
 ```text
-README.md
-day_01:
-    input.gpg
-    answers.gpg
-    rust_tom:
+README.md               # The results will be written here.
+day_01:                 # The day, in day_xx format.
+    input.gpg           # Somebody's encrypted input for day xx.
+    answers.gpg         # That person's (correct) encrypted answers for day xx.
+    rust_tom:           # Someone's solution, in lang_name format.
         Cargo.toml
+        src/
     python_tim:
         solution.py
     jupyter_tina:
