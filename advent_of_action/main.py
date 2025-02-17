@@ -50,24 +50,24 @@ class Stats:
 def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> Stats:
     """Measure the execution time of a solution."""
 
-    def inner(part: str, answer: str) -> tuple[str, str, str]:
+    def inner(part: str, answer: str) -> Stat:
         """Use the runner to measure the execution time of one part."""
         try:
             kilobytes, seconds, output = ext(dirpath, part)
             if output != answer:
                 print(f"Incorrect answer for part {part}: {output}")
-                return "", "", "Different answer"
+                return Stat("", "", "Different answer")
         except CalledProcessError as e:
             # Print all but the last line, which will be the timings.
             print("".join(e.stderr.splitlines()[:-1]))
-            return "", "", f"Error ({e.returncode})"
+            return Stat("", "", f"Error ({e.returncode})")
         except TimeoutExpired as e:
             print(f"Command timed out after {e.timeout:.0f} seconds")
-            return "", "", "Timeout"
+            return Stat("", "", "Timeout")
 
-        return f"{seconds:.2f}", f"{kilobytes}", ""
+        return Stat(f"{seconds:.2f}", f"{kilobytes}", "")
 
-    return Stats(Stat(*inner("one", answers[0])), Stat(*inner("two", answers[1])))
+    return Stats(inner("one", answers[0]), inner("two", answers[1]))
 
 
 def from_table(table: str) -> dict[Run, Stats]:
