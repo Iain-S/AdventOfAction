@@ -4,7 +4,6 @@ import os
 import shutil
 import subprocess
 import unittest
-from collections.abc import Generator
 from pathlib import Path, PosixPath
 from subprocess import run
 from unittest.mock import MagicMock, call, patch
@@ -112,11 +111,12 @@ class TestMain(unittest.TestCase):
 
     def test_measure_one(self) -> None:
         """Check that we can measure the execution time of a solution."""
+
         def mock_runner(_: Path) -> runners.TripleGenerator:
-            yield 1, .0, "setup"
+            yield 1, 0.0, "setup"
             yield 1792, 0.03, "answer"
             yield 1792, 0.03, "answer"
-            yield 1, .3, "teardown"
+            yield 1, 0.3, "teardown"
 
         actual = main.measure_execution_time(("answer", "answer"), Path("."), mock_runner)
         expected = ("0.03", "1792", ""), ("0.03", "1792", "")
@@ -127,15 +127,14 @@ class TestMain(unittest.TestCase):
 
     def test_measure_two(self) -> None:
         """Check that we can handle a wrong answer."""
+
         def wrong_answer_generator(_: Path) -> runners.TripleGenerator:
             yield (1792, 0.03, "setup")
             yield (1792, 0.03, "wrong answer\n")
             yield (1792, 0.03, "wrong answer\n")
             yield (1792, 0.03, "teardown")
 
-        actual = main.measure_execution_time(
-            ("answer", "answer"), Path("."), wrong_answer_generator
-        )
+        actual = main.measure_execution_time(("answer", "answer"), Path("."), wrong_answer_generator)
         expected = ("", "", "Different answer"), ("", "", "Different answer")
         self.assertEqual(
             expected,
@@ -147,10 +146,10 @@ class TestMain(unittest.TestCase):
         """Check that we can handle a non-zero exit code."""
 
         def bad_runner(_: Path) -> runners.TripleGenerator:
-            yield 1, .1, "setup"
+            yield 1, 0.1, "setup"
             yield runners.execute_command(["bash", "-c", "exit 1"])
             yield runners.execute_command(["bash", "-c", "exit 1"])
-            yield 1, .1, "teardown"
+            yield 1, 0.1, "teardown"
 
         actual = main.measure_execution_time(("", ""), Path("."), bad_runner)
         expected = ("", "", "Error (1)"), ("", "", "Error (1)")
@@ -164,7 +163,6 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_four(self, mock_print: MagicMock) -> None:
         """Check that we can handle a partially wrong answer."""
-
         # Check that we check the answer.
 
         def partial_runner(_: Path) -> runners.TripleGenerator:

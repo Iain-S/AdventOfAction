@@ -9,7 +9,7 @@ type KB = int
 type seconds = float
 type output = str
 type Triple = tuple[KB, seconds, output]
-type TripleGenerator = Generator[Triple, None, None]
+type TripleGenerator = Generator[Triple]
 type RunnerFunc = Callable[[Path], TripleGenerator]
 
 
