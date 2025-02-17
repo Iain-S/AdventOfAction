@@ -4,6 +4,7 @@ import os
 import shutil
 import subprocess
 import unittest
+from collections.abc import Generator
 from pathlib import Path, PosixPath
 from subprocess import run
 from unittest.mock import MagicMock, call, patch
@@ -150,10 +151,11 @@ class TestMain(unittest.TestCase):
         """Check that we can handle a partially wrong answer."""
 
         # Check that we check the answer.
-        def partial_runner(_: Path, part: str) -> tuple[int, float, str]:
-            if part == "one":
-                return 1792, 0.03, "answer"
-            return 1792, 0.03, "wrong answer"
+        def partial_runner(_: Path, part: str) -> Generator[runners.Triple, None, None]:
+            yield 1, 0.01, "setup"
+            yield 1792, 0.03, "answer"
+            yield 1792, 0.03, "wrong answer"
+            yield 1, 0.01, "teardown"
 
         actual = main.measure_execution_time(("answer", "answer"), Path("."), partial_runner)
         expected = (("0.03", "1792", ""), ("", "", "Different answer"))
