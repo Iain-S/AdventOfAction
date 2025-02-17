@@ -52,7 +52,6 @@ runs:
       if: ${{ inputs.rust-version != -1 }}
       uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
-        profile: minimal
         toolchain: ${{ inputs.rust-version }}
     - name: Set up Dotnet
       if: ${{ inputs.dotnet-version  != -1 }}
