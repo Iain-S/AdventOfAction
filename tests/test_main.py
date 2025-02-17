@@ -112,7 +112,13 @@ class TestMain(unittest.TestCase):
 
     def test_measure_one(self) -> None:
         """Check that we can measure the execution time of a solution."""
-        actual = main.measure_execution_time(("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "answer"))
+        def mock_runner(_: Path, __: str) -> Generator[runners.Triple]:
+            yield 1, .0, "setup"
+            yield 1792, 0.03, "answer"
+            yield 1792, 0.03, "answer"
+            yield 1, .3, "teardown"
+
+        actual = main.measure_execution_time(("answer", "answer"), Path("."), mock_runner)
         expected = ("0.03", "1792", ""), ("0.03", "1792", "")
         self.assertEqual(
             expected,

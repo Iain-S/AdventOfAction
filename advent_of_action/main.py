@@ -11,9 +11,9 @@ from advent_of_action.runners import RunnerFunc
 
 # Languages and their commands
 RUNTIMES: Final[dict[str, RunnerFunc]] = {
-    "python": runners.python_runner(),
+    "python": runners.python_runner,
     # "racket": runners.racket,
-    "rust": runners.python_runner(),
+    "rust": runners.python_runner,
     # "fsharp": runners.fsharp,
     # "ocaml": runners.ocaml,
     # "jupyter": runners.jupyter,
