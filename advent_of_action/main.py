@@ -143,10 +143,8 @@ def main() -> None:
                 directory = dirpath.parts[1]
                 language: Language = directory[0 : directory.find("_")]
                 person: Person = directory[directory.find("_") + 1 :]
-                if (day, language, person) not in results:
-                    for name, runner in RUNTIMES.items():
-                        if language == name:
-                            results[(day, language, person)] = measure_execution_time(answers, dirpath, runner)
+                if (day, language, person) not in results and language in RUNTIMES:
+                    results[(day, language, person)] = measure_execution_time(answers, dirpath, RUNTIMES[language])
 
     write_results(results)
 
