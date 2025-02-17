@@ -109,12 +109,6 @@ def write_results(the_results: Mapping[Run, Stats]) -> None:
 def main() -> None:
     """Run the solutions."""
     results: MutableMapping[Run, Stats] = {}
-    path = Path(".")
-    # Expecting
-    # ├── day_01
-    # │   ├── python_person
-    # │   │   └── solution.py
-    answers = ("", "")  # todo
 
     # Get the previous results.
     # todo Refactor this into a function.
@@ -126,25 +120,23 @@ def main() -> None:
         section = old_content[section_begins:section_ends] if section_ends else old_content[section_begins:]
         results = from_table(section)
 
-    for dirpath, dirnames, filenames in path.walk(top_down=True):
-        if ".optout" in filenames:
-            continue
-        # ToDo Is there a better way to traverse the directories alphabetically?
-        dirnames.sort()
-        if dirpath.parts and dirpath.parts[0].startswith("day_"):
-            day: Day = dirpath.parts[0][4:]
+    # Expecting
+    # ├── day_01
+    # │   ├── python_person
+    # │   │   └── solution.py
+    for day_dir in sorted(list(Path(".").glob("day_*"))):
+        day: Day = day_dir.parts[0][4:]
+        answers = get_answers(day_dir)
+        make_input_file(day_dir)
 
-            if len(dirpath.parts) == 1:
-                answers = get_answers(dirpath)
-
-                make_input_file(dirpath)
-
-            if len(dirpath.parts) == 2:
-                directory = dirpath.parts[1]
-                language: Language = directory[0 : directory.find("_")]
-                person: Person = directory[directory.find("_") + 1 :]
-                if (day, language, person) not in results and language in RUNTIMES:
-                    results[(day, language, person)] = measure_execution_time(answers, dirpath, RUNTIMES[language])
+        for solution_dir in sorted(list(day_dir.glob("*_*"))):
+            filenames = set([x.name for x in solution_dir.iterdir() if x.is_file()])
+            if ".optout" in filenames:
+                continue
+            directory = solution_dir.parts[1]
+            language, person = directory.split("_", maxsplit=1)
+            if (day, language, person) not in results and language in RUNTIMES:
+                results[(day, language, person)] = measure_execution_time(answers, solution_dir, RUNTIMES[language])
 
     write_results(results)
 
