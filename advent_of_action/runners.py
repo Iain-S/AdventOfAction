@@ -4,6 +4,7 @@ import os
 import subprocess
 from abc import ABC
 from collections.abc import Callable
+from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
 from typing import Final
@@ -17,10 +18,13 @@ type RunnerFunc = Callable[[Path], Triple]
 
 # make an enum for part one or two
 class Part(StrEnum):
+    SETUP= "setup"
     ONE = "one"
     TWO = "two"
+    TEARDOWN = "teardown"
 
 
+@dataclass
 class Command(ABC):
     """A runner for a programming language."""
 
@@ -41,7 +45,27 @@ RUST: Final = Command(
     teardown=["sleep", "0"],
 )
 
+RACKET: Final = Command(
+    setup=["sleep", "0"],
+    run=["racket", "solution.rkt"],
+    teardown=["sleep", "0"],
+)
 
+OCAML: Final = Command(
+    setup=["sleep", "0"],
+    run=["ocaml", "solution.ml"],
+    teardown=["sleep", "0"],
+)
+FSHARP: Final = Command(
+    setup=["sleep", "0"],
+    run=["dotnet", "fsi", "solution.fsx"],
+    teardown=["sleep", "0"],
+)
+JUPYTER: Final = Command(
+    setup=["cargo", "build"],
+    run=["ipython", "-c", "%run 'solution.ipynb'"],
+    teardown=["sleep", "0"]
+)
 def execute_command(command: list[str | Path], timeout: float = float(os.environ["TIMEOUT_SECONDS"])) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
     print("Running", command)
@@ -54,34 +78,3 @@ def execute_command(command: list[str | Path], timeout: float = float(os.environ
     )
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()
-
-    # def racket(dirpath: Path, part: str) -> Triple:
-    #     """Run a Racket solution."""
-    #     return execute_command(["racket", str(dirpath / "solution.rkt"), part])
-
-    @classmethod
-    def setup(cls, dirpath: Path) -> Triple:
-        return execute_command(["cargo", "build", "--manifest-path", str(dirpath / "Cargo.toml")])
-
-    @classmethod
-    def run(cls, dirpath: Path, part: Part) -> Triple:
-        return execute_command(["cargo", "run", "--quiet", "--manifest-path", str(dirpath / "Cargo.toml"), part.value])
-
-    @classmethod
-    def teardown(cls, dirpath: Path) -> Triple:
-        return 0, 0, "Nothing to do"
-
-
-# def fsharp(dirpath: Path, part: str) -> Triple:
-#     """Run an F# solution."""
-#     return execute_command(["dotnet", "fsi", str(dirpath / "solution.fsx"), part])
-
-
-# def ocaml(dirpath: Path, part: str) -> Triple:
-#     """Run an OCaml solution."""
-#     return execute_command(["ocaml", str(dirpath / "solution.ml"), part])
-
-
-# def jupyter(dirpath: Path, part: str) -> Triple:
-#     """Run a Jupyter notebook."""
-#     return execute_command(["ipython", "-c", f"%run {dirpath / 'solution.ipynb'}", part])

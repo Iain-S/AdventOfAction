@@ -7,16 +7,16 @@ from subprocess import CalledProcessError, TimeoutExpired, run
 from typing import Final
 
 from advent_of_action import runners
-from advent_of_action.runners import Part, Runner
+from advent_of_action.runners import Part, Command, execute_command
 
 # Languages and their commands
-RUNTIMES: Final[dict[str, Runner]] = {
-    "python": runners.PythonRunner,
-    # "racket": runners.racket,
-    "rust": runners.RustRunner,
-    # "fsharp": runners.fsharp,
-    # "ocaml": runners.ocaml,
-    # "jupyter": runners.jupyter,
+RUNTIMES: Final[dict[str, Command]] = {
+    "python": runners.PYTHON,
+    "racket": runners.RACKET,
+    "rust": runners.RUST,
+    "fsharp": runners.FSHARP,
+    "ocaml": runners.OCAML,
+    "jupyter": runners.JUPYTER,
 }
 
 type Day = str
@@ -30,14 +30,13 @@ type Stat = tuple[Seconds, Kilobytes, Notes]
 type Stats = tuple[Stat, Stat]
 
 
-def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> Stats:
+def measure_execution_time(answers: tuple[str, str], dirpath: Path, comm: Command) -> Stats:
     """Measure the execution time of a solution."""
-    ext.setup()
 
-    def inner(part: Part, answer: str) -> Stat:
+    def inner(part: Part, answer: str, command: list[str|Path]) -> Stat:
         """Use the runner to measure the execution time of one part."""
         try:
-            kilobytes, seconds, output = ext(dirpath)
+            kilobytes, seconds, output = execute_command(command)
             if output != answer:
                 print(f"Incorrect answer for part {part}: {output}")
                 return "", "", "Different answer"
@@ -51,9 +50,12 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
 
         return f"{seconds:.2f}", f"{kilobytes}", ""
 
-    result = tuple(map(inner, zip((Part), answers, strict=False)))
-    ext.teardown()
-    return result
+    return (
+        inner(Part.SETUP, "", comm.setup),
+        inner(Part.ONE, answers[0], comm.run),
+        inner(Part.TWO, answers[1], comm.run),
+        inner(Part.TEARDOWN, "", comm.teardown)
+           )[1:3]
 
 
 def from_table(table: str) -> dict[Run, Stats]:
