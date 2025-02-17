@@ -9,6 +9,7 @@ from subprocess import run
 from unittest.mock import MagicMock, call, patch
 
 from advent_of_action import main, runners
+from advent_of_action.main import Run, Stat, Stats
 
 
 class TestMain(unittest.TestCase):
@@ -137,8 +138,8 @@ class TestMain(unittest.TestCase):
             return runners.execute_command(["bash", "-c", "exit 1"])
 
         actual = main.measure_execution_time(("", ""), Path("."), bad_runner)
-        expected = ("", "", "Error (1)"), ("", "", "Error (1)")
-        self.assertTupleEqual(
+        expected = Stats(Stat("", "", "Error (1)"), Stat("", "", "Error (1)"))
+        self.assertEqual(
             expected,
             actual,
         )
@@ -156,8 +157,8 @@ class TestMain(unittest.TestCase):
             return 1792, 0.03, "wrong answer"
 
         actual = main.measure_execution_time(("answer", "answer"), Path("."), partial_runner)
-        expected = (("0.03", "1792", ""), ("", "", "Different answer"))
-        self.assertTupleEqual(
+        expected = Stats(Stat("0.03", "1792", ""), Stat("", "", "Different answer"))
+        self.assertEqual(
             expected,
             actual,
         )
@@ -171,8 +172,8 @@ class TestMain(unittest.TestCase):
             raise subprocess.TimeoutExpired("cmd", 6)
 
         actual = main.measure_execution_time(("", ""), Path("."), raise_timeout)
-        expected = ("", "", "Timeout"), ("", "", "Timeout")
-        self.assertTupleEqual(
+        expected = Stats(Stat("", "", "Timeout"), Stat("", "", "Timeout"))
+        self.assertEqual(
             expected,
             actual,
         )
@@ -201,13 +202,13 @@ class TestMain(unittest.TestCase):
         shutil.copy(Path("README_TEMPLATE.md"), readme)
         expected_readme_txt = Path("EXPECTED_README_2.md").read_text()
 
-        run = ("01", "python", "iain")
-        stat = ("0.01", "1792", "")
+        run = Run("01", "python", "iain")
+        stat = Stat("0.01", "1792", "")
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: Stats(stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: Stats(stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
     def test_write_results_two(self) -> None:
@@ -216,13 +217,13 @@ class TestMain(unittest.TestCase):
         shutil.copy(Path("README_TEMPLATE_2.md"), readme)
         expected_readme_txt = Path("EXPECTED_README_3.md").read_text()
 
-        run = ("01", "python", "iain")
-        stat = ("0.01", "1792", "")
+        run = Run("01", "python", "iain")
+        stat = Stat("0.01", "1792", "")
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: Stats(stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: Stats(stat, stat)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
     def test_get_answers(self) -> None:

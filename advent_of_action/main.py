@@ -2,6 +2,7 @@
 
 import os
 from collections.abc import Mapping, MutableMapping
+from dataclasses import dataclass
 from pathlib import Path
 from subprocess import CalledProcessError, TimeoutExpired, run
 from typing import Final
@@ -10,7 +11,7 @@ from advent_of_action import runners
 from advent_of_action.runners import RunnerFunc
 
 # Languages and their commands
-RUNTIMES: Final[dict[str, RunnerFunc]] = {
+RUNTIMES: Final = {
     "python": runners.python,
     "racket": runners.racket,
     "rust": runners.rust,
@@ -19,21 +20,37 @@ RUNTIMES: Final[dict[str, RunnerFunc]] = {
     "jupyter": runners.jupyter,
 }
 
-type Day = str
-type Language = str
-type Person = str
-type Seconds = str
-type Kilobytes = str
-type Notes = str
-type Run = tuple[Day, Language, Person]
-type Stat = tuple[Seconds, Kilobytes, Notes]
-type Stats = tuple[Stat, Stat]
+
+@dataclass
+class Run:
+    """A run of a solution."""
+
+    day: str
+    language: str
+    person: str
+
+
+@dataclass
+class Stat:
+    """Stats for one part of a solution."""
+
+    memory_kb: str
+    time_seconds: str
+    notes: str
+
+
+@dataclass
+class Stats:
+    """Stats for both parts of a solution."""
+
+    part_one: Stat
+    part_two: Stat
 
 
 def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> Stats:
     """Measure the execution time of a solution."""
 
-    def inner(part: str, answer: str) -> Stat:
+    def inner(part: str, answer: str) -> tuple[str, str, str]:
         """Use the runner to measure the execution time of one part."""
         try:
             kilobytes, seconds, output = ext(dirpath, part)
@@ -50,7 +67,7 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
 
         return f"{seconds:.2f}", f"{kilobytes}", ""
 
-    return inner("one", answers[0]), inner("two", answers[1])
+    return Stats(Stat(*inner("one", answers[0])), Stat(*inner("two", answers[1])))
 
 
 def from_table(table: str) -> dict[Run, Stats]:
@@ -62,12 +79,12 @@ def from_table(table: str) -> dict[Run, Stats]:
             break
         day, lang, person, part, seconds, kb, notes = line[1:-1].split(" | ")
         if part == "one":
-            part_one = (seconds.strip(), kb.strip(), notes.strip())
+            part_one = Stat(seconds.strip(), kb.strip(), notes.strip())
         elif part == "two":
             assert part_one is not None
-            results[(day.strip(), lang.strip(), person.strip())] = (
+            results[Run(day.strip(), lang.strip(), person.strip())] = Stats(
                 part_one,
-                (seconds.strip(), kb.strip(), notes.strip()),
+                Stat(seconds.strip(), kb.strip(), notes.strip()),
             )
         else:
             raise ValueError(f"Unknown part {part}")
@@ -81,9 +98,16 @@ def to_table(results: Mapping[Run, Stats]) -> str:
     table += "| day | language | who | part | time (s) | mem (KB) | notes |\n"
     table += "| --- | --- | --- | --- | --- | --- | --- |\n"
     for the_run, stats in results.items():
-        day, language, person = the_run
-        for (seconds, kilobytes, notes), part in zip(stats, ("one", "two"), strict=False):
-            table += f"| {day} | {language} | {person} | {part} | {seconds} | {kilobytes} | {notes} |\n"
+        for stat, part in zip((stats.part_one, stats.part_two), ("one", "two"), strict=False):
+            table += (
+                f"| {the_run.day} "
+                + f"| {the_run.language} "
+                + f"| {the_run.person} "
+                + f"| {part} "
+                + f"| {stat.time_seconds} "
+                + f"| {stat.memory_kb} "
+                + f"| {stat.notes} |\n"
+            )
     return table
 
 
@@ -132,7 +156,7 @@ def main() -> None:
         # ToDo Is there a better way to traverse the directories alphabetically?
         dirnames.sort()
         if dirpath.parts and dirpath.parts[0].startswith("day_"):
-            day: Day = dirpath.parts[0][4:]
+            day = dirpath.parts[0][4:]
 
             if len(dirpath.parts) == 1:
                 answers = get_answers(dirpath)
@@ -141,10 +165,10 @@ def main() -> None:
 
             if len(dirpath.parts) == 2:
                 directory = dirpath.parts[1]
-                language: Language = directory[0 : directory.find("_")]
-                person: Person = directory[directory.find("_") + 1 :]
+                language = directory[0 : directory.find("_")]
+                person = directory[directory.find("_") + 1 :]
                 if (day, language, person) not in results and language in RUNTIMES:
-                    results[(day, language, person)] = measure_execution_time(answers, dirpath, RUNTIMES[language])
+                    results[Run(day, language, person)] = measure_execution_time(answers, dirpath, RUNTIMES[language])
 
     write_results(results)
 
