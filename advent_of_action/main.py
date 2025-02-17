@@ -130,8 +130,7 @@ def main() -> None:
         make_input_file(day_dir)
 
         for solution_dir in sorted(list(day_dir.glob("*_*"))):
-            filenames = set([x.name for x in solution_dir.iterdir() if x.is_file()])
-            if ".optout" in filenames:
+            if ".optout" in set([x.name for x in solution_dir.iterdir() if x.is_file()]):
                 continue
             directory = solution_dir.parts[1]
             language, person = directory.split("_", maxsplit=1)
