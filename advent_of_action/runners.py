@@ -41,6 +41,7 @@ RUST: Final = Command(
     teardown=["sleep", "0"],
 )
 
+
 def execute_command(command: list[str | Path], timeout: float = float(os.environ["TIMEOUT_SECONDS"])) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
     print("Running", command)
@@ -54,12 +55,9 @@ def execute_command(command: list[str | Path], timeout: float = float(os.environ
     kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()
 
-
-# def racket(dirpath: Path, part: str) -> Triple:
-#     """Run a Racket solution."""
-#     return execute_command(["racket", str(dirpath / "solution.rkt"), part])
-
-
+    # def racket(dirpath: Path, part: str) -> Triple:
+    #     """Run a Racket solution."""
+    #     return execute_command(["racket", str(dirpath / "solution.rkt"), part])
 
     @classmethod
     def setup(cls, dirpath: Path) -> Triple:
