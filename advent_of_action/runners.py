@@ -9,7 +9,7 @@ type KB = int
 type seconds = float
 type output = str
 type Triple = tuple[KB, seconds, output]
-type RunnerFunc = Callable[[Path], Generator[Triple]]
+type RunnerFunc = Callable[[Path], Generator[Triple, None, None]]
 
 
 def execute_command(command: list[str | Path], timeout: float = float(os.environ["TIMEOUT_SECONDS"])) -> Triple:
@@ -26,7 +26,7 @@ def execute_command(command: list[str | Path], timeout: float = float(os.environ
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()
 
 
-def python_runner(dirpath: Path) -> Generator[Triple]:
+def python_runner(dirpath: Path) -> Generator[Triple, None, None]:
     """Run a Python solution."""
     yield execute_command(["pip", "install", "-r", str(dirpath / "requirements.txt")])
     yield execute_command(["python", str(dirpath / "solution.py"), "one"])
@@ -39,7 +39,7 @@ def python_runner(dirpath: Path) -> Generator[Triple]:
 #     return execute_command(["racket", str(dirpath / "solution.rkt"), part])
 
 
-def rust_runner(dirpath: Path) -> Generator[Triple]:
+def rust_runner(dirpath: Path) -> Generator[Triple, None, None]:
     """Run a Rust solution."""
     yield execute_command(["cargo", "build", "--manifest-path", str(dirpath / "Cargo.toml")])
     yield execute_command(["cargo", "run", "--quiet", "--manifest-path", str(dirpath / "Cargo.toml"), "one"])
