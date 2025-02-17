@@ -17,12 +17,13 @@ See also the [AdventOfActionTest](https://github.com/Iain-S/AdventOfActionTest/t
 The action expects your code to be laid out with this file structure:
 
 ```text
-README.md
-day_01:
-    input.gpg
-    answers.gpg
-    rust_tom:
+README.md               # The results will be written here.
+day_01:                 # The day, in day_xx format.
+    input.gpg           # Somebody's encrypted input for day xx.
+    answers.gpg         # That person's (correct) encrypted answers for day xx.
+    rust_tom:           # Someone's solution, in lang_name format.
         Cargo.toml
+        src/
     python_tim:
         solution.py
     jupyter_tina:
@@ -80,12 +81,12 @@ def main() -> None:
 If you'd like to opt out of having your code executed, add an `.optout` file to your directory for that day.
 
 The results of running each solution will be written to a table in the README.
-You will need to add an extra workflow step to push and commit in order to save that change (see below).
-Since pushing in a workflow uses the implicit GITHUB_TOKEN, you will need to give that token write permissions, if you haven't already.
-See [Configuring the Default GitHub Token Permissions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-the-default-github_token-permissions).
-
 If there are previous results in the README, those solutions will not be re-executed.
 To force a re-run, you can delete those lines from the results table in the README.
+
+You will need to add an extra workflow step to push and commit in order to save the README (see below).
+Since pushing in a workflow uses the implicit GITHUB_TOKEN, you will need to give that token write permissions, if you haven't already.
+See [Configuring the Default GitHub Token Permissions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository#configuring-the-default-github_token-permissions).
 
 ```yaml
     steps:
@@ -94,7 +95,7 @@ To force a re-run, you can delete those lines from the results table in the READ
         with:
           ref: ${{ github.head_ref || github.ref_name }}
       - name: Run the action
-        uses: Iain-S/AdventOfAction@0.1.5
+        uses: Iain-S/AdventOfAction@0.1.6
         with:
           # The directory in which you keep the day_xx directories.
           working-directory: ./
@@ -136,6 +137,7 @@ If a solution times out, throws an error or doesn't match the expected answer, t
 
 1. Install Poetry.
 1. Install Pre-commit.
+1. Clone this repo and `cd` into it.
 1. Install Advent of Action, with `poetry install`.
 1. Install the pre-commit hooks with `pre-commit install --install-hooks`.
 1. If you're on macOS, you'll want to install GNU's time (e.g. with `brew install gnu-time`) as the built-in time command doesn't support the `-f` option.
