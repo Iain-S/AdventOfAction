@@ -6,6 +6,7 @@ from abc import ABC
 from collections.abc import Callable
 from enum import StrEnum
 from pathlib import Path
+from typing import Final
 
 type kilobytes = int
 type seconds = float
@@ -20,21 +21,25 @@ class Part(StrEnum):
     TWO = "two"
 
 
-class Runner(ABC):
+class Command(ABC):
     """A runner for a programming language."""
 
-    @classmethod
-    def setup(cls, dirpath: Path) -> Triple:
-        raise NotImplementedError
+    setup: list[str]
+    run: list[str]
+    teardown: list[str]
 
-    @classmethod
-    def run(cls, dirpath: Path, part: Part) -> Triple:
-        raise NotImplementedError
 
-    @classmethod
-    def teardown(cls, dirpath: Path) -> Triple:
-        raise NotImplementedError
+PYTHON: Final = Command(
+    setup=["pip", "install", "-r", "requirements.txt"],
+    run=["python", "solution.py"],
+    teardown=["pip", "uninstall", "-r", "requirements.txt"],
+)
 
+RUST: Final = Command(
+    setup=["cargo", "build"],
+    run=["cargo", "run"],
+    teardown=["sleep", "0"],
+)
 
 def execute_command(command: list[str | Path], timeout: float = float(os.environ["TIMEOUT_SECONDS"])) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
@@ -50,29 +55,11 @@ def execute_command(command: list[str | Path], timeout: float = float(os.environ
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()
 
 
-class PythonRunner(Runner):
-    """Run a Python solution."""
-
-    @classmethod
-    def setup(cls, dirpath: Path) -> Triple:
-        return execute_command(["pip", "install", "-r", str(dirpath / "requirements.txt")])
-
-    @classmethod
-    def run(cls, dirpath: Path, part: Part) -> Triple:
-        return execute_command(["python", str(dirpath / "solution.py"), part.value])
-
-    @classmethod
-    def teardown(cls, dirpath: Path) -> Triple:
-        return execute_command(["pip", "uninstall", "-r", str(dirpath / "requirements.txt")])
-
-
 # def racket(dirpath: Path, part: str) -> Triple:
 #     """Run a Racket solution."""
 #     return execute_command(["racket", str(dirpath / "solution.rkt"), part])
 
 
-class RustRunner(Runner):
-    """Run a Rust solution."""
 
     @classmethod
     def setup(cls, dirpath: Path) -> Triple:
