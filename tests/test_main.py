@@ -112,7 +112,7 @@ class TestMain(unittest.TestCase):
 
     def test_measure_one(self) -> None:
         """Check that we can measure the execution time of a solution."""
-        def mock_runner(_: Path) -> Generator[runners.Triple, None, None]:
+        def mock_runner(_: Path) -> runners.TripleGenerator:
             yield 1, .0, "setup"
             yield 1792, 0.03, "answer"
             yield 1792, 0.03, "answer"
@@ -127,7 +127,7 @@ class TestMain(unittest.TestCase):
 
     def test_measure_two(self) -> None:
         """Check that we can handle a wrong answer."""
-        def wrong_answer_generator(_: Path) -> Generator[runners.Triple, None, None]:
+        def wrong_answer_generator(_: Path) -> runners.TripleGenerator:
             yield (1792, 0.03, "setup")
             yield (1792, 0.03, "wrong answer\n")
             yield (1792, 0.03, "wrong answer\n")
@@ -146,7 +146,7 @@ class TestMain(unittest.TestCase):
     def test_measure_three(self, mock_print: MagicMock) -> None:
         """Check that we can handle a non-zero exit code."""
 
-        def bad_runner(_: Path) -> Generator[runners.Triple, None, None]:
+        def bad_runner(_: Path) -> runners.TripleGenerator:
             yield 1, .1, "setup"
             yield runners.execute_command(["bash", "-c", "exit 1"])
             yield runners.execute_command(["bash", "-c", "exit 1"])
@@ -166,7 +166,8 @@ class TestMain(unittest.TestCase):
         """Check that we can handle a partially wrong answer."""
 
         # Check that we check the answer.
-        def partial_runner(_: Path) -> Generator[runners.Triple, None, None]:
+
+        def partial_runner(_: Path) -> runners.TripleGenerator:
             yield 1, 0.01, "setup"
             yield 1792, 0.03, "answer"
             yield 1792, 0.03, "wrong answer"
