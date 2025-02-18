@@ -8,7 +8,7 @@ from subprocess import CalledProcessError, TimeoutExpired, run
 from typing import Final
 
 from advent_of_action import runners
-from advent_of_action.runners import Command, Part, execute_command
+from advent_of_action.runners import Commands, Part, execute_command
 
 # Languages and their commands
 RUNTIMES: Final = {
@@ -35,7 +35,7 @@ type Stats = tuple[Stat, Stat]
 type Nothing = None | None
 
 
-def measure_execution_time(answers: tuple[str, str], comm: Command) -> Stats:
+def measure_execution_time(answers: tuple[str, str], comm: Commands) -> Stats:
     """Measure the execution time of a solution."""
 
     def inner(part: Part, answer: str | None, command: list[str | Path]) -> Stat:
