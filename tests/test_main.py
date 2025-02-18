@@ -54,9 +54,11 @@ class TestMain(unittest.TestCase):
             + [["ipython", "-c", "%run 'solution.ipynb'", x] for x in ("one", "two")]
             + [["ocaml", "solution.ml", x] for x in ("one", "two")]
         )
-        b = [["pip", "install", "-r", "requirements.txt"]]
+        b = [["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]]
         c = [["python", "solution.py", x] for x in ("one", "two")]
-        d = [["pip", "uninstall", "-r", "requirements.txt"]] + [["pip", "install", "-r", "requirements.txt"]]
+        d = [["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]] + [
+            ["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]
+        ]
         e = [
             [
                 "python",
@@ -65,7 +67,7 @@ class TestMain(unittest.TestCase):
             ]
             for x in ("one", "two")
         ]
-        f = [["pip", "uninstall", "-r", "requirements.txt"]]
+        f = [["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]]
         g = [["racket", "solution.rkt", x] for x in ("one", "two")]
         h = [["cargo", "build", "--quiet"]]
         i = [["cargo", "run", "--quiet", x] for x in ("one", "two")]
@@ -177,7 +179,7 @@ class TestMain(unittest.TestCase):
                 call(
                     timings + x,
                     capture_output=True,
-                    timeout=50,
+                    timeout=50.0,
                     text=True,
                     check=True,
                 )
@@ -197,7 +199,7 @@ class TestMain(unittest.TestCase):
                 call(
                     timings + x,
                     capture_output=True,
-                    timeout=50,
+                    timeout=50.0,
                     text=True,
                     check=True,
                 )

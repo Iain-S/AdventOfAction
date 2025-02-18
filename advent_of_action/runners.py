@@ -36,9 +36,9 @@ class Command(ABC):
 
 
 PYTHON: Final = Command(
-    setup=["pip", "install", "-r", "requirements.txt"],
+    setup=["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
     run=["python", "solution.py"],
-    teardown=["pip", "uninstall", "-r", "requirements.txt"],
+    teardown=["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
 )
 
 RUST: Final = Command(
