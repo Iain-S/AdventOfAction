@@ -42,7 +42,7 @@ PYTHON: Final = Command(
 )
 
 RUST: Final = Command(
-    setup=["cargo", "build"],
+    setup=["cargo", "build", "--quiet"],
     run=["cargo", "run", "--quiet"],
     teardown=[],
 )
