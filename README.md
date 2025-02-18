@@ -96,7 +96,7 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
         with:
           ref: ${{ github.head_ref || github.ref_name }}
       - name: Run the action
-        uses: Iain-S/AdventOfAction@0.1.7
+        uses: Iain-S/AdventOfAction@x.y.z
         with:
           # The directory in which you keep the day_xx directories.
           working-directory: ./
