@@ -4,11 +4,12 @@ import os
 import shutil
 import subprocess
 import unittest
-from pathlib import Path, PosixPath
+from pathlib import Path
 from subprocess import run
 from unittest.mock import MagicMock, call, patch
 
 from advent_of_action import main, runners
+from advent_of_action.runners import Command
 
 
 class TestMain(unittest.TestCase):
@@ -18,7 +19,7 @@ class TestMain(unittest.TestCase):
     def setUpClass(cls) -> None:
         """Set up the test environment for the class."""
         os.environ["GPG_PASS"] = "yourpassword"
-        os.environ["TIMEOUT_SECONDS"] = "60"
+        os.environ["TIMEOUT_SECONDS"] = "50"
 
         # For example, if we're on macOS.
         def new_run(command, *args, **kwargs):  # type: ignore
@@ -38,6 +39,7 @@ class TestMain(unittest.TestCase):
         # Undo anything that might have been set by failing tests.
         Path("./README.md").unlink(missing_ok=True)
         Path("./input.txt").unlink(missing_ok=True)
+        self.maxDiff = None
 
     @patch("subprocess.run", autospec=True)
     def test_main(self, mock_run: MagicMock) -> None:
@@ -48,38 +50,118 @@ class TestMain(unittest.TestCase):
         main.main()
         timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
         a = (
-            [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")]
-            + [
-                ["ipython", "-c", f"%run {str(PosixPath('day_99/jupyter_iain/solution.ipynb'))}", x]
-                for x in ("one", "two")
-            ]
-            + [["ocaml", str(PosixPath("day_99/ocaml_iain/solution.ml")), x] for x in ("one", "two")]
-            + [["python", str(PosixPath("day_99/python_iain/solution.py")), x] for x in ("one", "two")]
-            + [
-                [
-                    "python",
-                    str(PosixPath("day_99/python_zain/solution.py")),
-                    x,
-                ]
-                for x in ("one", "two")
-            ]
-            + [["racket", str(PosixPath("day_99/racket_iain/solution.rkt")), x] for x in ("one", "two")]
-            + [
-                ["cargo", "run", "--quiet", "--manifest-path", str(PosixPath("day_99/rust_iain/Cargo.toml")), x]
-                for x in ("one", "two")
-            ]
+            [["dotnet", "fsi", "solution.fsx", x] for x in ("one", "two")]
+            + [["ipython", "-c", "%run 'solution.ipynb'", x] for x in ("one", "two")]
+            + [["ocaml", "solution.ml", x] for x in ("one", "two")]
         )
+        b = [["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]]
+        c = [["python", "solution.py", x] for x in ("one", "two")]
+        d = [["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]] + [
+            ["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]
+        ]
+        e = [
+            [
+                "python",
+                "solution.py",
+                x,
+            ]
+            for x in ("one", "two")
+        ]
+        f = [["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]]
+        g = [["racket", "solution.rkt", x] for x in ("one", "two")]
+        h = [["cargo", "build", "--quiet"]]
+        i = [["cargo", "run", "--quiet", x] for x in ("one", "two")]
         self.assertListEqual(
             mock_run.call_args_list,
             [
                 call(
                     timings + x,
                     capture_output=True,
-                    timeout=60,
+                    timeout=50.0,
                     text=True,
                     check=True,
                 )
                 for x in a
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in b
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in c
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in d
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in e
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in f
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in g
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in h
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in i
             ],
         )
 
@@ -91,13 +173,19 @@ class TestMain(unittest.TestCase):
         shutil.copy(Path("README_TEMPLATE_3.md"), Path("README.md"))
         main.main()
         timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
-        a = [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")] + [
-            ["cargo", "run", "--quiet", "--manifest-path", str(PosixPath("day_99/rust_iain/Cargo.toml")), x]
-            for x in ("one", "two")
-        ]
         self.assertListEqual(
             mock_run.call_args_list,
             [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in [["dotnet", "fsi", "solution.fsx", x] for x in ("one", "two")]
+            ]
+            + [
                 call(
                     timings + x,
                     capture_output=True,
@@ -105,13 +193,26 @@ class TestMain(unittest.TestCase):
                     text=True,
                     check=True,
                 )
-                for x in a
+                for x in [["cargo", "build", "--quiet"]]
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in [["cargo", "run", "--quiet", x] for x in ("one", "two")]
             ],
         )
 
-    def test_measure_one(self) -> None:
+    @patch("subprocess.run", autospec=True)
+    def test_measure_one(self, mock_run: MagicMock) -> None:
         """Check that we can measure the execution time of a solution."""
-        actual = main.measure_execution_time(("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "answer"))
+        mock_run.return_value = MagicMock(stdout="answer\n", stderr="1792,0.02,0.01")
+
+        actual = main.measure_execution_time(("answer", "answer"), Command([], [], []))
         expected = ("0.03", "1792", ""), ("0.03", "1792", "")
         self.assertEqual(
             expected,
@@ -121,7 +222,7 @@ class TestMain(unittest.TestCase):
     def test_measure_two(self) -> None:
         """Check that we can handle a wrong answer."""
         actual = main.measure_execution_time(
-            ("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "wrong answer\n")
+            ("answer", "answer"), Command(["echo", "different"], ["echo", "different"], ["echo", "different"])
         )
         expected = ("", "", "Different answer"), ("", "", "Different answer")
         self.assertEqual(
@@ -132,11 +233,8 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_three(self, mock_print: MagicMock) -> None:
         """Check that we can handle a non-zero exit code."""
-
-        def bad_runner(_: Path, __: str) -> tuple[int, float, str]:
-            return runners.execute_command(["bash", "-c", "exit 1"])
-
-        actual = main.measure_execution_time(("", ""), Path("."), bad_runner)
+        exit_1 = ["bash", "-c", "exit 1"]
+        actual = main.measure_execution_time(("", ""), Command(exit_1, exit_1, exit_1))
         expected = ("", "", "Error (1)"), ("", "", "Error (1)")
         self.assertTupleEqual(
             expected,
@@ -148,29 +246,22 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_four(self, mock_print: MagicMock) -> None:
         """Check that we can handle a partially wrong answer."""
-
-        # Check that we check the answer.
-        def partial_runner(_: Path, part: str) -> tuple[int, float, str]:
-            if part == "one":
-                return 1792, 0.03, "answer"
-            return 1792, 0.03, "wrong answer"
-
-        actual = main.measure_execution_time(("answer", "answer"), Path("."), partial_runner)
-        expected = (("0.03", "1792", ""), ("", "", "Different answer"))
+        actual = main.measure_execution_time(("one_", "two"), Command(["sleep", "0"], ["echo"], ["sleep", "0"]))
+        expected = ("", "", "Different answer")
         self.assertTupleEqual(
             expected,
-            actual,
+            actual[0],
         )
-        mock_print.assert_called_with("Incorrect answer for part two: wrong answer")
+        mock_print.assert_any_call("Incorrect answer for part one: one")
 
+    @patch("subprocess.run", autospec=True)
     @patch("builtins.print", autospec=True)
-    def test_measure_five(self, mock_print: MagicMock) -> None:
+    def test_measure_five(self, mock_print: MagicMock, mock_run: MagicMock) -> None:
         """Check that we can handle a timeout."""
+        mock_run.side_effect = subprocess.TimeoutExpired("cmd", 6)
 
-        def raise_timeout(*args, **kwargs):  # type: ignore
-            raise subprocess.TimeoutExpired("cmd", 6)
+        actual = main.measure_execution_time(("", ""), runners.Command([], [], []))
 
-        actual = main.measure_execution_time(("", ""), Path("."), raise_timeout)
         expected = ("", "", "Timeout"), ("", "", "Timeout")
         self.assertTupleEqual(
             expected,
@@ -279,7 +370,7 @@ class TestExpectsGPG(unittest.TestCase):
     def test_make_input_raises(self) -> None:
         """Test that make_input_file raises an exception if GPG_PASS is missing."""
         with self.assertRaises(ValueError):
-            main.make_input_file(Path("day_99/"))
+            main.make_input_file()
 
 
 if __name__ == "__main__":

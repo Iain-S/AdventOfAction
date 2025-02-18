@@ -1,22 +1,23 @@
 """Run every solution."""
 
 import os
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Generator, Mapping, MutableMapping
+from contextlib import contextmanager
 from pathlib import Path
 from subprocess import CalledProcessError, TimeoutExpired, run
 from typing import Final
 
 from advent_of_action import runners
-from advent_of_action.runners import RunnerFunc
+from advent_of_action.runners import Command, Part, execute_command
 
 # Languages and their commands
-RUNTIMES: Final[dict[str, RunnerFunc]] = {
-    "python": runners.python,
-    "racket": runners.racket,
-    "rust": runners.rust,
-    "fsharp": runners.fsharp,
-    "ocaml": runners.ocaml,
-    "jupyter": runners.jupyter,
+RUNTIMES: Final[dict[str, Command]] = {
+    "python": runners.PYTHON,
+    "racket": runners.RACKET,
+    "rust": runners.RUST,
+    "fsharp": runners.FSHARP,
+    "ocaml": runners.OCAML,
+    "jupyter": runners.JUPYTER,
 }
 
 type Day = str
@@ -29,17 +30,30 @@ type Run = tuple[Day, Language, Person]
 type Stat = tuple[Seconds, Kilobytes, Notes]
 type Stats = tuple[Stat, Stat]
 
+# Prevent Ruff from simplifying Generator[None, None, None] to Generator[None],
+# which Pyre treats as Generator[None, Any, None].
+type Nothing = None | None
 
-def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerFunc) -> Stats:
+
+def measure_execution_time(answers: tuple[str, str], comm: Command) -> Stats:
     """Measure the execution time of a solution."""
 
-    def inner(part: str, answer: str) -> Stat:
+    def inner(part: Part, answer: str | None, command: list[str | Path]) -> Stat:
         """Use the runner to measure the execution time of one part."""
         try:
-            kilobytes, seconds, output = ext(dirpath, part)
-            if output != answer:
-                print(f"Incorrect answer for part {part}: {output}")
-                return "", "", "Different answer"
+            if answer is not None:
+                kilobytes, seconds, output = execute_command(command + [part.value])
+                if output != answer:
+                    print(f"Incorrect answer for part {part}: {output}")
+                    return "", "", "Different answer"
+                else:
+                    return f"{seconds:.2f}", f"{kilobytes}", ""
+            else:
+                # Ignore empty lists.
+                if command:
+                    execute_command(command, timeout=60.0)
+                return "", "", "Done"
+
         except CalledProcessError as e:
             # Print all but the last line, which will be the timings.
             print("".join(e.stderr.splitlines()[:-1]))
@@ -48,9 +62,12 @@ def measure_execution_time(answers: tuple[str, str], dirpath: Path, ext: RunnerF
             print(f"Command timed out after {e.timeout:.0f} seconds")
             return "", "", "Timeout"
 
-        return f"{seconds:.2f}", f"{kilobytes}", ""
-
-    return inner("one", answers[0]), inner("two", answers[1])
+    return (
+        inner(Part.SETUP, None, comm.setup),
+        inner(Part.ONE, answers[0], comm.run),
+        inner(Part.TWO, answers[1], comm.run),
+        inner(Part.TEARDOWN, None, comm.teardown),
+    )[1:3]
 
 
 def from_table(table: str) -> dict[Run, Stats]:
@@ -61,9 +78,9 @@ def from_table(table: str) -> dict[Run, Stats]:
         if not line:
             break
         day, lang, person, part, seconds, kb, notes = line[1:-1].split(" | ")
-        if part == "one":
+        if part == Part.ONE:
             part_one = (seconds.strip(), kb.strip(), notes.strip())
-        elif part == "two":
+        elif part == Part.TWO:
             assert part_one is not None
             results[(day.strip(), lang.strip(), person.strip())] = (
                 part_one,
@@ -82,7 +99,7 @@ def to_table(results: Mapping[Run, Stats]) -> str:
     table += "| --- | --- | --- | --- | --- | --- | --- |\n"
     for the_run, stats in results.items():
         day, language, person = the_run
-        for (seconds, kilobytes, notes), part in zip(stats, ("one", "two"), strict=False):
+        for (seconds, kilobytes, notes), part in zip(stats, (Part.ONE, Part.TWO), strict=False):
             table += f"| {day} | {language} | {person} | {part} | {seconds} | {kilobytes} | {notes} |\n"
     return table
 
@@ -106,6 +123,17 @@ def write_results(the_results: Mapping[Run, Stats]) -> None:
     readme.write_text(new_content)
 
 
+@contextmanager
+def chdir(new_path: Path) -> Generator[None, Nothing, Nothing]:
+    """Context manager for changing the current working directory."""
+    saved_path = Path.cwd()
+    os.chdir(new_path)
+    try:
+        yield
+    finally:
+        os.chdir(saved_path)
+
+
 def main() -> None:
     """Run the solutions."""
     results: MutableMapping[Run, Stats] = {}
@@ -127,7 +155,6 @@ def main() -> None:
     for day_dir in sorted(list(Path(".").glob("day_*"))):
         day: Day = day_dir.parts[0][4:]
         answers = get_answers(day_dir)
-        make_input_file(day_dir)
 
         for solution_dir in sorted(list(day_dir.glob("*_*"))):
             if ".optout" in set([x.name for x in solution_dir.iterdir() if x.is_file()]):
@@ -135,12 +162,14 @@ def main() -> None:
             directory = solution_dir.parts[1]
             language, person = directory.split("_", maxsplit=1)
             if (day, language, person) not in results and language in RUNTIMES:
-                results[(day, language, person)] = measure_execution_time(answers, solution_dir, RUNTIMES[language])
+                with chdir(solution_dir):
+                    make_input_file()
+                    results[(day, language, person)] = measure_execution_time(answers, RUNTIMES[language])
 
     write_results(results)
 
 
-def make_input_file(dirpath: Path) -> None:
+def make_input_file() -> None:
     """Decrypt the input file."""
     if (passphrase := os.getenv("GPG_PASS")) is None:
         raise ValueError("GPG_PASS environment variable not set.")
@@ -156,7 +185,7 @@ def make_input_file(dirpath: Path) -> None:
             "--output",
             # Scripts expect input.txt to be in the CWD.
             Path("input.txt"),
-            dirpath / "input.gpg",
+            "../input.gpg",
         ],
         text=True,
         capture_output=True,

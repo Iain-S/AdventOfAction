@@ -3,6 +3,8 @@
 import sys
 from pathlib import Path
 
+import jsonschema_rs  # noqa  # type: ignore
+
 
 def main() -> None:
     """Run the solution."""

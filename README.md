@@ -41,7 +41,8 @@ day_01:                 # The day, in day_xx format.
 
 We currently support Python, IPython notebook, OCaml, Rust, Racket, and F# solutions.
 Unsupported languages will be ignored.
-To see how each language is executed, look in [runners.py](advent_of_action/runners.py).
+To see how each language is set up, executed and torn down, look in [runners.py](advent_of_action/runners.py).
+For example, we set up Rust solutions with  `cargo build` and Python solutions with `pip install -r requirements.txt`, failing silently if there is no requirements file.
 
 For each day, provide an input file named `input.gpg` and a solution file named `answers.gpg`.
 Provide the encryption/decryption passphrase as the `gpg-passphrase` input.
@@ -95,7 +96,7 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
         with:
           ref: ${{ github.head_ref || github.ref_name }}
       - name: Run the action
-        uses: Iain-S/AdventOfAction@0.1.6
+        uses: Iain-S/AdventOfAction@0.1.7
         with:
           # The directory in which you keep the day_xx directories.
           working-directory: ./
@@ -104,8 +105,9 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
           # Probably best to store in a repo secret.
           gpg-passphrase: {{ secrets.YOUR_SECRET }}
 
-          # The timeout, in seconds, for each part of each solution.
-          timeout: 60
+          # The timeout, in seconds, for parts one and two of the solution.
+          # Setup and teardown timeouts are hard coded to 60 seconds.
+          timeout: 50
 
           # To be passed to the setup-python action.
           python-version: "3.13"
