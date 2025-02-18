@@ -11,7 +11,7 @@ from advent_of_action import runners
 from advent_of_action.runners import Command, Part, execute_command
 
 # Languages and their commands
-RUNTIMES: Final[dict[str, Command]] = {
+RUNTIMES: Final = {
     "python": runners.PYTHON,
     "racket": runners.RACKET,
     "rust": runners.RUST,
