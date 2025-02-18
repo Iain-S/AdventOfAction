@@ -9,7 +9,7 @@ from subprocess import run
 from unittest.mock import MagicMock, call, patch
 
 from advent_of_action import main, runners
-from advent_of_action.runners import Command
+from advent_of_action.runners import Commands, command
 
 
 class TestMain(unittest.TestCase):
@@ -212,7 +212,7 @@ class TestMain(unittest.TestCase):
         """Check that we can measure the execution time of a solution."""
         mock_run.return_value = MagicMock(stdout="answer\n", stderr="1792,0.02,0.01")
 
-        actual = main.measure_execution_time(("answer", "answer"), Command([], [], []))
+        actual = main.measure_execution_time(("answer", "answer"), Commands([], [], []))
         expected = ("0.03", "1792", ""), ("0.03", "1792", "")
         self.assertEqual(
             expected,
@@ -222,7 +222,7 @@ class TestMain(unittest.TestCase):
     def test_measure_two(self) -> None:
         """Check that we can handle a wrong answer."""
         actual = main.measure_execution_time(
-            ("answer", "answer"), Command(["echo", "different"], ["echo", "different"], ["echo", "different"])
+            ("answer", "answer"), Commands(["echo", "different"], ["echo", "different"], ["echo", "different"])
         )
         expected = ("", "", "Different answer"), ("", "", "Different answer")
         self.assertEqual(
@@ -233,8 +233,8 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_three(self, mock_print: MagicMock) -> None:
         """Check that we can handle a non-zero exit code."""
-        exit_1 = ["bash", "-c", "exit 1"]
-        actual = main.measure_execution_time(("", ""), Command(exit_1, exit_1, exit_1))
+        exit_1: command = ["bash", "-c", "exit 1"]
+        actual = main.measure_execution_time(("", ""), Commands(exit_1, exit_1, exit_1))
         expected = ("", "", "Error (1)"), ("", "", "Error (1)")
         self.assertTupleEqual(
             expected,
@@ -246,7 +246,7 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_four(self, mock_print: MagicMock) -> None:
         """Check that we can handle a partially wrong answer."""
-        actual = main.measure_execution_time(("one_", "two"), Command(["sleep", "0"], ["echo"], ["sleep", "0"]))
+        actual = main.measure_execution_time(("one_", "two"), Commands(["sleep", "0"], ["echo"], ["sleep", "0"]))
         expected = ("", "", "Different answer")
         self.assertTupleEqual(
             expected,
@@ -260,7 +260,7 @@ class TestMain(unittest.TestCase):
         """Check that we can handle a timeout."""
         mock_run.side_effect = subprocess.TimeoutExpired("cmd", 6)
 
-        actual = main.measure_execution_time(("", ""), runners.Command([], [], []))
+        actual = main.measure_execution_time(("", ""), runners.Commands([], [], []))
 
         expected = ("", "", "Timeout"), ("", "", "Timeout")
         self.assertTupleEqual(

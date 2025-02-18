@@ -2,8 +2,6 @@
 
 import os
 import subprocess
-from abc import ABC
-from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
@@ -13,10 +11,9 @@ type kilobytes = int
 type seconds = float
 type output = str
 type Triple = tuple[kilobytes, seconds, output]
-type RunnerFunc = Callable[[Path], Triple]
+type command = list[str | Path]
 
 
-# make an enum for part one or two
 class Part(StrEnum):
     """The parts of a day's solution."""
 
@@ -27,52 +24,52 @@ class Part(StrEnum):
 
 
 @dataclass
-class Command(ABC):
-    """A runner for a programming language."""
+class Commands:
+    """Commands to run the solution in a particular language."""
 
-    setup: list[str]
-    run: list[str]
-    teardown: list[str]
+    setup: command
+    run: command
+    teardown: command
 
 
-PYTHON: Final = Command(
+PYTHON: Final = Commands(
     setup=["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
     run=["python", "solution.py"],
     teardown=["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
 )
 
-RUST: Final = Command(
+RUST: Final = Commands(
     setup=["cargo", "build", "--quiet"],
     run=["cargo", "run", "--quiet"],
     teardown=[],
 )
 
-RACKET: Final = Command(
+RACKET: Final = Commands(
     setup=[],
     run=["racket", "solution.rkt"],
     teardown=[],
 )
 
-OCAML: Final = Command(
+OCAML: Final = Commands(
     setup=[],
     run=["ocaml", "solution.ml"],
     teardown=[],
 )
-FSHARP: Final = Command(
+FSHARP: Final = Commands(
     setup=[],
     run=["dotnet", "fsi", "solution.fsx"],
     teardown=[],
 )
-JUPYTER: Final = Command(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=[])
+JUPYTER: Final = Commands(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=[])
 
 
-def execute_command(command: list[str | Path], timeout: float | None = None) -> Triple:
+def execute_command(cmd: command, timeout: float | None = None) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
     if timeout is None:
         timeout = float(os.environ["TIMEOUT_SECONDS"])
-    print("Running", command)
+    print("Running", cmd)
     result = subprocess.run(
-        ["/usr/bin/time", "-f", "%M,%S,%U"] + command,
+        ["/usr/bin/time", "-f", "%M,%S,%U"] + cmd,
         capture_output=True,
         timeout=timeout,
         text=True,
