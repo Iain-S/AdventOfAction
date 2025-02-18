@@ -5,7 +5,7 @@ from collections.abc import Generator, Mapping, MutableMapping
 from contextlib import contextmanager
 from pathlib import Path
 from subprocess import CalledProcessError, TimeoutExpired, run
-from typing import Final, Optional
+from typing import Final
 
 from advent_of_action import runners
 from advent_of_action.runners import Command, Part, execute_command
@@ -32,7 +32,7 @@ type Stats = tuple[Stat, Stat]
 
 # Prevent Ruff from simplifying Generator[None, None, None] to Generator[None],
 # which Pyre treats as Generator[None, Any, None].
-type Nothing = Optional[None]
+type Nothing = None | None
 
 
 def measure_execution_time(answers: tuple[str, str], comm: Command) -> Stats:
@@ -49,10 +49,9 @@ def measure_execution_time(answers: tuple[str, str], comm: Command) -> Stats:
                 else:
                     return f"{seconds:.2f}", f"{kilobytes}", ""
             else:
-                a: int = 0.0
-                # Allow a minute for setup or teardown tasks.
-                # execute_command(command, timeout=60)
-                execute_command(command)
+                # Ignore empty lists.
+                if command:
+                    execute_command(command, timeout=60.0)
                 return "", "", "Done"
 
         except CalledProcessError as e:

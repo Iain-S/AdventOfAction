@@ -43,27 +43,27 @@ PYTHON: Final = Command(
 
 RUST: Final = Command(
     setup=["cargo", "build"],
-    run=["cargo", "run"],
-    teardown=["sleep", "0"],
+    run=["cargo", "run", "--quiet"],
+    teardown=[],
 )
 
 RACKET: Final = Command(
-    setup=["sleep", "0"],
+    setup=[],
     run=["racket", "solution.rkt"],
-    teardown=["sleep", "0"],
+    teardown=[],
 )
 
 OCAML: Final = Command(
-    setup=["sleep", "0"],
+    setup=[],
     run=["ocaml", "solution.ml"],
-    teardown=["sleep", "0"],
+    teardown=[],
 )
 FSHARP: Final = Command(
-    setup=["sleep", "0"],
+    setup=[],
     run=["dotnet", "fsi", "solution.fsx"],
-    teardown=["sleep", "0"],
+    teardown=[],
 )
-JUPYTER: Final = Command(setup=["sleep", "0"], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=["sleep", "0"])
+JUPYTER: Final = Command(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=[])
 
 
 def execute_command(command: list[str | Path], timeout: float | None = None) -> Triple:

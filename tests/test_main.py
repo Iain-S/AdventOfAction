@@ -4,7 +4,7 @@ import os
 import shutil
 import subprocess
 import unittest
-from pathlib import Path, PosixPath
+from pathlib import Path
 from subprocess import run
 from unittest.mock import MagicMock, call, patch
 
@@ -19,7 +19,7 @@ class TestMain(unittest.TestCase):
     def setUpClass(cls) -> None:
         """Set up the test environment for the class."""
         os.environ["GPG_PASS"] = "yourpassword"
-        os.environ["TIMEOUT_SECONDS"] = "60"
+        os.environ["TIMEOUT_SECONDS"] = "50"
 
         # For example, if we're on macOS.
         def new_run(command, *args, **kwargs):  # type: ignore
@@ -39,6 +39,7 @@ class TestMain(unittest.TestCase):
         # Undo anything that might have been set by failing tests.
         Path("./README.md").unlink(missing_ok=True)
         Path("./input.txt").unlink(missing_ok=True)
+        self.maxDiff = None
 
     @patch("subprocess.run", autospec=True)
     def test_main(self, mock_run: MagicMock) -> None:
@@ -49,38 +50,116 @@ class TestMain(unittest.TestCase):
         main.main()
         timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
         a = (
-            [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")]
-            + [
-                ["ipython", "-c", f"%run {str(PosixPath('day_99/jupyter_iain/solution.ipynb'))}", x]
-                for x in ("one", "two")
-            ]
-            + [["ocaml", str(PosixPath("day_99/ocaml_iain/solution.ml")), x] for x in ("one", "two")]
-            + [["python", str(PosixPath("day_99/python_iain/solution.py")), x] for x in ("one", "two")]
-            + [
-                [
-                    "python",
-                    str(PosixPath("day_99/python_zain/solution.py")),
-                    x,
-                ]
-                for x in ("one", "two")
-            ]
-            + [["racket", str(PosixPath("day_99/racket_iain/solution.rkt")), x] for x in ("one", "two")]
-            + [
-                ["cargo", "run", "--quiet", "--manifest-path", str(PosixPath("day_99/rust_iain/Cargo.toml")), x]
-                for x in ("one", "two")
-            ]
+            [["dotnet", "fsi", "solution.fsx", x] for x in ("one", "two")]
+            + [["ipython", "-c", "%run 'solution.ipynb'", x] for x in ("one", "two")]
+            + [["ocaml", "solution.ml", x] for x in ("one", "two")]
         )
+        b = [["pip", "install", "-r", "requirements.txt"]]
+        c = [["python", "solution.py", x] for x in ("one", "two")]
+        d = [["pip", "uninstall", "-r", "requirements.txt"]] + [["pip", "install", "-r", "requirements.txt"]]
+        e = [
+            [
+                "python",
+                "solution.py",
+                x,
+            ]
+            for x in ("one", "two")
+        ]
+        f = [["pip", "uninstall", "-r", "requirements.txt"]]
+        g = [["racket", "solution.rkt", x] for x in ("one", "two")]
+        h = [["cargo", "build"]]
+        i = [["cargo", "run", "--quiet", x] for x in ("one", "two")]
         self.assertListEqual(
             mock_run.call_args_list,
             [
                 call(
                     timings + x,
                     capture_output=True,
-                    timeout=60,
+                    timeout=50.0,
                     text=True,
                     check=True,
                 )
                 for x in a
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in b
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in c
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in d
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in e
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in f
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in g
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=60.0,
+                    text=True,
+                    check=True,
+                )
+                for x in h
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50.0,
+                    text=True,
+                    check=True,
+                )
+                for x in i
             ],
         )
 
@@ -92,13 +171,19 @@ class TestMain(unittest.TestCase):
         shutil.copy(Path("README_TEMPLATE_3.md"), Path("README.md"))
         main.main()
         timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
-        a = [["dotnet", "fsi", str(PosixPath("day_99/fsharp_iain/solution.fsx")), x] for x in ("one", "two")] + [
-            ["cargo", "run", "--quiet", "--manifest-path", str(PosixPath("day_99/rust_iain/Cargo.toml")), x]
-            for x in ("one", "two")
-        ]
         self.assertListEqual(
             mock_run.call_args_list,
             [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50,
+                    text=True,
+                    check=True,
+                )
+                for x in [["dotnet", "fsi", "solution.fsx", x] for x in ("one", "two")]
+            ]
+            + [
                 call(
                     timings + x,
                     capture_output=True,
@@ -106,7 +191,17 @@ class TestMain(unittest.TestCase):
                     text=True,
                     check=True,
                 )
-                for x in a
+                for x in [["cargo", "build"]]
+            ]
+            + [
+                call(
+                    timings + x,
+                    capture_output=True,
+                    timeout=50,
+                    text=True,
+                    check=True,
+                )
+                for x in [["cargo", "run", "--quiet", x] for x in ("one", "two")]
             ],
         )
 
