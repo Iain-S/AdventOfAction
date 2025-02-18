@@ -18,7 +18,9 @@ type RunnerFunc = Callable[[Path], Triple]
 
 # make an enum for part one or two
 class Part(StrEnum):
-    SETUP= "setup"
+    """The parts of a day's solution."""
+
+    SETUP = "setup"
     ONE = "one"
     TWO = "two"
     TEARDOWN = "teardown"
@@ -61,13 +63,13 @@ FSHARP: Final = Command(
     run=["dotnet", "fsi", "solution.fsx"],
     teardown=["sleep", "0"],
 )
-JUPYTER: Final = Command(
-    setup=["cargo", "build"],
-    run=["ipython", "-c", "%run 'solution.ipynb'"],
-    teardown=["sleep", "0"]
-)
-def execute_command(command: list[str | Path], timeout: float = float(os.environ["TIMEOUT_SECONDS"])) -> Triple:
+JUPYTER: Final = Command(setup=["sleep", "0"], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=["sleep", "0"])
+
+
+def execute_command(command: list[str | Path], timeout: float | None = None) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
+    if timeout is None:
+        timeout = float(os.environ["TIMEOUT_SECONDS"])
     print("Running", command)
     result = subprocess.run(
         ["/usr/bin/time", "-f", "%M,%S,%U"] + command,

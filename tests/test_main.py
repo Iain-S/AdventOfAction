@@ -9,6 +9,7 @@ from subprocess import run
 from unittest.mock import MagicMock, call, patch
 
 from advent_of_action import main, runners
+from advent_of_action.runners import Command
 
 
 class TestMain(unittest.TestCase):
@@ -109,9 +110,12 @@ class TestMain(unittest.TestCase):
             ],
         )
 
-    def test_measure_one(self) -> None:
+    @patch("subprocess.run", autospec=True)
+    def test_measure_one(self, mock_run: MagicMock) -> None:
         """Check that we can measure the execution time of a solution."""
-        actual = main.measure_execution_time(("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "answer"))
+        mock_run.return_value = MagicMock(stdout="answer\n", stderr="1792,0.02,0.01")
+
+        actual = main.measure_execution_time(("answer", "answer"), Command([], [], []))
         expected = ("0.03", "1792", ""), ("0.03", "1792", "")
         self.assertEqual(
             expected,
@@ -121,7 +125,7 @@ class TestMain(unittest.TestCase):
     def test_measure_two(self) -> None:
         """Check that we can handle a wrong answer."""
         actual = main.measure_execution_time(
-            ("answer", "answer"), Path("."), lambda x, y: (1792, 0.03, "wrong answer\n")
+            ("answer", "answer"), Command(["echo", "different"], ["echo", "different"], ["echo", "different"])
         )
         expected = ("", "", "Different answer"), ("", "", "Different answer")
         self.assertEqual(
@@ -132,11 +136,8 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_three(self, mock_print: MagicMock) -> None:
         """Check that we can handle a non-zero exit code."""
-
-        def bad_runner(_: Path, __: str) -> tuple[int, float, str]:
-            return runners.execute_command(["bash", "-c", "exit 1"])
-
-        actual = main.measure_execution_time(("", ""), Path("."), bad_runner)
+        exit_1 = ["bash", "-c", "exit 1"]
+        actual = main.measure_execution_time(("", ""), Command(exit_1, exit_1, exit_1))
         expected = ("", "", "Error (1)"), ("", "", "Error (1)")
         self.assertTupleEqual(
             expected,
@@ -148,29 +149,22 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_four(self, mock_print: MagicMock) -> None:
         """Check that we can handle a partially wrong answer."""
-
-        # Check that we check the answer.
-        def partial_runner(_: Path, part: str) -> tuple[int, float, str]:
-            if part == "one":
-                return 1792, 0.03, "answer"
-            return 1792, 0.03, "wrong answer"
-
-        actual = main.measure_execution_time(("answer", "answer"), Path("."), partial_runner)
-        expected = (("0.03", "1792", ""), ("", "", "Different answer"))
+        actual = main.measure_execution_time(("one_", "two"), Command(["sleep", "0"], ["echo"], ["sleep", "0"]))
+        expected = ("", "", "Different answer")
         self.assertTupleEqual(
             expected,
-            actual,
+            actual[0],
         )
-        mock_print.assert_called_with("Incorrect answer for part two: wrong answer")
+        mock_print.assert_any_call("Incorrect answer for part one: one")
 
+    @patch("subprocess.run", autospec=True)
     @patch("builtins.print", autospec=True)
-    def test_measure_five(self, mock_print: MagicMock) -> None:
+    def test_measure_five(self, mock_print: MagicMock, mock_run: MagicMock) -> None:
         """Check that we can handle a timeout."""
+        mock_run.side_effect = subprocess.TimeoutExpired("cmd", 6)
 
-        def raise_timeout(*args, **kwargs):  # type: ignore
-            raise subprocess.TimeoutExpired("cmd", 6)
+        actual = main.measure_execution_time(("", ""), runners.Command([], [], []))
 
-        actual = main.measure_execution_time(("", ""), Path("."), raise_timeout)
         expected = ("", "", "Timeout"), ("", "", "Timeout")
         self.assertTupleEqual(
             expected,
@@ -279,7 +273,7 @@ class TestExpectsGPG(unittest.TestCase):
     def test_make_input_raises(self) -> None:
         """Test that make_input_file raises an exception if GPG_PASS is missing."""
         with self.assertRaises(ValueError):
-            main.make_input_file(Path("day_99/"))
+            main.make_input_file()
 
 
 if __name__ == "__main__":
