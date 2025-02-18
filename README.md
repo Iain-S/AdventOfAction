@@ -2,7 +2,7 @@
 
 ![Test Coverage](tests/badge.svg)
 
-If you and your friends/colleagues share a repo for AoC, you can use this to run your solutions to each day's problems.
+If you and your friends/colleagues share a repo for [Advent of Code](https://adventofcode.com), you can use this to run your solutions to each day's problems.
 It will time each person's solution and monitor maximum memory usage, saving the results to the README:
 
 | day | language | who | part | time (s) | mem (KB) | notes |
