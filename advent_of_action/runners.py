@@ -13,10 +13,8 @@ type kilobytes = int
 type seconds = float
 type output = str
 type Triple = tuple[kilobytes, seconds, output]
-type RunnerFunc = Callable[[Path], Triple]
 
 
-# make an enum for part one or two
 class Part(StrEnum):
     """The parts of a day's solution."""
 
