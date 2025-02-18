@@ -105,9 +105,9 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
           # Probably best to store in a repo secret.
           gpg-passphrase: {{ secrets.YOUR_SECRET }}
 
-          # The timeout, in seconds, for parts one and two of the solution.
+          # The timeout, in seconds, for each of parts one and two of the solution.
           # Setup and teardown timeouts are hard coded to 60 seconds.
-          timeout: 50
+          timeout-seconds: 50
 
           # To be passed to the setup-python action.
           python-version: "3.13"
