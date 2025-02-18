@@ -25,7 +25,7 @@ class Part(StrEnum):
 
 @dataclass
 class Commands:
-    """A runner for a programming language."""
+    """Commands to run the solution in a particular language."""
 
     setup: command
     run: command
