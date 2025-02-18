@@ -2,8 +2,6 @@
 
 import os
 import subprocess
-from abc import ABC
-from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
@@ -25,7 +23,7 @@ class Part(StrEnum):
 
 
 @dataclass
-class Command(ABC):
+class Command:
     """A runner for a programming language."""
 
     setup: list[str]
@@ -64,7 +62,7 @@ FSHARP: Final = Command(
 JUPYTER: Final = Command(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=[])
 
 
-def execute_command(command: list[str | Path], timeout: float | None = None) -> Triple:
+def execute_command(command: list[str], timeout: float | None = None) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
     if timeout is None:
         timeout = float(os.environ["TIMEOUT_SECONDS"])
