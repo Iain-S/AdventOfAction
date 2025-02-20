@@ -35,6 +35,7 @@ target-version = "py313"
 [tool.ruff.lint]
 # 1. Enable flake8-bugbear (`B`) rules, in addition to the defaults.
 select = ["B", "D", "E", "F", "I", "SIM", "UP"]
+ignore = ["UP043"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
