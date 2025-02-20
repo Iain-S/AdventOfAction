@@ -10,6 +10,8 @@ A sentence.
 | y | python | iain | two | x | z |  |
 | y | fsharp | iain | one | x | z |  |
 | y | fsharp | iain | two |  |  | Different answer |
+| y | go | iain | one | x | z |  |
+| y | go | iain | two | x | z |  |
 | y | jupyter | iain | one | x | z |  |
 | y | jupyter | iain | two |  |  | Different answer |
 | y | ocaml | iain | one | x | z |  |
