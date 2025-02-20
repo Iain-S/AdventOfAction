@@ -39,8 +39,8 @@ PYTHON: Final = Commands(
 )
 
 RUST: Final = Commands(
-    setup=["cargo", "build", "--quiet"],
-    run=["cargo", "run", "--quiet"],
+    setup=["cargo", "build", "--quiet", "--release"],
+    run=["./target/release/solution"],
     teardown=[],
 )
 
