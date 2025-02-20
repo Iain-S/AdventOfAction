@@ -48,120 +48,100 @@ class TestMain(unittest.TestCase):
         mock_run.return_value.stderr = "1792,0.01,0.02"
         Path("README.md").write_text("")
         main.main()
+        setup_args = {
+            "capture_output": True,
+            "timeout": 60.0,
+            "text": True,
+            "check": True,
+        }
+        run_args = {
+            "capture_output": True,
+            "timeout": 50.0,
+            "text": True,
+            "check": True,
+        }
         timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
-        a = (
-            [["dotnet", "fsi", "solution.fsx", x] for x in ("one", "two")]
-            + [["ipython", "-c", "%run 'solution.ipynb'", x] for x in ("one", "two")]
-            + [["ocaml", "solution.ml", x] for x in ("one", "two")]
-        )
-        b = [["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]]
-        c = [["python", "solution.py", x] for x in ("one", "two")]
-        d = [["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]] + [
-            ["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]
+        pip_install = [
+            call(
+                timings + ["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
+                **setup_args,
+            )
         ]
-        e = [
-            [
-                "python",
-                "solution.py",
-                x,
-            ]
+        pip_uninstall = [
+            call(
+                timings + ["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
+                **setup_args,
+            )
+        ]
+        python_run = [
+            call(
+                timings + ["python", "solution.py", x],
+                **run_args,
+            )
             for x in ("one", "two")
         ]
-        f = [["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]]
-        g = [["racket", "solution.rkt", x] for x in ("one", "two")]
-        h = [["cargo", "build", "--quiet", "--release"]]
-        i = [["./target/release/solution", x] for x in ("one", "two")]
+
         self.assertListEqual(
             mock_run.call_args_list,
             [
                 call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=50.0,
-                    text=True,
-                    check=True,
+                    timings + ["dotnet", "fsi", "solution.fsx", x],
+                    **run_args,
                 )
-                for x in a
+                for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=60.0,
-                    text=True,
-                    check=True,
+                    timings + ["go", "build", "."],
+                    **setup_args,
                 )
-                for x in b
             ]
             + [
                 call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=50.0,
-                    text=True,
-                    check=True,
+                    timings + ["./solution", x],
+                    **run_args,
                 )
-                for x in c
+                for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=60.0,
-                    text=True,
-                    check=True,
+                    timings + ["ipython", "-c", "%run 'solution.ipynb'", x],
+                    **run_args,
                 )
-                for x in d
+                for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=50.0,
-                    text=True,
-                    check=True,
+                    timings + ["ocaml", "solution.ml", x],
+                    **run_args,
                 )
-                for x in e
+                for x in ("one", "two")
+            ]
+            + pip_install
+            + python_run
+            + pip_uninstall
+            + pip_install
+            + python_run
+            + pip_uninstall
+            + [
+                call(
+                    timings + ["racket", "solution.rkt", x],
+                    **run_args,
+                )
+                for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=60.0,
-                    text=True,
-                    check=True,
+                    timings + ["cargo", "build", "--quiet", "--release"],
+                    **setup_args,
                 )
-                for x in f
             ]
             + [
                 call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=50.0,
-                    text=True,
-                    check=True,
+                    timings + ["./target/release/solution", x],
+                    **run_args,
                 )
-                for x in g
-            ]
-            + [
-                call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=60.0,
-                    text=True,
-                    check=True,
-                )
-                for x in h
-            ]
-            + [
-                call(
-                    timings + x,
-                    capture_output=True,
-                    timeout=50.0,
-                    text=True,
-                    check=True,
-                )
-                for x in i
+                for x in ("one", "two")
             ],
         )
 
