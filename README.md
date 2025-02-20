@@ -43,7 +43,7 @@ day_01:                   # The day, in day_xx format.
 We currently support Python, IPython notebook, OCaml, Rust, Racket, and F# solutions.
 Unsupported languages will be ignored.
 To see how each language is set up, executed and torn down, look in [runners.py](advent_of_action/runners.py).
-For example, we set up Rust solutions with  `cargo build` and Python solutions with `pip install -r requirements.txt`, failing silently if there is no requirements file.
+For example, we set up Rust solutions with  `cargo build --release` and Python solutions with `pip install -r requirements.txt`, failing silently if there is no requirements file.
 
 For each day, provide an input file named `input.gpg` and a solution file named `answers.gpg`.
 Provide the encryption/decryption passphrase as the `gpg-passphrase` input.
