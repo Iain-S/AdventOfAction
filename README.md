@@ -35,12 +35,15 @@ day_01:                   # The day, in day_xx format.
         solution.ml
     fsharp_tara:
         solution.fsx
+    go_tabitha:
+        go.mod            # Module name should end in 'solution'.
+        hello.go
     python_travis:
         .optout           # Don't run this solution.
         solution.py
 ```
 
-We currently support Python, IPython notebook, OCaml, Rust, Racket, and F# solutions.
+We currently support Python, IPython notebook, OCaml, Rust, Racket, Golang and F# solutions.
 Unsupported languages will be ignored.
 To see how each language is set up, executed and torn down, look in [runners.py](advent_of_action/runners.py).
 For example, we set up Rust solutions with  `cargo build --release` and Python solutions with `pip install -r requirements.txt`, failing silently if there is no requirements file.

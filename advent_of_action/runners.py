@@ -32,16 +32,27 @@ class Commands:
     teardown: command
 
 
+FSHARP: Final = Commands(
+    setup=[],
+    run=["dotnet", "fsi", "solution.fsx"],
+    teardown=[],
+)
+GOLANG: Final = Commands(
+    setup=["go", "build", "."],
+    run=["./solution"],
+    teardown=[],
+)
+
+JUPYTER: Final = Commands(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=[])
+OCAML: Final = Commands(
+    setup=[],
+    run=["ocaml", "solution.ml"],
+    teardown=[],
+)
 PYTHON: Final = Commands(
     setup=["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
     run=["python", "solution.py"],
     teardown=["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
-)
-
-RUST: Final = Commands(
-    setup=["cargo", "build", "--quiet", "--release"],
-    run=["./target/release/solution"],
-    teardown=[],
 )
 
 RACKET: Final = Commands(
@@ -49,18 +60,11 @@ RACKET: Final = Commands(
     run=["racket", "solution.rkt"],
     teardown=[],
 )
-
-OCAML: Final = Commands(
-    setup=[],
-    run=["ocaml", "solution.ml"],
+RUST: Final = Commands(
+    setup=["cargo", "build", "--quiet", "--release"],
+    run=["./target/release/solution"],
     teardown=[],
 )
-FSHARP: Final = Commands(
-    setup=[],
-    run=["dotnet", "fsi", "solution.fsx"],
-    teardown=[],
-)
-JUPYTER: Final = Commands(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=[])
 
 
 def execute_command(cmd: command, timeout: float | None = None) -> Triple:
