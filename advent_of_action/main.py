@@ -30,10 +30,6 @@ type Run = tuple[Day, Language, Person]
 type Stat = tuple[Seconds, Kilobytes, Notes]
 type Stats = tuple[Stat, Stat]
 
-# Prevent Ruff from simplifying Generator[None, None, None] to Generator[None],
-# which Pyre treats as Generator[None, Any, None].
-type Nothing = None | None
-
 
 def measure_execution_time(answers: tuple[str, str], comm: Commands) -> Stats:
     """Measure the execution time of a solution."""
@@ -124,7 +120,7 @@ def write_results(the_results: Mapping[Run, Stats]) -> None:
 
 
 @contextmanager
-def chdir(new_path: Path) -> Generator[None, Nothing, Nothing]:
+def chdir(new_path: Path) -> Generator[None, None, None]:
     """Context manager for changing the current working directory."""
     saved_path = Path.cwd()
     os.chdir(new_path)
