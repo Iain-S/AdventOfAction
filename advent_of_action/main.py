@@ -12,12 +12,13 @@ from advent_of_action.runners import Commands, Part, execute_command
 
 # Languages and their commands
 RUNTIMES: Final = {
+    "fsharp": runners.FSHARP,
+    "go": runners.GOLANG,
+    "jupyter": runners.JUPYTER,
+    "ocaml": runners.OCAML,
     "python": runners.PYTHON,
     "racket": runners.RACKET,
     "rust": runners.RUST,
-    "fsharp": runners.FSHARP,
-    "ocaml": runners.OCAML,
-    "jupyter": runners.JUPYTER,
 }
 
 type Day = str

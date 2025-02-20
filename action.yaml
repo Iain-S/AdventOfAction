@@ -35,6 +35,10 @@ inputs:
     description: "Rust toolchain version to use. -1 for none."
     required: false
     default: "1.84"
+  go-version:
+    description: "Golang version to use. -1 for none."
+    required: false
+    default: "1.23.6"
 runs:
   using: "composite"
   steps:
@@ -63,6 +67,11 @@ runs:
       uses: ocaml/setup-ocaml@v3
       with:
         ocaml-compiler: ${{ inputs.ocaml-version }}
+    - name: Set up Golang
+      if: ${{ inputs.go-version != -1 }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ inputs.go-version }}
     - name: Install package
       run: echo $GITHUB_ACTION_PATH && pip install $GITHUB_ACTION_PATH
       shell: bash
