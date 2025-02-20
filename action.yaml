@@ -68,6 +68,7 @@ runs:
       with:
         ocaml-compiler: ${{ inputs.ocaml-version }}
     - name: Set up Golang
+      if: ${{ inputs.go-version != -1 }}
       uses: actions/setup-go@v5
       with:
         go-version: ${{ inputs.go-version }}
