@@ -17,15 +17,16 @@ See also the [AdventOfActionTest](https://github.com/Iain-S/AdventOfActionTest/t
 The action expects your code to be laid out with this file structure:
 
 ```text
-README.md               # The results will be written here.
-day_01:                 # The day, in day_xx format.
-    input.gpg           # Somebody's encrypted input for day xx.
-    answers.gpg         # That person's (correct) encrypted answers for day xx.
-    rust_tom:           # Someone's solution, in lang_name format.
-        Cargo.toml
+README.md                 # The results will be written here.
+day_01:                   # The day, in day_xx format.
+    input.gpg             # Somebody's encrypted input for day xx.
+    answers.gpg           # That person's (correct) encrypted answers for day xx.
+    rust_tom:             # Someone's solution, in lang_name format.
+        Cargo.toml        # Rust package name should be 'solution'.
         src/
     python_tim:
         solution.py
+        requirements.txt  # Optional Python requirements.
     jupyter_tina:
         solution.ipynb
     racket_tod:
@@ -35,7 +36,7 @@ day_01:                 # The day, in day_xx format.
     fsharp_tara:
         solution.fsx
     python_travis:
-        .optout
+        .optout           # Don't run this solution.
         solution.py
 ```
 
