@@ -69,8 +69,8 @@ class TestMain(unittest.TestCase):
         ]
         f = [["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]]
         g = [["racket", "solution.rkt", x] for x in ("one", "two")]
-        h = [["cargo", "build", "--quiet"]]
-        i = [["cargo", "run", "--quiet", x] for x in ("one", "two")]
+        h = [["cargo", "build", "--quiet", "--release"]]
+        i = [["./target/release/solution", x] for x in ("one", "two")]
         self.assertListEqual(
             mock_run.call_args_list,
             [
@@ -193,7 +193,7 @@ class TestMain(unittest.TestCase):
                     text=True,
                     check=True,
                 )
-                for x in [["cargo", "build", "--quiet"]]
+                for x in [["cargo", "build", "--quiet", "--release"]]
             ]
             + [
                 call(
@@ -203,7 +203,7 @@ class TestMain(unittest.TestCase):
                     text=True,
                     check=True,
                 )
-                for x in [["cargo", "run", "--quiet", x] for x in ("one", "two")]
+                for x in [["./target/release/solution", x] for x in ("one", "two")]
             ],
         )
 
