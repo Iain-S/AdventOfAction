@@ -99,6 +99,7 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref || github.ref_name }}
+
       - name: Run the action
         uses: Iain-S/AdventOfAction@x.y.z
         with:
@@ -127,6 +128,10 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
 
           # To be passed to the setup-ocaml action or -1 to disable.
           ocaml-version: -1
+
+          # To be passed to the setup-go action or -1 to disable.
+          go-version: -1
+
       - name: Commit results
         shell: bash
         run: |
