@@ -79,5 +79,5 @@ def execute_command(cmd: command, timeout: float | None = None) -> Triple:
         text=True,
         check=True,
     )
-    kilobytes, sys_seconds, user_seconds = result.stderr.split(",")
+    kilobytes, sys_seconds, user_seconds = result.stderr.splitlines()[-1].split(",")
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()

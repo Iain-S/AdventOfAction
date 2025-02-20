@@ -253,7 +253,7 @@ class TestMain(unittest.TestCase):
     def test_execute_command(self, mock_run: MagicMock) -> None:
         """Executing a command should return the memory usage, time and stdout."""
         mock_run.return_value.stdout = "hello\n"
-        mock_run.return_value.stderr = "1792,0.01,0.02"
+        mock_run.return_value.stderr = "someoutput\n1792,0.01,0.02"
         actual = runners.execute_command(
             [],
         )
