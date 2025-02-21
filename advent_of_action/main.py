@@ -92,7 +92,7 @@ def from_table(table: str) -> dict[Run, Stats]:
 def to_table(results: Mapping[Run, Stats]) -> str:
     """Convert results to a Markdown table."""
     table = "\n\n## Stats\n\n"
-    table += "| day | language | who | part | time (s) | mem (KB) | notes |\n"
+    table += "| day | language | who | part | time (s) | mem (KiB) | notes |\n"
     table += "| --- | --- | --- | --- | --- | --- | --- |\n"
     for the_run, stats in results.items():
         day, language, person = the_run
