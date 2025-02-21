@@ -38,12 +38,16 @@ day_01:                   # The day, in day_xx format.
     go_tabitha:
         go.mod            # Module name should end in 'solution'.
         hello.go
+    haskell_troy:
+        solution.cabal    # Package name should be 'solution'.
+        app:
+            Main.hs
     python_travis:
         .optout           # Don't run this solution.
         solution.py
 ```
 
-We currently support Python, IPython notebook, OCaml, Rust, Racket, Golang and F# solutions.
+We currently support Python, IPython notebook, OCaml, Rust, Racket, Golang, Haskell and F# solutions.
 Unsupported languages will be ignored.
 To see how each language is set up, executed and torn down, look in [runners.py](advent_of_action/runners.py).
 For example, we set up Rust solutions with  `cargo build --release` and Python solutions with `pip install -r requirements.txt`, failing silently if there is no requirements file.
@@ -131,6 +135,9 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
 
           # To be passed to the setup-go action or -1 to disable.
           go-version: -1
+
+          # To be passed to the setup-haskell action or -1 to disable.
+          haskell-version: -1
 
       - name: Commit results
         shell: bash

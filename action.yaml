@@ -39,6 +39,10 @@ inputs:
     description: "Golang version to use. -1 for none."
     required: false
     default: "1.23.6"
+  haskell-version:
+    description: "GHC version to use. -1 for none."
+    required: false
+    default: "9.10"
 runs:
   using: "composite"
   steps:
@@ -72,6 +76,11 @@ runs:
       uses: actions/setup-go@v5
       with:
         go-version: ${{ inputs.go-version }}
+    - name: Setup Haskell
+      if: ${{ inputs.haskell-version != -1 }}
+      uses: haskell-actions/setup@v2.7.9
+      with:
+        ghc-version: ${{ inputs.haskell-version }}
     - name: Install package
       run: echo $GITHUB_ACTION_PATH && pip install $GITHUB_ACTION_PATH
       shell: bash

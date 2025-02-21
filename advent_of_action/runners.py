@@ -34,50 +34,58 @@ class Commands:
 
 FSHARP: Final = Commands(
     setup=[],
-    run=["dotnet", "fsi", "solution.fsx"],
+    run=["dotnet", "fsi", "solution.fsx", "{part}"],
     teardown=[],
 )
 GOLANG: Final = Commands(
     setup=["go", "build", "."],
-    run=["./solution"],
+    run=["./solution", "{part}"],
+    teardown=[],
+)
+HASKELL: Final = Commands(
+    setup=["cabal", "build"],
+    run=["$(cabal list-bin solution)", "{part}"],
     teardown=[],
 )
 
-JUPYTER: Final = Commands(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'"], teardown=[])
+JUPYTER: Final = Commands(setup=[], run=["ipython", "-c", "'%run solution.ipynb'", "{part}"], teardown=[])
 OCAML: Final = Commands(
     setup=[],
-    run=["ocaml", "solution.ml"],
+    run=["ocaml", "solution.ml", "{part}"],
     teardown=[],
 )
 PYTHON: Final = Commands(
     setup=["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
-    run=["python", "solution.py"],
+    run=["python", "solution.py", "{part}"],
     teardown=["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
 )
 
 RACKET: Final = Commands(
     setup=[],
-    run=["racket", "solution.rkt"],
+    run=["racket", "solution.rkt", "{part}"],
     teardown=[],
 )
 RUST: Final = Commands(
     setup=["cargo", "build", "--quiet", "--release"],
-    run=["./target/release/solution"],
+    run=["./target/release/solution", "{part}"],
     teardown=[],
 )
 
 
-def execute_command(cmd: command, timeout: float | None = None) -> Triple:
+def execute_command(cmd: command, part: Part | None = None, timeout: float | None = None) -> Triple:
     """Execute a command and return the memory usage, time and stdout."""
     if timeout is None:
         timeout = float(os.environ["TIMEOUT_SECONDS"])
+    cmd_str = " ".join(str(x) for x in ["/usr/bin/time", "-f", "%M,%S,%U"] + cmd)
     print("Running", cmd)
     result = subprocess.run(
-        ["/usr/bin/time", "-f", "%M,%S,%U"] + cmd,
+        cmd_str.format(part=part) if part else cmd_str,
         capture_output=True,
-        timeout=timeout,
         text=True,
         check=True,
+        shell=True,
+        timeout=timeout,
     )
+
     kilobytes, sys_seconds, user_seconds = result.stderr.splitlines()[-1].split(",")
     return int(kilobytes), float(sys_seconds) + float(user_seconds), result.stdout.strip()
