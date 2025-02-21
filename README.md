@@ -5,7 +5,7 @@
 If you and your friends/colleagues share a repo for [Advent of Code](https://adventofcode.com), you can use this to run and compare your solutions to each day's problems.
 It will time each person's solution and monitor maximum memory usage, saving the results to the README:
 
-| day | language | who | part | time (s) | mem (KB) | notes |
+| day | language | who | part | time (s) | mem (KiB) | notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 01 | python | tina | one | 0.00 | 9728 |  |
 | 01 | python | tina | two | 0.02 | 9856 |  |
