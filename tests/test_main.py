@@ -115,7 +115,7 @@ class TestMain(unittest.TestCase):
             ]
             + [
                 call(
-                    " ".join(timings + ["ipython", "-c", "%run 'solution.ipynb'", x]),
+                    " ".join(timings + ["ipython", "-c", "'%run solution.ipynb'", x]),
                     **run_args,
                 )
                 for x in ("one", "two")

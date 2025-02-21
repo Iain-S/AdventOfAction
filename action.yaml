@@ -42,7 +42,7 @@ inputs:
   haskell-version:
     description: "GHC version to use. -1 for none."
     required: false
-    default: "9.2"
+    default: "9.10"
 runs:
   using: "composite"
   steps:

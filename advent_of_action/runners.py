@@ -44,11 +44,11 @@ GOLANG: Final = Commands(
 )
 HASKELL: Final = Commands(
     setup=["cabal", "build"],
-    run=["$(cabal list-bin solution) {part}"],
+    run=["$(cabal list-bin solution)", "{part}"],
     teardown=[],
 )
 
-JUPYTER: Final = Commands(setup=[], run=["ipython", "-c", "%run 'solution.ipynb'", "{part}"], teardown=[])
+JUPYTER: Final = Commands(setup=[], run=["ipython", "-c", "'%run solution.ipynb'", "{part}"], teardown=[])
 OCAML: Final = Commands(
     setup=[],
     run=["ocaml", "solution.ml", "{part}"],

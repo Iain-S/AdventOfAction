@@ -60,6 +60,7 @@ jobs:
           dotnet-version: "-1"
           ocaml-version: "-1"
           go-version: "-1"
+          haskell-version: "-1"
       - name: Compare results
         shell: bash
         run: |
