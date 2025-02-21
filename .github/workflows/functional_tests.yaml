@@ -22,7 +22,7 @@ jobs:
       - name: Run our action
         uses: ./
         with:
-          python-version: "3.13"
+          python-version: "3.12"
           working-directory: tests/
           gpg-passphrase: ${{ secrets.GPG_PASS }}
       - name: Compare results
@@ -54,7 +54,7 @@ jobs:
           working-directory: tests/
           gpg-passphrase: ${{ secrets.GPG_PASS }}
           timeout-seconds: 30
-          python-version: "3.13"
+          python-version: "3.12"
           racket-version: "-1"
           rust-version: "-1"
           dotnet-version: "-1"
