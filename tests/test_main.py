@@ -48,34 +48,31 @@ class TestMain(unittest.TestCase):
         mock_run.return_value.stderr = "1792,0.01,0.02"
         Path("README.md").write_text("")
         main.main()
+        common_args = {"capture_output": True, "text": True, "check": True, "shell": True}
         setup_args = {
-            "capture_output": True,
+            **common_args,
             "timeout": 60.0,
-            "text": True,
-            "check": True,
         }
         run_args = {
-            "capture_output": True,
+            **common_args,
             "timeout": 50.0,
-            "text": True,
-            "check": True,
         }
         timings = ["/usr/bin/time", "-f", "%M,%S,%U"]
         pip_install = [
             call(
-                timings + ["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
+                " ".join(timings + ["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]),
                 **setup_args,
             )
         ]
         pip_uninstall = [
             call(
-                timings + ["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
+                " ".join(timings + ["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]),
                 **setup_args,
             )
         ]
         python_run = [
             call(
-                timings + ["python", "solution.py", x],
+                " ".join(timings + ["python", "solution.py", x]),
                 **run_args,
             )
             for x in ("one", "two")
@@ -85,34 +82,47 @@ class TestMain(unittest.TestCase):
             mock_run.call_args_list,
             [
                 call(
-                    timings + ["dotnet", "fsi", "solution.fsx", x],
+                    " ".join(timings + ["dotnet", "fsi", "solution.fsx", x]),
                     **run_args,
                 )
                 for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + ["go", "build", "."],
+                    " ".join(timings + ["go", "build", "."]),
                     **setup_args,
                 )
             ]
             + [
                 call(
-                    timings + ["./solution", x],
+                    " ".join(timings + ["./solution", x]),
                     **run_args,
                 )
                 for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + ["ipython", "-c", "%run 'solution.ipynb'", x],
+                    " ".join(timings + ["cabal", "build"]),
+                    **setup_args,
+                )
+            ]
+            + [
+                call(
+                    " ".join(timings + ["$(cabal list-bin solution)", x]),
                     **run_args,
                 )
                 for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + ["ocaml", "solution.ml", x],
+                    " ".join(timings + ["ipython", "-c", "%run 'solution.ipynb'", x]),
+                    **run_args,
+                )
+                for x in ("one", "two")
+            ]
+            + [
+                call(
+                    " ".join(timings + ["ocaml", "solution.ml", x]),
                     **run_args,
                 )
                 for x in ("one", "two")
@@ -125,20 +135,20 @@ class TestMain(unittest.TestCase):
             + pip_uninstall
             + [
                 call(
-                    timings + ["racket", "solution.rkt", x],
+                    " ".join(timings + ["racket", "solution.rkt", x]),
                     **run_args,
                 )
                 for x in ("one", "two")
             ]
             + [
                 call(
-                    timings + ["cargo", "build", "--quiet", "--release"],
+                    " ".join(timings + ["cargo", "build", "--quiet", "--release"]),
                     **setup_args,
                 )
             ]
             + [
                 call(
-                    timings + ["./target/release/solution", x],
+                    " ".join(timings + ["./target/release/solution", x]),
                     **run_args,
                 )
                 for x in ("one", "two")

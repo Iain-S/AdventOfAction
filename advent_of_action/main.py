@@ -14,6 +14,7 @@ from advent_of_action.runners import Commands, Part, execute_command
 RUNTIMES: Final = {
     "fsharp": runners.FSHARP,
     "go": runners.GOLANG,
+    "haskell": runners.HASKELL,
     "jupyter": runners.JUPYTER,
     "ocaml": runners.OCAML,
     "python": runners.PYTHON,
@@ -39,7 +40,7 @@ def measure_execution_time(answers: tuple[str, str], comm: Commands) -> Stats:
         """Use the runner to measure the execution time of one part."""
         try:
             if answer is not None:
-                kilobytes, seconds, output = execute_command(command + [part.value])
+                kilobytes, seconds, output = execute_command(command, part=part)
                 if output != answer:
                     print(f"Incorrect answer for part {part}: {output}")
                     return "", "", "Different answer"
