@@ -8,6 +8,8 @@ A sentence.
 | --- | --- | --- | --- | --- | --- | --- |
 | 99 | go | iain | one | 1 | 8 |  |
 | 99 | go | iain | two |  |  | Different answer |
+| 99 | haskell | iain | one | 1 | 8 |  |
+| 99 | haskell | iain | two |  |  | Different answer |
 | 99 | jupyter | iain | one | 1 | 8 |  |
 | 99 | jupyter | iain | two |  |  | Different answer |
 | 99 | ocaml | iain | one | 1 | 8 |  |

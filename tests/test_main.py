@@ -23,7 +23,7 @@ class TestMain(unittest.TestCase):
 
         # For example, if we're on macOS.
         def new_run(command, *args, **kwargs):  # type: ignore
-            command = ["gtime"] + command[1:]
+            command = "gtime" + command[13:]
             return run(command, *args, **kwargs)
 
         if shutil.which("gtime"):
@@ -167,31 +167,34 @@ class TestMain(unittest.TestCase):
             mock_run.call_args_list,
             [
                 call(
-                    timings + x,
+                    " ".join(timings + x),
                     capture_output=True,
-                    timeout=50.0,
                     text=True,
                     check=True,
+                    shell=True,
+                    timeout=50.0,
                 )
                 for x in [["dotnet", "fsi", "solution.fsx", x] for x in ("one", "two")]
             ]
             + [
                 call(
-                    timings + x,
+                    " ".join(timings + x),
                     capture_output=True,
-                    timeout=60,
                     text=True,
                     check=True,
+                    shell=True,
+                    timeout=60,
                 )
                 for x in [["cargo", "build", "--quiet", "--release"]]
             ]
             + [
                 call(
-                    timings + x,
+                    " ".join(timings + x),
                     capture_output=True,
-                    timeout=50.0,
                     text=True,
                     check=True,
+                    shell=True,
+                    timeout=50.0,
                 )
                 for x in [["./target/release/solution", x] for x in ("one", "two")]
             ],
@@ -223,7 +226,7 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_three(self, mock_print: MagicMock) -> None:
         """Check that we can handle a non-zero exit code."""
-        exit_1: command = ["bash", "-c", "exit 1"]
+        exit_1: command = ["bash", "-c", "'exit 1'"]
         actual = main.measure_execution_time(("", ""), Commands(exit_1, exit_1, exit_1))
         expected = ("", "", "Error (1)"), ("", "", "Error (1)")
         self.assertTupleEqual(
@@ -236,7 +239,7 @@ class TestMain(unittest.TestCase):
     @patch("builtins.print", autospec=True)
     def test_measure_four(self, mock_print: MagicMock) -> None:
         """Check that we can handle a partially wrong answer."""
-        actual = main.measure_execution_time(("one_", "two"), Commands(["sleep", "0"], ["echo"], ["sleep", "0"]))
+        actual = main.measure_execution_time(("one_", "two"), Commands(["sleep", "0"], ["echo {part}"], ["sleep", "0"]))
         expected = ("", "", "Different answer")
         self.assertTupleEqual(
             expected,
