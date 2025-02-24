@@ -35,6 +35,7 @@ jobs:
           echo "..."
           sed -i -E 's/[0-9]+\.[0-9]+/x/' tests/README.md
           sed -i -E 's/[0-9]+/y/' tests/README.md
+          sed -i -E 's/[0-9]+/a/' tests/README.md
           sed -i -E 's/[0-9]+/z/' tests/README.md
           diff --ignore-all-space --ignore-blank-lines tests/README.md tests/EXPECTED_README.md
   test_with_explicit_inputs:
