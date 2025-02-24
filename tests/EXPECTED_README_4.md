@@ -4,7 +4,7 @@ A sentence.
 
 ## Stats
 
-| day | language | who | lines | part | time (s) | mem (KB) | notes |
+| day | language | who | lines | part | time (s) | mem (KiB) | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | y | python | iain | a | one | x | z |  |
 | y | python | iain | a | two | x | z |  |
