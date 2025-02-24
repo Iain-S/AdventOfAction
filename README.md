@@ -119,7 +119,7 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
           timeout-seconds: 50
 
           # To be passed to the setup-python action.
-          python-version: "3.13"
+          python-version: "3.12"
 
           # To be passed to the setup-dotnet action or -1 to disable.
           dotnet-version: 8

@@ -7,6 +7,8 @@ from pathlib import Path
 from subprocess import CalledProcessError, TimeoutExpired, run
 from typing import Final
 
+import pygount
+
 from advent_of_action import runners
 from advent_of_action.runners import Commands, Part, execute_command
 
@@ -218,6 +220,17 @@ def get_answers(dirpath: Path) -> tuple[str, str]:
     answers = lines[0], lines[1]
     Path("answers.txt").unlink()
     return answers
+
+
+def count_lines(language: str) -> int:
+    """Count the lines of code in the solution."""
+    extensions: Final = {"python": "py"}
+
+    summary = pygount.ProjectSummary()
+    for filepath in Path(".").rglob(f"*.{extensions[language]}"):
+        summary.add(pygount.SourceAnalysis.from_file(filepath, "pygount"))
+
+    return summary.total_code_count
 
 
 if __name__ == "__main__":

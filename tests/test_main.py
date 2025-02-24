@@ -366,5 +366,17 @@ class TestExpectsGPG(unittest.TestCase):
             main.make_input_file()
 
 
+class TestLineCount(unittest.TestCase):
+    """Test the lines-of-code counting function."""
+
+    def test_count_lines(self) -> None:
+        """The count_lines func gives the expected answer."""
+        with main.chdir(Path("day_99/python_iain")):
+            self.assertEqual(14, main.count_lines("python"))
+
+        with main.chdir(Path("day_99/python_zain")):
+            self.assertEqual(2, main.count_lines("python"))
+
+
 if __name__ == "__main__":
     unittest.main()
