@@ -32,10 +32,11 @@ type Kilobytes = str
 type Notes = str
 type Run = tuple[Day, Language, Person]
 type Stat = tuple[Seconds, Kilobytes, Notes]
-type Stats = tuple[Stat, Stat]
+type linecount = int
+type Stats = tuple[Stat, Stat, linecount]
 
 
-def measure_execution_time(answers: tuple[str, str], comm: Commands) -> Stats:
+def measure_execution_time(answers: tuple[str, str], comm: Commands) -> tuple[Stat, Stat]:
     """Measure the execution time of a solution."""
 
     def inner(part: Part, answer: str | None, command: list[str | Path]) -> Stat:
@@ -77,14 +78,16 @@ def from_table(table: str) -> dict[Run, Stats]:
     for line in table.splitlines()[6:]:
         if not line:
             break
-        day, lang, person, part, seconds, kb, notes = line[1:-1].split(" | ")
+        day, lang, person, lines, part, seconds, kb, notes = line[1:-1].split(" | ")
         if part == Part.ONE:
             part_one = (seconds.strip(), kb.strip(), notes.strip())
         elif part == Part.TWO:
             assert part_one is not None
+            part_two = (seconds.strip(), kb.strip(), notes.strip())
             results[(day.strip(), lang.strip(), person.strip())] = (
                 part_one,
-                (seconds.strip(), kb.strip(), notes.strip()),
+                part_two,
+                int(lines.strip()),
             )
         else:
             raise ValueError(f"Unknown part {part}")
@@ -95,12 +98,12 @@ def from_table(table: str) -> dict[Run, Stats]:
 def to_table(results: Mapping[Run, Stats]) -> str:
     """Convert results to a Markdown table."""
     table = "\n\n## Stats\n\n"
-    table += "| day | language | who | part | time (s) | mem (KiB) | notes |\n"
-    table += "| --- | --- | --- | --- | --- | --- | --- |\n"
+    table += "| day | language | who | lines | part | time (s) | mem (KiB) | notes |\n"
+    table += "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
     for the_run, stats in results.items():
         day, language, person = the_run
-        for (seconds, kilobytes, notes), part in zip(stats, (Part.ONE, Part.TWO), strict=False):
-            table += f"| {day} | {language} | {person} | {part} | {seconds} | {kilobytes} | {notes} |\n"
+        for (seconds, kilobytes, notes), part in zip(stats[:2], (Part.ONE, Part.TWO), strict=False):
+            table += f"| {day} | {language} | {person} | {stats[2]} | {part} | {seconds} | {kilobytes} | {notes} |\n"
     return table
 
 
@@ -164,7 +167,10 @@ def main() -> None:
             if (day, language, person) not in results and language in RUNTIMES:
                 with chdir(solution_dir):
                     make_input_file()
-                    results[(day, language, person)] = measure_execution_time(answers, RUNTIMES[language])
+                    results[(day, language, person)] = (
+                        *measure_execution_time(answers, RUNTIMES[language]),
+                        count_lines(language),
+                    )
 
     write_results(results)
 
@@ -224,7 +230,16 @@ def get_answers(dirpath: Path) -> tuple[str, str]:
 
 def count_lines(language: str) -> int:
     """Count the lines of code in the solution."""
-    extensions: Final = {"python": "py"}
+    extensions: Final = {
+        "python": "py",
+        "fsharp": "fsx",
+        "go": "go",
+        "haskell": "hs",
+        "ocaml": "ml",
+        "racket": "rkt",
+        "rust": "rs",
+        "jupyter": "ipynb",
+    }
 
     summary = pygount.ProjectSummary()
     for filepath in Path(".").rglob(f"*.{extensions[language]}"):
