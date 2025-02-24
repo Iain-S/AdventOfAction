@@ -288,10 +288,10 @@ class TestMain(unittest.TestCase):
         run = ("01", "python", "iain")
         stat = ("0.01", "1792", "")
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: (stat, stat, 3)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: (stat, stat, 3)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
     def test_write_results_two(self) -> None:
@@ -303,10 +303,10 @@ class TestMain(unittest.TestCase):
         run = ("01", "python", "iain")
         stat = ("0.01", "1792", "")
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: (stat, stat, 8)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
-        main.write_results({run: (stat, stat)})
+        main.write_results({run: (stat, stat, 8)})
         self.assertEqual(expected_readme_txt, readme.read_text())
 
     def test_get_answers(self) -> None:
@@ -321,14 +321,14 @@ class TestMain(unittest.TestCase):
             + "\n"
             + "## Stats\n"
             + "\n"
-            + "| day | language | who | part | time (s) | mem (KiB) | notes |\n"
-            + "| --- | --- | --- | --- | --- | --- | --- |\n"
-            + "| 01 | python | iain | one | 0.01 | 1792 | |\n"
-            + "| 01 | python | iain | two | 0.01 | 1792 | |\n"
+            + "| day | language | who | lines | part | time (s) | mem (KiB) | notes |\n"
+            + "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
+            + "| 01 | python | iain | 7 | one | 0.01 | 1792 | |\n"
+            + "| 01 | python | iain | 7 | two | 0.01 | 1792 | |\n"
             + "\n"
             + "\n"
         )
-        expected = {("01", "python", "iain"): (("0.01", "1792", ""), ("0.01", "1792", ""))}
+        expected = {("01", "python", "iain"): (("0.01", "1792", ""), ("0.01", "1792", ""), 7)}
         self.assertDictEqual(expected, actual)
 
     def test_from_table_raises(self) -> None:
@@ -339,9 +339,9 @@ class TestMain(unittest.TestCase):
                 + "\n"
                 + "## Stats\n"
                 + "\n"
-                + "| day | language | who | part | time (s) | mem (KiB) | notes |\n"
-                + "| --- | --- | --- | --- | --- | --- | --- |\n"
-                + "| 01 | python | iain | three | 0.01 | 1792 | |\n"
+                + "| day | language | who | lines | part | time (s) | mem (KiB) | notes |\n"
+                + "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
+                + "| 01 | python | iain | 7 | three | 0.01 | 1792 | |\n"
                 + "\n"
                 + "\n"
             )
@@ -364,6 +364,18 @@ class TestExpectsGPG(unittest.TestCase):
         """Test that make_input_file raises an exception if GPG_PASS is missing."""
         with self.assertRaises(ValueError):
             main.make_input_file()
+
+
+class TestLineCount(unittest.TestCase):
+    """Test the lines-of-code counting function."""
+
+    def test_count_lines(self) -> None:
+        """The count_lines func gives the expected answer."""
+        with main.chdir(Path("day_99/python_iain")):
+            self.assertEqual(14, main.count_lines("python"))
+
+        with main.chdir(Path("day_99/python_zain")):
+            self.assertEqual(2, main.count_lines("python"))
 
 
 if __name__ == "__main__":

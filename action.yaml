@@ -18,7 +18,7 @@ inputs:
   python-version:
     description: "Python version to use"
     required: false
-    default: "3.13"
+    default: "3.12"
   racket-version:
     description: "Racket version to use. -1 for none."
     required: false

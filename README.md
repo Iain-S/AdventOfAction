@@ -3,12 +3,12 @@
 ![Test Coverage](tests/badge.svg)
 
 If you and your friends/colleagues share a repo for [Advent of Code](https://adventofcode.com), you can use this to run and compare your solutions to each day's problems.
-It will time each person's solution and monitor maximum memory usage, saving the results to the README:
+It will time each person's solution, monitor maximum memory usage and count the lines of code, saving the results to the README:
 
-| day | language | who | part | time (s) | mem (KiB) | notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| 01 | python | tina | one | 0.00 | 9728 |  |
-| 01 | python | tina | two | 0.02 | 9856 |  |
+| day | language | who | lines | part | time (s) | mem (KiB) | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 01 | python | tina | 15 | one | 0.00 | 9728 |  |
+| 01 | python | tina | 15 | two | 0.02 | 9856 |  |
 
 ## Using the Action
 
@@ -119,7 +119,7 @@ See [Configuring the Default GitHub Token Permissions](https://docs.github.com/e
           timeout-seconds: 50
 
           # To be passed to the setup-python action.
-          python-version: "3.13"
+          python-version: "3.12"
 
           # To be passed to the setup-dotnet action or -1 to disable.
           dotnet-version: 8

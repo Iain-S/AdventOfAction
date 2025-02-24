@@ -24,7 +24,7 @@ repos:
     hooks:
       - id: pyre
         name: Pyre
-        entry: poetry run pyre --strict --noninteractive check
+        entry: poetry run pyre --optional-search-path=stubs/ --strict --noninteractive check
         language: system
         pass_filenames: false
         types: [python]
