@@ -339,9 +339,9 @@ class TestMain(unittest.TestCase):
                 + "\n"
                 + "## Stats\n"
                 + "\n"
-                + "| day | language | who | part | time (s) | mem (KiB) | notes |\n"
-                + "| --- | --- | --- | --- | --- | --- | --- |\n"
-                + "| 01 | python | iain | three | 0.01 | 1792 | |\n"
+                + "| day | language | who | lines | part | time (s) | mem (KiB) | notes |\n"
+                + "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
+                + "| 01 | python | iain | 7 | three | 0.01 | 1792 | |\n"
                 + "\n"
                 + "\n"
             )
