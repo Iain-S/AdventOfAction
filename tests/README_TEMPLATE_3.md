@@ -5,7 +5,7 @@ A sentence.
 ## Stats
 
 | day | language | who | lines | part | time (s) | mem (MiB) | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | ---: | --- | ---: | ---: | --- |
 | 99 | go | iain | 8 | one | 1 | 8 |  |
 | 99 | go | iain | 8 | two |  |  | Different answer |
 | 99 | haskell | iain | 8 | one | 1 | 8 |  |

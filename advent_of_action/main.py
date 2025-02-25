@@ -99,7 +99,7 @@ def to_table(results: Mapping[Run, Stats]) -> str:
     """Convert results to a Markdown table."""
     table = "\n\n## Stats\n\n"
     table += "| day | language | who | lines | part | time (s) | mem (MiB) | notes |\n"
-    table += "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
+    table += "| --- | --- | --- | ---: | --- | ---: | ---: | --- |\n"
     for the_run, stats in results.items():
         day, language, person = the_run
         for (seconds, kilobytes, notes), part in zip(stats[:2], (Part.ONE, Part.TWO), strict=False):

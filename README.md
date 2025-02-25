@@ -6,7 +6,7 @@ If you and your friends/colleagues share a repo for [Advent of Code](https://adv
 It will time each person's solution, monitor maximum memory usage and count the lines of code, saving the results to the README:
 
 | day | language | who | lines | part | time (s) | mem (MiB) | notes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | ---: | --- | ---: | ---: | --- |
 | 01 | python | tim | 15 | one | 0.00 | 9728 |  |
 | 01 | python | tim | 15 | two | 0.02 | 9856 |  |
 
