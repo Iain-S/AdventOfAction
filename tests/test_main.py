@@ -206,7 +206,7 @@ class TestMain(unittest.TestCase):
         mock_run.return_value = MagicMock(stdout="answer\n", stderr="1792,0.02,0.01")
 
         actual = main.measure_execution_time(("answer", "answer"), Commands([], [], []))
-        expected = ("0.03", "1792", ""), ("0.03", "1792", "")
+        expected = (("0.03", "1.8", ""),) * 2
         self.assertEqual(
             expected,
             actual,
@@ -321,7 +321,7 @@ class TestMain(unittest.TestCase):
             + "\n"
             + "## Stats\n"
             + "\n"
-            + "| day | language | who | lines | part | time (s) | mem (KiB) | notes |\n"
+            + "| day | language | who | lines | part | time (s) | mem (MiB) | notes |\n"
             + "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
             + "| 01 | python | iain | 7 | one | 0.01 | 1792 | |\n"
             + "| 01 | python | iain | 7 | two | 0.01 | 1792 | |\n"
@@ -339,7 +339,7 @@ class TestMain(unittest.TestCase):
                 + "\n"
                 + "## Stats\n"
                 + "\n"
-                + "| day | language | who | lines | part | time (s) | mem (KiB) | notes |\n"
+                + "| day | language | who | lines | part | time (s) | mem (MiB) | notes |\n"
                 + "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
                 + "| 01 | python | iain | 7 | three | 0.01 | 1792 | |\n"
                 + "\n"

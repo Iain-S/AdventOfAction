@@ -28,10 +28,10 @@ type Day = str
 type Language = str
 type Person = str
 type Seconds = str
-type Kilobytes = str
+type MiBytes = str
 type Notes = str
 type Run = tuple[Day, Language, Person]
-type Stat = tuple[Seconds, Kilobytes, Notes]
+type Stat = tuple[Seconds, MiBytes, Notes]
 type linecount = int
 type Stats = tuple[Stat, Stat, linecount]
 
@@ -43,12 +43,12 @@ def measure_execution_time(answers: tuple[str, str], comm: Commands) -> tuple[St
         """Use the runner to measure the execution time of one part."""
         try:
             if answer is not None:
-                kilobytes, seconds, output = execute_command(command, part=part)
+                kibytes, seconds, output = execute_command(command, part=part)
                 if output != answer:
                     print(f"Incorrect answer for part {part}: {output}")
                     return "", "", "Different answer"
                 else:
-                    return f"{seconds:.2f}", f"{kilobytes}", ""
+                    return f"{seconds:.2f}", f"{kibytes / 1024.0:.1f}", ""
             else:
                 # Ignore empty lists.
                 if command:
@@ -98,7 +98,7 @@ def from_table(table: str) -> dict[Run, Stats]:
 def to_table(results: Mapping[Run, Stats]) -> str:
     """Convert results to a Markdown table."""
     table = "\n\n## Stats\n\n"
-    table += "| day | language | who | lines | part | time (s) | mem (KiB) | notes |\n"
+    table += "| day | language | who | lines | part | time (s) | mem (MiB) | notes |\n"
     table += "| --- | --- | --- | --- | --- | --- | --- | --- |\n"
     for the_run, stats in results.items():
         day, language, person = the_run
