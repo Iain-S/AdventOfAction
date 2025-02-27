@@ -6,8 +6,8 @@ A sentence.
 
 | day | language | who | lines | part | time | mem | notes |
 | --- | --- | --- | ---: | --- | ---: | ---: | --- |
-| 00 | python | iain | 3 | one | 2.34 | 1999 |  |
-| 00 | python | iain | 3 | two | 2.34 | 1999 |  |
+| 00 | python | iain | 3 | one | 2.34 | 19.0 |  |
+| 00 | python | iain | 3 | two | 2.34 | 19.0 |  |
 
 ## Section
 
