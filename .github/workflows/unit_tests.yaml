@@ -23,6 +23,8 @@ jobs:
       - run: |
           coverage run --source advent_of_action -m unittest discover
           COVERAGE=$(coverage report --format total)
+          echo "Test coverage was ${COVERAGE}%."
+          [ "$COVERAGE" = 100 ] || exit 1
           python -m pybadges --left-text Coverage --right-text "${COVERAGE}"% > badge.svg
         shell: bash
         working-directory: tests
