@@ -286,7 +286,7 @@ class TestMain(unittest.TestCase):
         expected_readme_txt = Path("EXPECTED_README_2.md").read_text()
 
         run = ("01", "python", "iain")
-        stat = ("0.01", "1792", "")
+        stat = ("0.01", "17.0", "")
 
         main.write_results({run: (stat, stat, 3)})
         self.assertEqual(expected_readme_txt, readme.read_text())
