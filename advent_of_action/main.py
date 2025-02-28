@@ -36,6 +36,12 @@ type linecount = int
 type Stats = tuple[Stat, Stat, linecount]
 
 
+def never_tested() -> None:
+    """This function is never tested."""
+    x = 10 + 10
+    del x
+
+
 def measure_execution_time(answers: tuple[str, str], comm: Commands) -> tuple[Stat, Stat]:
     """Measure the execution time of a solution."""
 
