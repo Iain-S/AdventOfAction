@@ -7,8 +7,8 @@ It will time each person's solution, monitor maximum memory usage and count the 
 
 | day | language | who | lines | part | time (s) | mem (MiB) | notes |
 | --- | --- | --- | ---: | --- | ---: | ---: | --- |
-| 01 | python | tim | 15 | one | 0.00 | 9728 |  |
-| 01 | python | tim | 15 | two | 0.02 | 9856 |  |
+| 01 | python | tim | 15 | one | 0.00 | 9.7 |  |
+| 01 | python | tim | 15 | two | 0.02 | 9.8 |  |
 
 ## Using the Action
 
