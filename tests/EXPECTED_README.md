@@ -20,8 +20,8 @@ A sentence.
 | y | ocaml | iain | a | two |  |  | Different answer |
 | y | python | iain | a | one | x | z |  |
 | y | python | iain | a | two | x | z |  |
-| y | python | zain | a | one |  |  | Error(z) |
-| y | python | zain | a | two |  |  | Error(z) |
+| y | python | zain | a | one |  |  | Error(1) |
+| y | python | zain | a | two |  |  | Error(1) |
 | y | racket | iain | a | one | x | z |  |
 | y | racket | iain | a | two |  |  | Different answer |
 | y | rust | iain | a | one | x | z |  |
