@@ -57,7 +57,7 @@ OCAML: Final = Commands(
 PYTHON: Final = Commands(
     setup=["pip", "install", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
     run=["python", "solution.py", "{part}"],
-    teardown=["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"],
+    teardown=["pip", "uninstall", "-q", "-q", "-q", "--no-input", "--yes", "-r", "requirements.txt"],
 )
 
 RACKET: Final = Commands(

@@ -66,7 +66,9 @@ class TestMain(unittest.TestCase):
         ]
         pip_uninstall = [
             call(
-                " ".join(timings + ["pip", "uninstall", "-q", "-q", "-q", "--no-input", "-r", "requirements.txt"]),
+                " ".join(
+                    timings + ["pip", "uninstall", "-q", "-q", "-q", "--no-input", "--yes", "-r", "requirements.txt"]
+                ),
                 **setup_args,
             )
         ]
