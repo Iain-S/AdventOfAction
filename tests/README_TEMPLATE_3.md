@@ -22,7 +22,6 @@ A sentence.
 | 99 | racket | iain | 8 | two |  |  | Different answer |
 | 99 | rust | iain | 8 | one | 1 | 8.0 |  |
 
-
 ## Section
 
 Another sentence.

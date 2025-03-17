@@ -13,7 +13,6 @@ A sentence.
 | 01 | zython | iain | 3 | one | 2.34 | 19.0 |  |
 | 01 | zython | iain | 3 | two | 2.34 | 19.0 |  |
 
-
 ## Section
 
 Another sentence.

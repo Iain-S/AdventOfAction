@@ -27,7 +27,6 @@ A sentence.
 | y | rust | iain | a | one | x | z |  |
 | y | rust | iain | a | two |  |  | Different answer |
 
-
 ## Section
 
 Another sentence.
