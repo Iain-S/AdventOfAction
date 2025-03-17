@@ -100,7 +100,7 @@ def to_table(results: Mapping[Run, Stats]) -> str:
     table = "\n\n## Stats\n\n"
     table += "| day | language | who | lines | part | time (s) | mem (MiB) | notes |\n"
     table += "| --- | --- | --- | ---: | --- | ---: | ---: | --- |\n"
-    for the_run, stats in results.items():
+    for the_run, stats in sorted(results.items()):
         day, language, person = the_run
         for (seconds, kilobytes, notes), part in zip(stats[:2], (Part.ONE, Part.TWO), strict=False):
             table += f"| {day} | {language} | {person} | {stats[2]} | {part} | {seconds} | {kilobytes} | {notes} |\n"
